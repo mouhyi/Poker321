@@ -7,6 +7,12 @@ import java.util.HashMap;
 
 import Data.UserData;
 
+/**
+ * Implementation class of the remote interface
+ * 
+ * @author mouhyi
+ * 
+ */
 public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 		RemoteUser {
 
@@ -16,22 +22,46 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 		super();
 	}
 
+	/**
+	 * Add a friendship relationship between two users
+	 * 
+	 * @param userId
+	 * @param friendId
+	 * @return 0 on success, -1 on failure
+	 * @throws RemoteException
+	 * @throws SQLException
+	 * @author mouhyi
+	 */
 	@Override
-	public void addFriend(String friend) throws RemoteException {
-		// TODO Auto-generated method stub
+	public int addFriend(int userId, int friendId) throws RemoteException,
+			SQLException {
+		return UserData.addFriend(userId, friendId);
 
 	}
 
+	/**
+	 * Delete a friendship relationship between two users
+	 * 
+	 * @param userId
+	 * @param friendId
+	 * @return 0 on success, -1 on failure
+	 * @throws RemoteException
+	 * @throws SQLException
+	 * @author mouhyi
+	 */
 	@Override
-	public void deleteFriend() throws RemoteException {
-		// TODO Auto-generated method stub
+	public int deleteFriend(int userId, int friendId) throws SQLException {
+		return UserData.deleteFriend(userId, friendId);
 
 	}
 
 	/**
 	 * This method enables the user to update his profile
 	 * 
+	 * @param user
 	 * @return 0 on success, -1 on failure
+	 * @throws RemoteException
+	 * @throws SQLException
 	 * @author mouhyi
 	 */
 	@Override
@@ -42,11 +72,14 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	}
 
 	/**
-	 * Get user's FriendsList
+	 * This method enables the user to add chips to his account
 	 * 
-	 * @return ArrayList of friends UserObjects
+	 * @param user
+	 * @param ammount
+	 * @return 0 on success, -1 on failure
+	 * @throws RemoteException
+	 * @throws SQLException
 	 * @author mouhyi
-	 * 
 	 */
 	@Override
 	public ArrayList<UserObject> getFriends(int u_id) throws RemoteException,
@@ -56,9 +89,13 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	}
 
 	/**
-	 * Log in a registered user
+	 * This method implements the login functionality
 	 * 
+	 * @param email
+	 * @param password
 	 * @return UserObject corresponding to email
+	 * @throws RemoteException
+	 * @throws SQLException
 	 * @author mouhyi
 	 */
 	@Override
@@ -79,12 +116,13 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	}
 
 	/**
-	 * Log user Out
+	 **
+	 * This method logs out the current user
 	 * 
 	 * @param user
+	 * @return logged out UserObject
 	 * @throws RemoteException
 	 * @throws SQLException
-	 * @return 0 on success, -1 on failure
 	 * @author mouhyi
 	 */
 	@Override
@@ -95,11 +133,14 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	}
 
 	/**
-	 * Add chips to user's account
+	/**
+	 * This method enables the user to add chips to his account
 	 * 
+	 * @param user
 	 * @param ammount
-	 *            >0
 	 * @return 0 on success, -1 on failure
+	 * @throws RemoteException
+	 * @throws SQLException
 	 * @author mouhyi
 	 */
 	@Override
@@ -118,15 +159,31 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	}
 
 	/**
-	 * Register a new user
-	 * 
+	 * This method registers a new user
+	 * @param user
 	 * @return 0 on success, -1 on failure
+	 * @throws RemoteException
+	 * @throws SQLException
 	 * @author mouhyi
 	 */
 	@Override
-	public boolean signup(UserObject user) throws RemoteException, SQLException {
+	public int signup(UserObject user) throws RemoteException, SQLException {
 		return Data.UserData.createUser(user);
 
 	}
-
+	
+	/**
+	 * search a user by email
+	 * 
+	 * @param email
+	 * @return UserObject corresponding to email
+	 * @throws RemoteException
+	 * @throws SQLException
+	 * @author mouhyi
+	 */
+	public  UserObject getUserObject(String email)
+			throws RemoteException, SQLException {
+		int userId = UserData.getId(email);
+		return UserData.getUserObject(userId);
+	}
 }

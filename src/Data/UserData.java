@@ -21,9 +21,9 @@ public class UserData {
 	 * @author mouhyi
 	 */
 	// tested Mar 29, 07:30pm
-	public static boolean createUser(UserObject user) throws SQLException {
+	public static int createUser(UserObject user) throws SQLException {
 		if (exists(user.getName())) {
-			return false;
+			return -1;
 		}
 		String email = Methods.addQuotes(user.getEmail());
 		String password = Methods.addQuotes(user.getPassword());
@@ -43,7 +43,7 @@ public class UserData {
 
 		Statement st = con.createStatement();
 		st.executeUpdate(query);
-		return true;
+		return 0;
 
 	}
 

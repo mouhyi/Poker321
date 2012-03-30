@@ -15,6 +15,7 @@ import java.util.concurrent.*;
  *
  */
 public class UserClient {
+	
 	// stub to the UserServer object
 	private RemoteUser userProxy;
 	

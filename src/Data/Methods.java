@@ -4,7 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-
+/**
+ * Class containing useful methods 
+ * @author mouhyi
+ *
+ */
 public class Methods {
 	public static Connection connectToDB(String db) throws SQLException{
 		Connection con= null;
