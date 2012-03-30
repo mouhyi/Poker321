@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import Server.userModule.UserObject;
 
 /**
- * This class represents the facade for the user's data management
- * TODO: escape all inputs (Security Req)
+ * This class represents the facade for the user's data management TODO: escape
+ * all inputs (Security Req)
  * 
  * @author Mouhyi
  */
@@ -152,6 +152,7 @@ public class UserData {
 	 * @return boolean: true if user exists, false otherwise
 	 * @author mouhyi
 	 */
+	// tested: Mar29 07:40pm
 	public static boolean exists(String user) throws SQLException {
 		return (getId(user) != -1);
 	}
@@ -163,18 +164,19 @@ public class UserData {
 	 * @return boolean: true if user exists, false otherwise
 	 * @author mouhyi
 	 */
+	// tested: Mar29 07:40pm
 	public static boolean exists(int userId) throws SQLException {
-		boolean result=false;
+		boolean result = false;
 		Statement st = null;
 
 		try {
 			Connection con = Methods.connectToDB("5CARD");
-			String query = "SELECT email FROM 5CARD.Users WHERE u_id='" + userId
-					+ "'";
+			String query = "SELECT email FROM 5CARD.Users WHERE u_id='"
+					+ userId + "'";
 			st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			if (rs.next()) {
-				result =true;
+				result = true;
 			}
 
 		} catch (SQLException e) {
@@ -192,6 +194,7 @@ public class UserData {
 	 * 
 	 * @author mouhyi
 	 */
+	// tested: Mar29 07:50pm
 	public static int updateUser(UserObject user) throws SQLException {
 		int updated = -1;
 		PreparedStatement pstmt = null;
@@ -206,10 +209,10 @@ public class UserData {
 					+ " WHERE u_id=?";
 			pstmt = con.prepareStatement(query);
 			pstmt.setString(1, user.getName());
-			pstmt.setDouble(2,  user.getChips());
-			pstmt.setBoolean(3,  user.isOnline());
+			pstmt.setDouble(2, user.getChips());
+			pstmt.setBoolean(3, user.isOnline());
 			pstmt.setInt(4, user.getId());
-			
+
 			System.out.println(pstmt.toString());
 
 			updated = pstmt.executeUpdate();
@@ -231,6 +234,7 @@ public class UserData {
 	 * @throws SQLException
 	 * @author mouhyi
 	 */
+	// tested: Mar30 03:30pm
 	public static ArrayList<UserObject> getFriends(int u_id)
 			throws SQLException {
 		ArrayList<UserObject> friends = new ArrayList<UserObject>();
@@ -261,12 +265,20 @@ public class UserData {
 	 * table !!! For now, the friendship need not be confirmed by the other user
 	 * 
 	 * @throws SQLException
+	 * @return 0 on success, -1 on failure
 	 * @author mouhyi
 	 */
+	// tested: Mar29 08:30pm
 	public static int addFriend(int userId, int friendId) throws SQLException {
 		PreparedStatement pstmt = null;
 		int success = -1;
 		Connection con = null;
+
+		if (!exists(userId) || !exists(friendId))
+			return -1;
+		
+		if(isFriend(userId, friendId))
+			return -1;
 
 		try {
 			con = Methods.connectToDB("5CARD");
@@ -313,6 +325,7 @@ public class UserData {
 	 * @throws SQLException
 	 * @author mouhyi
 	 */
+	// tested: Mar30 03:00pm
 	public static int deleteFriend(int userId, int friendId)
 			throws SQLException {
 		PreparedStatement pstmt = null;
@@ -356,4 +369,42 @@ public class UserData {
 			return success;
 		}
 	}
+	/**
+	 * Checks whether two users are friends or not
+	 * 
+	 * @param userId
+	 * @param friendId
+	 * @return boolean: true if the users are friends, false otherwise
+	 * @throws SQLException
+	 * @author mouhyi
+	 */
+	// tested: Mar30 02:30pm
+	public static boolean isFriend(int userId, int friendId)
+			throws SQLException {
+		PreparedStatement pstmt = null;
+		Connection con = null;
+		boolean result = false;
+
+		try {
+			con = Methods.connectToDB("5CARD");
+
+			String query = "SELECT * FROM 5CARD.Friends WHERE u_id=? AND f_id=? ";
+			pstmt = con.prepareStatement(query);
+			pstmt.setInt(1, userId);
+			pstmt.setInt(2, friendId);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				result = true;
+			}
+
+		} catch (SQLException e) {
+			Methods.printSQLException(e);
+		} finally {
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			return result;
+		}
+	}
+
 }
