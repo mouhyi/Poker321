@@ -7,6 +7,6 @@ import java.rmi.*;
  * @author mouhyi
  *
  */
-public interface GameServer extends Remote {
+public interface GameServer {
 
 }

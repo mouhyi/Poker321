@@ -1,11 +1,14 @@
 package Server.gameModule;
 
+import java.util.ArrayList;
+
 /**
  * A class of hands
  * 
  * @author mouhyi
  */
 public class Hand {
+	private ArrayList<Card> cards;
 	
 	/**
 	 * Constructor
@@ -13,7 +16,7 @@ public class Hand {
 	 * @author mouhyi
 	 */
 	public Hand(){
-		
+		ArrayList<Card> cards = new ArrayList<Card>();
 	}
 	 /**
 	  * Adds new card to the hand
@@ -21,7 +24,7 @@ public class Hand {
 	  * @author mouhyi
 	  */
 	public void add(Card card){
-		
+		cards.add(card);
 	}
 	
 	/**
@@ -30,6 +33,6 @@ public class Hand {
 	 * @author mouhyi
 	 */
 	public int getSize(){
-		
+		return cards.size();
 	}
 }

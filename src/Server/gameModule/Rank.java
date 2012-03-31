@@ -2,9 +2,10 @@ package Server.gameModule;
 
 /**
  * Rank Class
+ * The order of declaration define the natural ordering
  * @author mouhyi
  *
  */
 public enum Rank {
-	Joker, Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King
+	Deuce, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace
 }
