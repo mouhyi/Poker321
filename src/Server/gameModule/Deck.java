@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Wrapper class for a standard deck of cards
+ * 
+ * @author mouhyi
+ *
+ */
+//all methods tested on Mar 31, 04:11pm
+
 public class Deck {
 
 	private ArrayList<Card> cards;
@@ -62,5 +70,14 @@ public class Deck {
 	 */
 	public int getSize(){
 		return cards.size();
+	}
+	
+	/**
+	 * Add a specific card to the deck.
+	 * 
+	 * @author mouhyi
+	 */
+	public void addCard(Card card) {
+		cards.add(card);
 	}
 }

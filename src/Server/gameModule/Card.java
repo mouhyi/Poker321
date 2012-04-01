@@ -73,12 +73,11 @@ public class Card implements Comparable<Card> {
 	 * This method implements the Comparable part of this class. IT defines a
 	 * natural ordering of cards based on its rank
 	 * 
-	 * @param c
-	 *            The Card which to compare this Card value.
-	 * @return A negative integer if this object is less than the Card argument;
-	 *         zero if this Card is equal to the Card argument; a positive
-	 *         number if this Card is greater than the Card argument.
-	 *@author mouhyi
+	 * @param c: The Card which to compare this Card value.
+	 * @return A negative integer if this card is less than the Card argument;
+	 *         zero if this Card is equal to the Card argument;
+	 *         a positive number if this Card is greater than the Card argument.
+	 * @author mouhyi
 	 **/
 	public int compareTo(Card c) {
 		return (this.rank.compareTo(c.rank));
@@ -91,7 +90,7 @@ public class Card implements Comparable<Card> {
 	 * players have equally ranked low card to break the tie for the bring-in
 	 * 
 	 * @param c: Card object
-	 * @return
+	 * @return int
 	 * @author mouhyi
 	 */
 	public int compareBySuit(Card c) {

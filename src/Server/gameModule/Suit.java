@@ -1,6 +1,7 @@
 package Server.gameModule;
 /**
  * Suit Class
+ * 
  * @author mouhyi
  *
  */

@@ -8,7 +8,8 @@ package Server.gameModule;
 public class Test {
 	
 	public static void main(String[] args){
-		testCardComp();
+		//testCardComp();
+		testDeck();
 	}
 	
 	public static void testCardComp(){
@@ -21,5 +22,11 @@ public class Test {
 		System.out.println(c3.equals(c2));
 		System.out.println(c3.compareTo(c2));
 		System.out.println(c1.toString());
+	}
+	public static void testDeck(){
+		Deck d = new Deck();
+		d.shuffle();
+		System.out.println(d.drawCard());
+		System.out.println(d.getSize());
 	}
 }
