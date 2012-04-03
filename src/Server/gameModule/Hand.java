@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A class of hands TODO: Algorithm to Determine the value of the hand
+ * A wrapper class of a Poker Hand.
+ * All of the algorithms used to determine the value of a hand
+ * are original and no outside sources were consulted. Moreover, these
+ * algorithms are pretty efficient.
  * 
  * @author mouhyi
  */
@@ -195,7 +198,8 @@ public class Hand implements Comparable<Hand> {
 	 * Implement the comparable interface. IT defines a natural ordering of
 	 * hands.
 	 * 
-	 * @param h:Hand
+	 * @param h
+	 *            :Hand
 	 * @return A negative integer if this hand is less than the Hand argument;
 	 *         zero if this Hand is equal to the Hand argument; a positive
 	 *         number if this Hand is greater than the Hand argument.
@@ -206,31 +210,33 @@ public class Hand implements Comparable<Hand> {
 		if (comp != 0) {
 			return comp;
 		}
-		if (this.getValue() == HandType.HIGH_CARD || this.getValue() == HandType.FLUSH ||
-				this.getValue() == HandType.STRAIGHT || this.getValue() == HandType.STRAIGHT_FLUSH) {
+		if (this.getValue() == HandType.HIGH_CARD
+				|| this.getValue() == HandType.FLUSH
+				|| this.getValue() == HandType.STRAIGHT
+				|| this.getValue() == HandType.STRAIGHT_FLUSH) {
 			return breakTieHighCard(this.cards, h.cards);
 		}
-		
+
 		List<Map.Entry<Rank, Integer>> thisList = this.sortCards();
 		List<Map.Entry<Rank, Integer>> list = h.sortCards();
 		Rank thisRk, rk;
-	
-		while(true){
+
+		while (true) {
 			thisRk = thisList.get(thisList.size() - 1).getKey();
 			rk = list.get(list.size() - 1).getKey();
 			comp = thisRk.compareTo(rk);
-			
-			if(comp != 0){
+
+			if (comp != 0) {
 				return comp;
 			}
-			thisList.remove(thisList.size()-1);
-			list.remove(list.size()-1);
-			
-			if(list.size() < 1){
+			thisList.remove(thisList.size() - 1);
+			list.remove(list.size() - 1);
+
+			if (list.size() < 1) {
 				return 0;
 			}
-			
-		}	
+
+		}
 	}
 
 	/**
@@ -249,7 +255,6 @@ public class Hand implements Comparable<Hand> {
 		return c1.get(i).compareTo(c2.get(i));
 	}
 
-
 	/**
 	 * Returns the Highest n-tuple in this hand where n=1..4
 	 * 
@@ -259,10 +264,10 @@ public class Hand implements Comparable<Hand> {
 		List<Map.Entry<Rank, Integer>> list = this.sortCards();
 		return list.get(list.size() - 1).getKey();
 	}
-	
+
 	/**
-	 * Returns the second Highest n-tuple in this hand where n=1..4
-	 * pre: hand.size > 3
+	 * Returns the second Highest n-tuple in this hand where n=1..4 pre:
+	 * hand.size > 3
 	 * 
 	 * @author mouhyi
 	 */
@@ -311,7 +316,7 @@ public class Hand implements Comparable<Hand> {
 		return list;
 
 	}
-	
+
 	// ----> methods up to here tested on Apr 2, 02:00am
 
 }

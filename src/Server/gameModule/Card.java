@@ -12,6 +12,7 @@ public class Card implements Comparable<Card> {
 
 	private Suit suit;
 	private Rank rank;
+	boolean up;
 
 	/**
 	 * Constructor
@@ -21,14 +22,18 @@ public class Card implements Comparable<Card> {
 	public Card(Rank rank, Suit suit) {
 		this.rank = rank;
 		this.suit = suit;
+		up = true;
 	}
 
-	/**
-	 * Settors ang gettors TODO: delete setters: a card instance should be final
-	 * 
-	 * @author mouhyi
-	 * 
+	/*
+	 * Settors ang gettors 
+	 * TODO: delete setters: a card instance should be final
+	 * @author mouhyi 
 	 */
+	public void setDown(){
+		this.up = false;
+	}
+	
 	public Suit getSuit() {
 		return suit;
 	}
