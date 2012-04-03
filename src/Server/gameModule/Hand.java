@@ -3,189 +3,315 @@ package Server.gameModule;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
- * A class of hands
- * TODO: Algorithm to Determine the value of the hand
+ * A class of hands TODO: Algorithm to Determine the value of the hand
  * 
  * @author mouhyi
  */
 public class Hand implements Comparable<Hand> {
+
+	private final static int HAND_SIZE = 5;
 	private ArrayList<Card> cards;
-	
+
 	/**
 	 * Constructor
 	 * 
 	 * @author mouhyi
 	 */
-	public Hand(){
-		// ArrayList with initial capacity = 5 = size of a poker hand;
-		ArrayList<Card> cards = new ArrayList<Card>(5);
+	public Hand() {
+		// ArrayList with initial capacity = size of a poker hand;
+		cards = new ArrayList<Card>(HAND_SIZE);
 	}
-	 /**
-	  * Adds new card to this hand
-	  * 
-	  * @param card
-	  * @author mouhyi
-	  */
-	public void add(Card card){
-		cards.add(card);
-	}
-	
+
 	/**
-	  * Removes a card from this hand
-	  * 
-	  * @param card
-	  * @author mouhyi
-	  */
-	public void remove(Card card){
+	 * Adds new card to this hand
+	 * 
+	 * @param card
+	 *            to be added
+	 * @author mouhyi
+	 */
+	public void add(Card card) {
 		cards.add(card);
 	}
-	
+
+	/**
+	 * Adds list of card to this hand
+	 * 
+	 * @param list
+	 *            : cards to be added
+	 * @author mouhyi
+	 */
+	public void addAll(ArrayList<Card> list) {
+		cards.addAll(list);
+	}
+
+	/**
+	 * Removes a card from this hand
+	 * 
+	 * @return top card of the hand
+	 * @author mouhyi
+	 */
+	public Card remove() {
+		return cards.remove(cards.size() - 1);
+	}
+
 	/**
 	 * Returns the number of cards in this hand
 	 * 
 	 * @author mouhyi
 	 */
-	public int getSize(){
+	public int getSize() {
 		return cards.size();
 	}
-	
-	// Test All the following methods
-	
+
 	/**
-	 * Determines the value of this hand.
-	 * notes: If there is a flush, there cannot be pairings and vice versa.
-	 * If there is a pairing, there cannot be straight and vice versa.
+	 * Determines the value of this hand. notes: If there is a flush, there
+	 * cannot be pairings and vice versa. If there is a pairing, there cannot be
+	 * straight and vice versa.
 	 * 
 	 * @return the value of this hand
 	 * @author mouhyi
 	 */
-	public HandType getValue(){
-		if(isStraightFlush())
+	public HandType getValue() {
+		if (isStraightFlush()) {
 			return HandType.STRAIGHT_FLUSH;
-		if(isFlush())
+		}
+		if (isFlush()) {
 			return HandType.FLUSH;
-		if(isStraight())
+		}
+		if (isStraight()) {
 			return HandType.STRAIGHT;
+		}
 		return this.getPairing();
 	}
-	
+
 	/**
 	 * Test if all the cards in this hand are of the same suit.
 	 * 
 	 * @return Boolean: true if flush, false if not
 	 * @author mouhyi
 	 */
-	public boolean isFlush(){
+	public boolean isFlush() {
 		Suit s = cards.get(0).getSuit();
-		for (int i=1; i<=5; i++){
-			if(cards.get(i).getSuit() != s)
+		for (int i = 1; i < cards.size(); i++) {
+			if (cards.get(i).getSuit() != s)
 				return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Test if this hand contains five cards in sequence,
 	 * 
-	 * @return Boolean: true if flush, false if not
+	 * @return Boolean: true if straight, false if not
 	 * @author mouhyi
 	 */
-	public boolean isStraight(){
+	public boolean isStraight() {
 		Collections.sort(cards);
-		// if hand does not contain an Ace: check the diff between highest and lowest card
-		if(cards.get(4).getRank() != Rank.Ace){
-			int diff = cards.get(4).getRank().ordinal() - cards.get(0).getRank().ordinal();
-			return (diff == 4);
+		int n = cards.size();
+		// if hand does not contain an Ace
+		if (cards.get(n - 1).getRank() != Rank.Ace) {
+			int diff = cards.get(n - 1).getRank().ordinal()
+					- cards.get(0).getRank().ordinal();
+			return (diff == n - 1);
 		}
 		// if hand contains Ace (at index 4)
-		else{
-			int diff = cards.get(3).getRank().ordinal() - cards.get(0).getRank().ordinal();
-			if(diff !=3) return false;
+		else {
+			// check for: J, Q, K, Ace
+			int diff = cards.get(n - 1).getRank().ordinal()
+					- cards.get(0).getRank().ordinal();
+			if (diff == n - 1) {
+				return true;
+			}
+			// check for: Ace, 2, 3, 4, 5
+			diff = cards.get(n - 2).getRank().ordinal()
+					- cards.get(0).getRank().ordinal();
+			if (diff != n - 2)
+				return false;
 			return (cards.get(0).getRank() == Rank.Deuce);
 		}
 	}
-	
+
 	/**
 	 * Test if this hand contains five cards in sequence, all of the same Suit
 	 * 
 	 * @return Boolean: true if StraightFlush, false if not
 	 * @author mouhyi
 	 */
-	public boolean isStraightFlush(){
+	public boolean isStraightFlush() {
 		return (isStraight() && isFlush());
 	}
-	
+
 	/**
-	 * Determine the pairing category of this hand
-	 * Call this method if this hand is not Flush nor Straight
+	 * Determine the pairing category of this hand.Call this method if this hand
+	 * is not Flush nor Straight
 	 * 
 	 * @return HandType
 	 * @author mouhyi
 	 */
-	public HandType getPairing(){
-		HashMap<Rank,Integer> table = new HashMap<Rank,Integer>(13);
-		for(Rank rank : Rank.values()){
+	public HandType getPairing() {
+		HashMap<Rank, Integer> table = new HashMap<Rank, Integer>(13);
+		for (Rank rank : Rank.values()) {
 			table.put(rank, 0);
 		}
-		for (Card c: cards){
+		for (Card c : cards) {
 			Rank r = c.getRank();
 			int freq = table.get(r);
-			table.put(r, freq+1);
+			table.put(r, freq + 1);
 		}
-		if(table.containsValue(4))
+		if (table.containsValue(4)) {
 			return HandType.FOUR_OF_A_KIND;
-		if(table.containsValue(3) && table.containsValue(2))
+		}
+		if (table.containsValue(3) && table.containsValue(2)) {
 			return HandType.FULL_HOUSE;
-		if(table.containsValue(3))
+		}
+		if (table.containsValue(3)) {
 			return HandType.THREE_OF_A_KIND;
-		if(table.containsValue(2)){
+		}
+		if (table.containsValue(2)) {
 			Collection<Integer> col = table.values();
-			int freq =0;
-			for (int i: col){
-				if (i==2) freq++;
+			int freq = 0;
+			for (int i : col) {
+				if (i == 2)
+					freq++;
 			}
-			if(freq==2)
+			if (freq == 2)
 				return HandType.TWO_PAIR;
 			else
 				return HandType.ONE_PAIR;
 		}
 		return HandType.HIGH_CARD;
 	}
-	
+
 	/**
-	 * Implement the comparable interface part.
-	 * IT defines a natural ordering of hands.
+	 * Implement the comparable interface. IT defines a natural ordering of
+	 * hands.
 	 * 
-	 * @param h: Hand
+	 * @param h:Hand
 	 * @return A negative integer if this hand is less than the Hand argument;
-	 *         zero if this Hand is equal to the Hand argument;
-	 *         a positive number if this Hand is greater than the Hand argument.
+	 *         zero if this Hand is equal to the Hand argument; a positive
+	 *         number if this Hand is greater than the Hand argument.
 	 * @author mouhyi
 	 */
-	public int compareTo(Hand h){
-		return ( this.getValue().compareTo(h.getValue()) );
+	public int compareTo(Hand h) {
+		int comp = this.getValue().compareTo(h.getValue());
+		if (comp != 0) {
+			return comp;
+		}
+		if (this.getValue() == HandType.HIGH_CARD || this.getValue() == HandType.FLUSH ||
+				this.getValue() == HandType.STRAIGHT || this.getValue() == HandType.STRAIGHT_FLUSH) {
+			return breakTieHighCard(this.cards, h.cards);
+		}
+		
+		List<Map.Entry<Rank, Integer>> thisList = this.sortCards();
+		List<Map.Entry<Rank, Integer>> list = h.sortCards();
+		Rank thisRk, rk;
+	
+		while(true){
+			thisRk = thisList.get(thisList.size() - 1).getKey();
+			rk = list.get(list.size() - 1).getKey();
+			comp = thisRk.compareTo(rk);
+			
+			if(comp != 0){
+				return comp;
+			}
+			thisList.remove(thisList.size()-1);
+			list.remove(list.size()-1);
+			
+			if(list.size() < 1){
+				return 0;
+			}
+			
+		}	
 	}
-	
-	// TODO: implement Tie breaker
-	
+
 	/**
-	 * Helper method to compare two set of cards based on highest individual card
+	 * Helper method to compare two set of cards based on highest individual
+	 * card. Only useful when the two hands have the same category
 	 * 
 	 * @author mouhyi
 	 */
-	public static int breakTieHighCard(ArrayList<Card> c1, ArrayList<Card> c2 ){
+	public static int breakTieHighCard(ArrayList<Card> c1, ArrayList<Card> c2) {
 		Collections.sort(c1);
 		Collections.sort(c2);
-		int i = c1.size()-1;
-		while(i>=0){
-			if (c1.get(i) != c2.get(i))
-				break;
+		int i = c1.size() - 1;
+		while (i >= 0 && (c1.get(i).compareTo(c2.get(i)) == 0)) {
 			i--;
 		}
 		return c1.get(i).compareTo(c2.get(i));
 	}
+
+
+	/**
+	 * Returns the Highest n-tuple in this hand where n=1..4
+	 * 
+	 * @author mouhyi
+	 */
+	public Rank getHighestTuple() {
+		List<Map.Entry<Rank, Integer>> list = this.sortCards();
+		return list.get(list.size() - 1).getKey();
+	}
+	
+	/**
+	 * Returns the second Highest n-tuple in this hand where n=1..4
+	 * pre: hand.size > 3
+	 * 
+	 * @author mouhyi
+	 */
+	public Rank getSecHighestTuple() {
+		List<Map.Entry<Rank, Integer>> list = this.sortCards();
+		return list.get(list.size() - 2).getKey();
+	}
+
+	/**
+	 * Sorts hands into a list <Map.Entry<Rank, Integer= freq>>
+	 * 
+	 * @return sorted list
+	 * @author mouhyi
+	 */
+	// tested Apr 2, 11:15 pm
+	public List<Map.Entry<Rank, Integer>> sortCards() {
+		HashMap<Rank, Integer> table = new HashMap<Rank, Integer>(HAND_SIZE);
+		for (Card c : cards) {
+			Rank r = c.getRank();
+			int freq = (table.containsKey(r)) ? table.get(r) : 0;
+			table.put(r, freq + 1);
+		}
+		List<Map.Entry<Rank, Integer>> sortedEntries = sortByValue(table);
+
+		return sortedEntries;
+
+	}
+
+	// Helper method to sort a hashmap by value
+	public static List<Map.Entry<Rank, Integer>> sortByValue(
+			HashMap<Rank, Integer> map) {
+		List<Map.Entry<Rank, Integer>> list = new LinkedList(map.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<Rank, Integer>>() {
+			public int compare(Map.Entry<Rank, Integer> m1,
+					Map.Entry<Rank, Integer> m2) {
+				if (m1.getValue() > m2.getValue()) {
+					return 1;
+				} else if (m1.getValue() < m2.getValue()) {
+					return -1;
+				} else {
+					return (m1.getKey().compareTo(m2.getKey()));
+				}
+			}
+		});
+
+		return list;
+
+	}
+	
+	// ----> methods up to here tested on Apr 2, 02:00am
+
 }

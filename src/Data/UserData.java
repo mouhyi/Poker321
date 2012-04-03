@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import Server.userModule.UserObject;
 
 /**
- * This class represents the facade for the user's data management TODO: escape
- * all inputs (Security Req)
+ * This class represents the facade for the user's data management 
  * 
  * @author Mouhyi
  */
+// TODO: escape * all inputs (Security Req)
 
 public class UserData {
 
 	/**
 	 * This method adds a new user to the 'users' table, tested: Mar25 4:00am
-	 * returns true on success
 	 * 
+	 * @return int: 0 on success, -1 on failure
 	 * @author mouhyi
 	 */
 	// tested Mar 29, 07:30pm
