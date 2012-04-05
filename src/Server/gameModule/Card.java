@@ -90,15 +90,15 @@ public class Card implements Comparable<Card> {
 	}
 
 	/**
-	 * Compare two cards based on their suits in the following order: clubs
-	 * (lowest),diamonds, hearts, and spades (highest). Call this method if two
-	 * players have equally ranked low card to break the tie for the bring-in
+	 * Compare two cards based on their rank and use suits as tie breaker in the following order: clubs
+	 * (lowest),diamonds, hearts, and spades (highest).
 	 * 
 	 * @param c: Card object
 	 * @return int
 	 * @author mouhyi
 	 */
 	public int compareBySuit(Card c) {
-		return (this.suit.compareTo(c.suit));
+		int tmp = this.rank.compareTo(c.rank);
+		return (tmp != 0) ? tmp : (this.suit.compareTo(c.suit)) ;
 	}
 }
