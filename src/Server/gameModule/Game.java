@@ -19,7 +19,7 @@ public class Game {
 	Deck deck;
 	double ante;
 	double bringIn;
-	int curPlayer;
+	int curPlayerId;
 
 	/**
 	 * Constructor
@@ -103,32 +103,80 @@ public class Game {
 		return null;
 	}
 
-	// TODO implement doBetting() used in each round
-	// TODO getWinner()
+	// TODO implement doBetting() used in each round & Game Controller (RMI callbacks)
+	
 
 	/**
 	 * Determines the winner of this game. If there is only one player
 	 * remaining, then he is the winner. Otherwise, there is a showdown to
-	 * determine the player with the highest hand value
+	 * determine the player with the highest hand value. This method should be
+	 * called only at the end of the game
 	 * 
 	 * @return the winner of this game
+	 * @author mouhyi
 	 */
 	public synchronized Player getWinner() {
-		for (Player p: players){
+		for (Player p : players) {
 			p.mergeHand();
 		}
 		return this.getBestHand();
 
 	}
-	
+
 	/**
-	 * Determines the player with the best face up hand up to this round
+	 * Determines the player with the best face up hand in this round
 	 * 
 	 * @return Player
 	 */
-	public synchronized Player getBestHand(){
-		Collections.sort(players);
-		return players.get(players.size()-1);
+	public synchronized Player getBestHand() {
+		ArrayList<Player> playersCpy = new ArrayList<Player>(players);
+		Collections.sort(playersCpy);
+		return playersCpy.get(playersCpy.size() - 1);
+	}
+	
+	/**
+	 * Collect the ante
+	 * 
+	 * @author mouhyi
+	 */
+	public synchronized void collectAnte(){
+		for (Player p : players) {
+			p.bet(ante);
+			pot += ante;
+		}
+	}
+	
+	/**
+	 * Each player being dealt one card face down, followed by one card face up
+	 * Then the player with the lowest-ranking upcard must pay the bring in.
+	 * 
+	 * @return minPlayer - player with lowest up card 
+	 * @author mouhyi
+	 */
+	public synchronized Player dofirstRound(){
+		for (Player p : players) {
+			p.getCard(deck.drawCard(), true);
+		}
+		Player minPlayer = null;
+		Card minCard = null;
+		for (Player p : players) {
+			Card tmp = deck.drawCard();
+			p.getCard(tmp, false);
+			if ( (minCard == null) || (minCard.compareBySuit(tmp) > 0) ){
+				minCard = tmp;
+				minPlayer = p;
+			}
+		}
+		return minPlayer;
+		// minPlayer bets >= bringIn
+		
+	}
+	
+	public synchronized Player doRound(){
+		for (Player p : players) {
+			p.getCard(deck.drawCard(), false);
+		}
+		return this.getBestHand();
 	}
 
 }

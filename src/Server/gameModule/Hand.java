@@ -118,7 +118,15 @@ public class Hand implements Comparable<Hand> {
 	 */
 	public boolean isStraight() {
 		ArrayList<Card> cardsCpy = new ArrayList<Card>(cards);
-		Collections.sort(cards);
+		Collections.sort(cardsCpy);
+		
+		// if there two cards have the same rank return false
+		for (Card c: cardsCpy){
+			if (Collections.frequency(cardsCpy, c) >1){
+				return false;
+			}
+		}
+		
 		int n = cardsCpy.size();
 		// if hand does not contain an Ace
 		if (cardsCpy.get(n - 1).getRank() != Rank.Ace) {
