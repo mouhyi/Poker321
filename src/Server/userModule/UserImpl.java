@@ -72,11 +72,10 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	}
 
 	/**
-	 * This method enables the user to add chips to his account
+	 * Rturn user's friends
 	 * 
-	 * @param user
-	 * @param ammount
-	 * @return 0 on success, -1 on failure
+	 * @param u_id
+	 *            : user Id
 	 * @throws RemoteException
 	 * @throws SQLException
 	 * @author mouhyi
@@ -116,7 +115,7 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	}
 
 	/**
-	 **
+	 ** 
 	 * This method logs out the current user
 	 * 
 	 * @param user
@@ -133,8 +132,7 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	}
 
 	/**
-	/**
-	 * This method enables the user to add chips to his account
+	 * Enables the user to add chips to his account
 	 * 
 	 * @param user
 	 * @param ammount
@@ -159,7 +157,8 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	}
 
 	/**
-	 * This method registers a new user
+	 * Registers a new user
+	 * 
 	 * @param user
 	 * @return 0 on success, -1 on failure
 	 * @throws RemoteException
@@ -171,9 +170,9 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 		return Data.UserData.createUser(user);
 
 	}
-	
+
 	/**
-	 * search a user by email
+	 * Searchs a user by email
 	 * 
 	 * @param email
 	 * @return UserObject corresponding to email
@@ -181,9 +180,21 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	 * @throws SQLException
 	 * @author mouhyi
 	 */
-	public  UserObject getUserObject(String email)
+	public UserObject getUserObject(String email)
 			throws RemoteException, SQLException {
 		int userId = UserData.getId(email);
+		return UserData.getUserObject(userId);
+	}
+	
+	/**
+	 * Searchs users by Id
+	 * @param userId
+	 * @return
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
+	public UserObject getUserObject(int userId) throws RemoteException,
+			SQLException {
 		return UserData.getUserObject(userId);
 	}
 }
