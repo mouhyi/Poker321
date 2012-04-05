@@ -101,6 +101,8 @@ public class Hand implements Comparable<Hand> {
 	 * @author mouhyi
 	 */
 	public boolean isFlush() {
+		int n = cards.size();
+		if(n<5) return false;
 		Suit s = cards.get(0).getSuit();
 		for (int i = 1; i < cards.size(); i++) {
 			if (cards.get(i).getSuit() != s)
@@ -120,6 +122,7 @@ public class Hand implements Comparable<Hand> {
 		ArrayList<Card> cardsCpy = new ArrayList<Card>(cards);
 		Collections.sort(cards);
 		int n = cardsCpy.size();
+		if(n<5) return false;
 		// if hand does not contain an Ace
 		if (cardsCpy.get(n - 1).getRank() != Rank.Ace) {
 			int diff = cardsCpy.get(n - 1).getRank().ordinal()

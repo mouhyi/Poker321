@@ -323,8 +323,8 @@ public class Test2 {
 		//Pair 1
 		Hand h6 = new Hand();
 		ArrayList<Card> list6 = new ArrayList<Card> (4);
-		list6.add(new Card(Rank.Eight, Suit.Spades));
-		list6.add(new Card(Rank.Eight, Suit.Diamonds));
+		list6.add(new Card(Rank.Seven, Suit.Spades));
+		list6.add(new Card(Rank.Seven, Suit.Diamonds));
 		list6.add(new Card(Rank.Six, Suit.Clubs));
 		list6.add(new Card(Rank.Five, Suit.Hearts));
 		h6.addAll(list6);
@@ -340,28 +340,28 @@ public class Test2 {
 		h7.addAll(list7);
 		all[7]=h7;
 
-		//High card 1
+		//High card 1. also checking here is if isFlush is working fine.
 		Hand h8 = new Hand();
 		ArrayList<Card> list8 = new ArrayList<Card> (4);
 		list8.add(new Card(Rank.King, Suit.Spades));
-		list8.add(new Card(Rank.Four, Suit.Diamonds));
-		list8.add(new Card(Rank.Queen, Suit.Clubs));
-		list8.add(new Card(Rank.Six, Suit.Hearts));
+		list8.add(new Card(Rank.Four, Suit.Spades));
+		list8.add(new Card(Rank.Queen, Suit.Spades));
+		list8.add(new Card(Rank.Six, Suit.Spades));
 		h8.addAll(list8);
 		all[8]=h8;
 
 		//High card 1
 		Hand h9 = new Hand();
 		ArrayList<Card> list9 = new ArrayList<Card> (4);
-		list9.add(new Card(Rank.Queen, Suit.Spades));
+		list9.add(new Card(Rank.Queen, Suit.Diamonds));
 		list9.add(new Card(Rank.King, Suit.Diamonds));
-		list9.add(new Card(Rank.Four, Suit.Clubs));
-		list9.add(new Card(Rank.Three, Suit.Hearts));
+		list9.add(new Card(Rank.Four, Suit.Diamonds));
+		list9.add(new Card(Rank.Three, Suit.Diamonds));
 		h9.addAll(list9);
 		all[9]=h9;
 
 		for(int i =0;i<10;i++){
-			System.out.println("Hand" + i+ " :");
+			System.out.println("Hand" + i+ " ,"+all[i].getValue()+" :");
 			for(int j=0;j<10;j++){
 				if(i!=j){
 					System.out.println("\t vs hand "+j+" :"+all[i].compareTo(all[j]));}
