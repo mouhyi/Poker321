@@ -101,6 +101,9 @@ public class Hand implements Comparable<Hand> {
 	 * @author mouhyi
 	 */
 	public boolean isFlush() {
+		if(cards.size() < HAND_SIZE){
+			return false;
+		}
 		Suit s = cards.get(0).getSuit();
 		for (int i = 1; i < cards.size(); i++) {
 			if (cards.get(i).getSuit() != s)
@@ -119,6 +122,11 @@ public class Hand implements Comparable<Hand> {
 	public boolean isStraight() {
 		ArrayList<Card> cardsCpy = new ArrayList<Card>(cards);
 		Collections.sort(cardsCpy);
+		
+		// if size<5
+		if(cardsCpy.size() < HAND_SIZE){
+			return false;
+		}
 		
 		// if there two cards have the same rank return false
 		for (Card c: cardsCpy){
