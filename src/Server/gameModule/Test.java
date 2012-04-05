@@ -16,9 +16,9 @@ public class Test {
 		//testCardComp();
 		//testDeck();
 		//testHandgetV();
-		//testHandComp();
+		testHandComp();
 		//testSortCards();
-		testcompHands();
+		//testcompHands();
 	}
 	
 	public static void testCardComp(){
@@ -56,22 +56,24 @@ public class Test {
 	public static void testHandComp(){
 		Hand h = new Hand();
 		ArrayList<Card> list = new ArrayList<Card> (5);
-		list.add(new Card(Rank.Ace, Suit.Hearts));
-		list.add(new Card(Rank.Deuce, Suit.Hearts));
-		list.add(new Card(Rank.Three, Suit.Hearts));
-		list.add(new Card(Rank.Four, Suit.Hearts));
-		list.add(new Card(Rank.Five, Suit.Hearts));
+		list.add(new Card(Rank.Jack, Suit.Clubs));
+	    list.add(new Card(Rank.Ten, Suit.Clubs));
+	    list.add(new Card(Rank.Nine, Suit.Clubs));
+	    list.add(new Card(Rank.Eight, Suit.Clubs));
+	    list.add(new Card(Rank.Seven, Suit.Clubs));
 		h.addAll(list);
 		
 		Hand h2 = new Hand();
 		ArrayList<Card> list2 = new ArrayList<Card> (5);
-		list2.add(new Card(Rank.Deuce, Suit.Hearts));
-		list2.add(new Card(Rank.Three, Suit.Hearts));
-		list2.add(new Card(Rank.Four, Suit.Hearts));
-		list2.add(new Card(Rank.Five, Suit.Hearts));
-		list2.add(new Card(Rank.Six, Suit.Hearts));
+		list2.add(new Card(Rank.Jack, Suit.Hearts));
+	    list2.add(new Card(Rank.Ten, Suit.Hearts));
+	    list2.add(new Card(Rank.Nine, Suit.Hearts));
+	    list2.add(new Card(Rank.Eight, Suit.Hearts));
+	    list2.add(new Card(Rank.Seven, Suit.Hearts));
 		h2.addAll(list2);
 		
+		System.out.println(h.getValue());
+		System.out.println(h2.getValue());
 		//System.out.println(Hand.breakTieHighCard(list, list2));
 		System.out.println(h.compareTo(h2));
 	}

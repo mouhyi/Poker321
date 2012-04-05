@@ -252,7 +252,7 @@ public class Hand implements Comparable<Hand> {
 		while (i >= 0 && (c1.get(i).compareTo(c2.get(i)) == 0)) {
 			i--;
 		}
-		return c1.get(i).compareTo(c2.get(i));
+		return ((i==-1)? 0 : c1.get(i).compareTo(c2.get(i)));
 	}
 
 	/**
