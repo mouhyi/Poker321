@@ -211,10 +211,12 @@ public class Hand implements Comparable<Hand> {
 			return comp;
 		}
 		if (this.getValue() == HandType.HIGH_CARD
-				|| this.getValue() == HandType.FLUSH
-				|| this.getValue() == HandType.STRAIGHT
-				|| this.getValue() == HandType.STRAIGHT_FLUSH) {
+				|| this.getValue() == HandType.FLUSH){
 			return breakTieHighCard(this.cards, h.cards);
+		}
+		if(this.getValue() == HandType.STRAIGHT
+				|| this.getValue() == HandType.STRAIGHT_FLUSH){
+			return breakTieStraight(this.cards, h.cards);
 		}
 
 		List<Map.Entry<Rank, Integer>> thisList = this.sortCards();
@@ -246,6 +248,53 @@ public class Hand implements Comparable<Hand> {
 	 * @author mouhyi
 	 */
 	public static int breakTieHighCard(ArrayList<Card> c1, ArrayList<Card> c2) {
+		Collections.sort(c1);
+		Collections.sort(c2);
+		int i = c1.size() - 1;
+		while (i >= 0 && (c1.get(i).compareTo(c2.get(i)) == 0)) {
+			i--;
+		}
+		return ((i==-1)? 0 : c1.get(i).compareTo(c2.get(i)));
+	}
+	
+	/**
+	 * Tie breaker for STRAIGHT_FLUSH or STRAIGHT
+	 * @param c1
+	 * @param c2
+	 * @return
+	 * @author mouhyi
+	 */
+	public static int breakTieStraight(ArrayList<Card> c1, ArrayList<Card> c2) {
+		boolean aceLow1=false, aceLow2=false, ace1=false, ace2=false;
+		for (Card card: c1){
+			ace1 = false; 
+			if (card.getRank() == Rank.Ace){
+				ace1 = true;
+			}
+			if (card.getRank() == Rank.Deuce){
+				aceLow1 = true;
+			}
+		}
+		aceLow1 = aceLow1 && ace1;
+		
+		for (Card card: c2){
+			ace1 = false; 
+			if (card.getRank() == Rank.Ace){
+				ace2 = true;
+			}
+			if (card.getRank() == Rank.Deuce){
+				aceLow2 = true;
+			}
+		}
+		aceLow2 = aceLow2 && ace2;
+		
+		if(aceLow1 && !aceLow2){
+			return -1;
+		}
+		if(aceLow2 && !aceLow1){
+			return 1;
+		}
+		
 		Collections.sort(c1);
 		Collections.sort(c2);
 		int i = c1.size() - 1;

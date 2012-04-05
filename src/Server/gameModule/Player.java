@@ -11,10 +11,11 @@ import Server.userModule.UserObject;
  * @author mouhyi
  *
  */
-public class Player {
+public class Player implements Comparable<Player> {
 
 	private UserObject user;
 	private Hand hand;
+	private Card faceDownCard;
 	private double chips;
 	private double curBet;
 	private double prevBet;
@@ -43,12 +44,13 @@ public class Player {
 	 * @param down: wether the card should be up or down
 	 * @author mouhyi
 	 */
-	public void addCard(Card card, boolean down){
+	public void getCard(Card card, boolean down){
 		if(down) {
-			card.setDown();
+			faceDownCard = card;
 		}
 		hand.add(card);
 	}
+
 	
 	/**
 	 * Updates this user's chips column in the DB
@@ -77,6 +79,36 @@ public class Player {
 		chips -= ammount;
 		return 0;
 	}
+	
+	/**
+	 * Retrieves the userId of this player
+	 * 
+	 * @return userId
+	 * @author mouhyi
+	 */
+	public int getId(){
+		return user.getId();
+	}
+	
+	/**
+	 * Implement the comparable interface. IT defines a natural ordering of
+	 * players according to their hand values.
+	 * 
+	 * @param Player:p
+	 * @return A negative integer if this player's hand is less than the player's argument hand;
+	 *         zero if they are equal;
+	 *         a positive number otherwise.
+	 * @author mouhyi
+	 */
+	public int compareTo(Player p) {
+		return this.hand.compareTo(p.hand);
+	}
+	
+	public void mergeHand(){
+		hand.add(faceDownCard);
+	}
+	
+	
 	
 	
 }

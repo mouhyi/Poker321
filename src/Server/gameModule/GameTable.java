@@ -11,7 +11,7 @@ import Server.userModule.UserObject;
  * @author mouhyi
  *
  */
-public class Table {
+public class GameTable {
 	private Game game;
 	private UserObject owner;
 	ArrayList<Player> players;
@@ -26,7 +26,7 @@ public class Table {
 	 * @param ante
 	 * @param bringIn
 	 */
-	public Table(UserObject owner, List<Player> list, double ante, double bringIn){
+	public GameTable(UserObject owner, List<Player> list, double ante, double bringIn){
 		this.owner = owner;
 		this.ante = ante;
 		this.bringIn = bringIn;

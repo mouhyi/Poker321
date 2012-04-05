@@ -124,6 +124,7 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	 * @throws SQLException
 	 * @author mouhyi
 	 */
+	// TODO: change the parameter to userId
 	@Override
 	public int logout(UserObject user) throws RemoteException, SQLException {
 		user.setOnline(false);
