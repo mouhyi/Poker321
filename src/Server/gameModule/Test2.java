@@ -8,8 +8,8 @@ public class Test2 {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//testHands();
-		clearDeckTest();
+		testHands5();
+		//clearDeckTest();
 	}
 	public static void clearDeckTest(){
 
@@ -23,12 +23,17 @@ public class Test2 {
 		}
 		System.out.println(test.getSize()==0);//should still be zero
 	}
-	public static void testHands(){
+	public static void testHands5(){
 		//mainly tests on two things
-		//1. self vs self
+		//1. self vs self (same hand type)
 		//2. self vs higher
 		//3. self vs lower
 		//just making sure all the different combinations of the code is working well
+		//if ran correctly it should give no zeros and 
+		//	if i>j, then all tests on i against j should be positive 
+		
+		//sorry that the code is kinda messy since i screwed up the hand ordering a few times ...
+		
 		//straight_flush 1  
 		Hand all[] = new Hand[50]; 
 		Hand sf1 = new Hand();
@@ -51,7 +56,7 @@ public class Test2 {
 		sf2.addAll(list2);
 		all[1]=sf2;
 		
-		//Ace_flush 
+		//Ace_straight_flush 
 		//Special case since its supposed to be smaller then all the other straight flushes
 		Hand sfa = new Hand();
 		ArrayList<Card> listA = new ArrayList<Card> (5);
