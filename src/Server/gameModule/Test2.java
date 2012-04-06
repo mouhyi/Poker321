@@ -8,7 +8,11 @@ public class Test2{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		testHands2();
+		testHands1();
+	//	testHands2();
+		//testHands3();
+		//testHands4();
+		//testHands5();
 		//clearDeckTest();
 
 	}
@@ -516,16 +520,106 @@ public class Test2{
 		}
 	}
 	public static void testHands1(){
+		//here the goal is to test the cards as a hand
+		//this time it will be slightly different 
+		ArrayList<Hand> all = new ArrayList<Hand>(52);
 		Deck test = new Deck();
-		Hand all[] =  new Hand[52];
-		for(int i =0;i<52;i++){
-			Card current = test.drawCard();
-			System.out.println(current.toString());
+
+		Hand h0 = new Hand();
+		ArrayList<Card> list0 = new ArrayList<Card> (1);
+		list0.add(new Card(Rank.Deuce,Suit.Clubs));
+		h0.addAll(list0);
+		all.add(h0);
+
+
+
+		Hand h1 = new Hand();
+		ArrayList<Card> list1 = new ArrayList<Card> (1);
+		list1.add(new Card(Rank.Three,Suit.Diamonds));
+		h1.addAll(list1);
+		all.add(h1);
+
+
+		Hand h2 = new Hand();
+		ArrayList<Card> list2 = new ArrayList<Card> (1);
+		list2.add(new Card(Rank.Four,Suit.Diamonds));
+		h2.addAll(list2);
+		all.add(h2);
+
+
+		Hand h3 = new Hand();
+		ArrayList<Card> list3 = new ArrayList<Card> (1);
+		list3.add(new Card(Rank.Five,Suit.Spades));
+		h3.addAll(list3);
+		all.add(h3);
+
+
+		Hand h4 = new Hand();
+		ArrayList<Card> list4 = new ArrayList<Card> (1);
+		list4.add(new Card(Rank.Six,Suit.Diamonds));
+		h4.addAll(list4);
+		all.add(h4);
+
+
+		Hand h5 = new Hand();
+		ArrayList<Card> list5 = new ArrayList<Card> (1);
+		list5.add(new Card(Rank.Seven,Suit.Clubs));
+		h5.addAll(list5);
+		all.add(h5);
+
+
+		Hand h6 = new Hand();
+		ArrayList<Card> list6 = new ArrayList<Card> (1);
+		list6.add(new Card(Rank.Eight,Suit.Hearts));
+		h6.addAll(list6);
+		all.add(h6);
+
+		Hand h7 = new Hand();
+		ArrayList<Card> list7 = new ArrayList<Card> (1);
+		list7.add(new Card(Rank.Nine,Suit.Hearts));
+		h7.addAll(list7);
+		all.add(h7);
+
+		Hand h8 = new Hand();
+		ArrayList<Card> list8 = new ArrayList<Card> (1);
+		list8.add(new Card(Rank.Ten,Suit.Clubs));
+		h8.addAll(list8);
+		all.add(h8);
+
+		Hand h9 = new Hand();
+		ArrayList<Card> list9 = new ArrayList<Card> (1);
+		list9.add(new Card(Rank.Jack,Suit.Diamonds));
+		h9.addAll(list9);
+		all.add(h9);
+
+		Hand h10 = new Hand();
+		ArrayList<Card> list10 = new ArrayList<Card> (1);
+		list10.add(new Card(Rank.Queen,Suit.Spades));
+		h10.addAll(list10);
+		all.add(h10);
+
+		Hand h11 = new Hand();
+		ArrayList<Card> list11 = new ArrayList<Card> (1);
+		list11.add(new Card(Rank.King,Suit.Diamonds));
+		h11.addAll(list11);
+		all.add(h11);
+
+		Hand h12 = new Hand();
+		ArrayList<Card> list12 = new ArrayList<Card> (1);
+		list12.add(new Card(Rank.Ace,Suit.Clubs));
+		h12.addAll(list12);
+		all.add(h12);
+
+		for(int i =0;i<13;i++){
+			System.out.println("Hand" + i+ " ,"+all.get(i).getValue()+" :");
+			for(int j=0;j<13;j++){
+				if(i!=j){
+
+					System.out.println("\t vs hand "+j+" :"+all.get(i).compareTo(all.get(j)));}
+
+			}
 
 		}
-		
-		
-		
-		
 	}
+
 }
