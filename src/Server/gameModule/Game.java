@@ -323,16 +323,18 @@ public class Game {
 
 	/**
 	 * 
-	 * @param count
-	 *            - number of calls to the last bet
+	 * @param count - number of calls to the last bet
 	 */
+	// TODO: implement RMI
 	public synchronized void doBetting(int count) {
 		// RMI
 		// betting goes in increasing indices and wraps around
 		// chips are added to pot at the end in confirmBet
 		// or immedialtely if a player folds
 		/*
-		 * notify curplayer: if player folds(or timedout) remove him from players
+		 * notify curplayer(callBack)
+		 * wait for a flag
+		 * if player folds(or timedout) remove him from players
 		 * and confirm his bet and update pot
 		 * else curBet = player's bet (error if bet<curBet)
 		 * count++ for call, count=1 for a raise
