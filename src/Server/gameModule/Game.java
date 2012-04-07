@@ -1,5 +1,7 @@
 package Server.gameModule;
 
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -74,15 +76,41 @@ public class Game {
 		curPlayer = getNextPlayer();
 		doBetting(1);
 		
+		// round: 2,3,4
 		while(round < ROUNDS){
+			if(players.size()<2){
+				break;
+			}
 			if(allIn){
 				allInShowdown();
 				break;
 			}
 			doBetting(0);
+			round ++;
 		}
-		// notify players of the winners, ammount won
-		dividePot();
+		
+		// notify players of the winners & amount won and divide pot
+		if(players.size()<2){
+			players.get(0).addChips(pots.get(0).chips);
+			try{
+				players.get(0).updateChips();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}else{
+			ArrayList<Player> winners = this.getWinner();
+			for (Player p : winners) {
+				p.addChips(pots.get(0).chips / winners.size());
+				try{
+					p.updateChips();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+			}
+		}
+		// Game over
+		
 	}
 
 	public int getNextPlayer() {
@@ -187,17 +215,7 @@ public class Game {
 	// TODO implement doBetting() used in each round & Game Controller (RMI
 	// callbacks)
 
-	/**
-	 * Divides the pot between the winners
-	 * 
-	 * @author mouhyi
-	 */
-	public synchronized void dividePot() {
-		ArrayList<Player> winners = this.getWinner();
-		for (Player p : winners) {
-			p.addChips(pots.get(0).chips / winners.size());
-		}
-	}
+	
 
 	/**
 	 * Determines the winner(s) of this game. If there is only one player
@@ -269,7 +287,7 @@ public class Game {
 
 	/**
 	 * Each player is dealt one card face down, followed by one card face up
-	 * Then the player with the lowest-ranking upcard must pay the bring in.
+	 * Then determines the player with the lowest-ranking up card
 	 * 
 	 * @return minSeat - index of player with lowest up card
 	 * @author mouhyi
@@ -289,8 +307,6 @@ public class Game {
 			}
 		}
 		return players.indexOf(minPlayer);
-		// minPlayer bets >= bringIn
-
 	}
 
 	/**
@@ -311,7 +327,7 @@ public class Game {
 	 *            - number of calls to the last bet
 	 */
 	public synchronized void doBetting(int count) {
-
+		// RMI
 		// betting goes in increasing indices and wraps around
 		// chips are added to pot at the end in confirmBet
 		// or immedialtely if a player folds
@@ -320,7 +336,7 @@ public class Game {
 		 * and confirm his bet and update pot
 		 * else curBet = player's bet (error if bet<curBet)
 		 * count++ for call, count=1 for a raise
-	 	 * repeat until count = players.size or all-in=true
+	 	 * repeat until count = players.size or all-in=true, or one player left
 	 	 * confirmBet
 		 */
 	}

@@ -58,11 +58,11 @@ public class Player implements Comparable<Player> {
 	 * @return
 	 */
 	// TODO change into isValidBet()
-	public int bet(double ammount){
-		if(ammount > this.chips){
+	public int bet(double amount){
+		if(amount > this.chips){
 			return -1;
 		}
-		curBet = ammount;
+		curBet = amount;
 		return 0;
 	}
 	
@@ -88,8 +88,8 @@ public class Player implements Comparable<Player> {
 	 * Add chips to the player's stakes
 	 * @param ammount
 	 */
-	public void addChips(double ammount){
-		chips += ammount;
+	public void addChips(double amount){
+		chips += amount;
 	}
 	
 	/**
