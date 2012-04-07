@@ -96,19 +96,19 @@ public class Test {
 	public static void testcompHands(){
 		Hand h = new Hand();
 		ArrayList<Card> list = new ArrayList<Card> (5);
-		list.add(new Card(Rank.Eight, Suit.Spades));
-		list.add(new Card(Rank.Eight, Suit.Diamonds));
-		list.add(new Card(Rank.Six, Suit.Clubs));
-		list.add(new Card(Rank.Five, Suit.Hearts));
+		list.add(new Card(Rank.King, Suit.Spades));
+	    list.add(new Card(Rank.Four, Suit.Spades));
+	    list.add(new Card(Rank.Queen, Suit.Spades));
+	    list.add(new Card(Rank.Six, Suit.Spades));
 		h.addAll(list);
 		System.out.println(h.getValue());
 		
 		Hand h2 = new Hand();
 		ArrayList<Card> list2 = new ArrayList<Card> (5);
-		list2.add(new Card(Rank.Deuce, Suit.Spades));
-	    list2.add(new Card(Rank.Deuce, Suit.Diamonds));
-	    list2.add(new Card(Rank.Five, Suit.Clubs));
-	    list2.add(new Card(Rank.Four, Suit.Hearts));
+		list2.add(new Card(Rank.Queen, Suit.Diamonds));
+	    list2.add(new Card(Rank.King, Suit.Diamonds));
+	    list2.add(new Card(Rank.Four, Suit.Diamonds));
+	    list2.add(new Card(Rank.Three, Suit.Diamonds));
 		h2.addAll(list2);
 		System.out.println(h2.getValue());
 		

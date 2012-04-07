@@ -16,6 +16,7 @@ public class Player implements Comparable<Player> {
 	private UserObject user;
 	private Hand hand;
 	private Card faceDownCard;
+	// player's stake 
 	private double chips;
 	private double curBet;
 	private double prevBet;
@@ -28,9 +29,9 @@ public class Player implements Comparable<Player> {
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public Player(int id) throws RemoteException, SQLException{
+	public Player(int id, double stake) throws RemoteException, SQLException{
 		user = (new UserImpl()).getUserObject(id);
-		chips = user.getChips();
+		chips = stake;
 		hand = new Hand();
 		myTurn = false;
 		seat =-1;
@@ -50,7 +51,46 @@ public class Player implements Comparable<Player> {
 		}
 		hand.add(card);
 	}
+	
+	/**
+	 * Bet an ammount of chips
+	 * @param ammount
+	 * @return
+	 */
+	// TODO change into isValidBet()
+	public int bet(double ammount){
+		if(ammount > this.chips){
+			return -1;
+		}
+		curBet = ammount;
+		return 0;
+	}
+	
+	/**
+	 * Gets this player's stakes
+	 * 
+	 * @return chips - player's chips
+	 */
+	public double getChips() {
+		return chips;
+	}
 
+	/**
+	 * Should be called at the end of a betting round
+	 * @return
+	 */
+	public void confirmBet(){
+		chips -= curBet;
+		curBet =0;
+	}
+	
+	/**
+	 * Add chips to the player's stakes
+	 * @param ammount
+	 */
+	public void addChips(double ammount){
+		chips += ammount;
+	}
 	
 	/**
 	 * Updates this user's chips column in the DB
@@ -63,21 +103,8 @@ public class Player implements Comparable<Player> {
 	 * 
 	 */
 	public int updateChips() throws RemoteException, SQLException{
-		user.setChips(chips);
+		user.setChips(user.getChips() + chips);
 		return (new UserImpl()).editProfile(user) ;
-	}
-	
-	/**
-	 * this Player
-	 * @param ammount
-	 * @return
-	 */
-	public int bet(double ammount){
-		if(ammount > this.chips){
-			return -1;
-		}
-		chips -= ammount;
-		return 0;
 	}
 	
 	/**
@@ -104,11 +131,12 @@ public class Player implements Comparable<Player> {
 		return this.hand.compareTo(p.hand);
 	}
 	
+	/**
+	 * Merges the face down card into the hand
+	 */
 	public void mergeHand(){
 		hand.add(faceDownCard);
 	}
-	
-	
-	
+
 	
 }

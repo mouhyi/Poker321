@@ -12,14 +12,37 @@ import java.util.List;
  */
 public class Game {
 
+	public final int ROUNDS = 4;
+
+	// player's seat = player's index in the ArrayList
 	private ArrayList<Player> players;
 	int round;
-	double pot;
+	ArrayList<Pot> pots;
 	double curBet;
 	Deck deck;
 	double ante;
 	double bringIn;
-	int curPlayerId;
+	// index of current player in the arrayList
+	int curPlayer;
+	// If everybody left is all in
+	private boolean allIn;
+
+	/**
+	 * Wrapper class for poker pots added to handle side pots in all-in
+	 * situations
+	 * 
+	 * @author mouhyi
+	 * 
+	 */
+	private class Pot {
+		double chips;
+		ArrayList<Player> players;
+
+		private Pot(double chips, ArrayList<Player> players) {
+			this.chips = chips;
+			this.players = players;
+		}
+	}
 
 	/**
 	 * Constructor
@@ -32,10 +55,38 @@ public class Game {
 		players = new ArrayList<Player>(list);
 		this.ante = ante;
 		this.bringIn = bringIn;
-		pot = 0;
 		curBet = 0;
-		round = 0;
+		curPlayer = 0;
+		round = 1;
 		deck = new Deck();
+		pots.add(new Pot(0.0, players));
+	}
+
+	/**
+	 * Runs a five card stud Game
+	 */
+	public synchronized void play(){
+		// ante & first round
+		collectAnte();
+		round =1;
+		curPlayer = doFirstRound();
+		players.get(curPlayer).bet(bringIn);
+		curPlayer = getNextPlayer();
+		doBetting(1);
+		
+		while(round < ROUNDS){
+			if(allIn){
+				allInShowdown();
+				break;
+			}
+			doBetting(0);
+		}
+		// notify players of the winners, ammount won
+		dividePot();
+	}
+
+	public int getNextPlayer() {
+		return (curPlayer + 1) % players.size();
 	}
 
 	/**
@@ -54,10 +105,10 @@ public class Game {
 	}
 
 	/**
-	 * Updates the game state whith a player calling the current bet
+	 * Updates the game state with a player calling the current bet
 	 * 
 	 * @param userId
-	 *            - userId of the player making the bet player
+	 *            - userId of the player making the bet
 	 * @return
 	 */
 	public synchronized int call(int userId) {
@@ -74,6 +125,7 @@ public class Game {
 	 *            - value of the raise
 	 * @return 0 on success, -1 on failure
 	 */
+	// TODO create All-in Buuton
 	public synchronized int raise(int userId, double bet) {
 		Player player = this.getPlayer(userId);
 		if (player == null) {
@@ -85,6 +137,35 @@ public class Game {
 			return 0;
 		}
 		return -1;
+	}
+
+	/**
+	 * Flag the game when a player goes all in
+	 * 
+	 * @param userId
+	 *            - player all in
+	 */
+	public synchronized void allIn(int userId) {
+		allIn = true;
+		curBet = getPlayer(userId).getChips();
+	}
+
+	public synchronized void allInShowdown() {
+		for (int i = round + 1; i <= ROUNDS; i++) {
+			this.deal();
+		}
+	}
+
+	/**
+	 * Should be called at the end of each betting round to update players chips
+	 * and add the bets to the pot
+	 */
+	public synchronized void confirmBet() {
+		for (Player p : players) {
+			p.bet(curBet);
+			p.confirmBet();
+		}
+		pots.get(0).chips += curBet * players.size();
 	}
 
 	/**
@@ -103,11 +184,23 @@ public class Game {
 		return null;
 	}
 
-	// TODO implement doBetting() used in each round & Game Controller (RMI callbacks)
-	
+	// TODO implement doBetting() used in each round & Game Controller (RMI
+	// callbacks)
 
 	/**
-	 * Determines the winner of this game. If there is only one player
+	 * Divides the pot between the winners
+	 * 
+	 * @author mouhyi
+	 */
+	public synchronized void dividePot() {
+		ArrayList<Player> winners = this.getWinner();
+		for (Player p : winners) {
+			p.addChips(pots.get(0).chips / winners.size());
+		}
+	}
+
+	/**
+	 * Determines the winner(s) of this game. If there is only one player
 	 * remaining, then he is the winner. Otherwise, there is a showdown to
 	 * determine the player with the highest hand value. This method should be
 	 * called only at the end of the game
@@ -115,7 +208,7 @@ public class Game {
 	 * @return the winner of this game
 	 * @author mouhyi
 	 */
-	public synchronized Player getWinner() {
+	public synchronized ArrayList<Player> getWinner() {
 		for (Player p : players) {
 			p.mergeHand();
 		}
@@ -124,36 +217,64 @@ public class Game {
 	}
 
 	/**
-	 * Determines the player with the best face up hand in this round
+	 * Determines the player(s) with the best face up hand in this round
 	 * 
-	 * @return Player
+	 * @return ArrayList<Player>
+	 * @author mouhyi
 	 */
-	public synchronized Player getBestHand() {
+	public synchronized ArrayList<Player> getBestHand() {
 		ArrayList<Player> playersCpy = new ArrayList<Player>(players);
 		Collections.sort(playersCpy);
-		return playersCpy.get(playersCpy.size() - 1);
+		ArrayList<Player> best = new ArrayList<Player>();
+		Player bestPlayer = playersCpy.get(playersCpy.size() - 1);
+		int i = playersCpy.size() - 1;
+		while (i >= 0 && playersCpy.get(i) == bestPlayer) {
+			best.add(playersCpy.get(i));
+		}
+		return best;
 	}
-	
+
 	/**
-	 * Collect the ante
+	 * Determines the index of the first player to bet(highest hand) in the
+	 * current round. If there is a tie, the player with lowest seat number is
+	 * returned Must be called at the beginning of each round.
+	 * 
+	 * @return the player betting first
+	 * @author mouhyi
+	 */
+	public synchronized int firstToBet() {
+		ArrayList<Player> best = this.getBestHand();
+		int minSeat = -1;
+		for (Player p : best) {
+			if (players.indexOf(p) < minSeat) {
+				minSeat = players.indexOf(p);
+
+			}
+		}
+		return minSeat;
+	}
+
+	/**
+	 * Collect the ante and puts it in the main pot
 	 * 
 	 * @author mouhyi
 	 */
-	public synchronized void collectAnte(){
+	public synchronized void collectAnte() {
 		for (Player p : players) {
 			p.bet(ante);
-			pot += ante;
+			p.confirmBet();
+			pots.get(0).chips += ante;
 		}
 	}
-	
+
 	/**
-	 * Each player being dealt one card face down, followed by one card face up
+	 * Each player is dealt one card face down, followed by one card face up
 	 * Then the player with the lowest-ranking upcard must pay the bring in.
 	 * 
-	 * @return minPlayer - player with lowest up card 
+	 * @return minSeat - index of player with lowest up card
 	 * @author mouhyi
 	 */
-	public synchronized Player dofirstRound(){
+	public synchronized int doFirstRound() {
 		for (Player p : players) {
 			p.getCard(deck.drawCard(), true);
 		}
@@ -162,21 +283,46 @@ public class Game {
 		for (Player p : players) {
 			Card tmp = deck.drawCard();
 			p.getCard(tmp, false);
-			if ( (minCard == null) || (minCard.compareBySuit(tmp) > 0) ){
+			if ((minCard == null) || (minCard.compareBySuit(tmp) > 0)) {
 				minCard = tmp;
 				minPlayer = p;
 			}
 		}
-		return minPlayer;
+		return players.indexOf(minPlayer);
 		// minPlayer bets >= bringIn
-		
+
 	}
-	
-	public synchronized Player doRound(){
+
+	/**
+	 * Deals a card to each player in the game
+	 * 
+	 * @author mouhyi
+	 * 
+	 */
+	public synchronized void deal() {
 		for (Player p : players) {
 			p.getCard(deck.drawCard(), false);
 		}
-		return this.getBestHand();
+	}
+
+	/**
+	 * 
+	 * @param count
+	 *            - number of calls to the last bet
+	 */
+	public synchronized void doBetting(int count) {
+
+		// betting goes in increasing indices and wraps around
+		// chips are added to pot at the end in confirmBet
+		// or immedialtely if a player folds
+		/*
+		 * notify curplayer: if player folds(or timedout) remove him from players
+		 * and confirm his bet and update pot
+		 * else curBet = player's bet (error if bet<curBet)
+		 * count++ for call, count=1 for a raise
+	 	 * repeat until count = players.size or all-in=true
+	 	 * confirmBet
+		 */
 	}
 
 }
