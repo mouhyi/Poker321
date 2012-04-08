@@ -252,8 +252,8 @@ public class JTest {
 		hc2.addAll(list16);
 		all[19]=hc2;
 
-		for(int i =3;i<20;i++){
-			for(int j=3;j<20;j++){
+		for(int i =0;i<20;i++){
+			for(int j=0;j<20;j++){
 
 				if(j>i){
 					assertTrue("Failed at " +i+","+j+" :" +all[i].compareTo(all[j]),0<all[i].compareTo(all[j]));
