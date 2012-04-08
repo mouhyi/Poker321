@@ -33,6 +33,8 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	// If everybody left is all in
 	private boolean allIn;
 	private int id;
+	// counts the number of matched calls in a betting round
+	private int count;
 	
 	private ArrayList<PlayerClient> PClients;
 
@@ -55,6 +57,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		pot = 0.0;
 		this.id = id;
 		PClients = new ArrayList<PlayerClient> ();
+		count =0;
 	}
 
 	/**
@@ -62,10 +65,20 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * 
 	 * @param p
 	 */
-	public synchronized void registerPlayer(PlayerClient p) throws RemoteException {
-		PClients.add(p);
+	public void registerPlayer(PlayerClient p) throws RemoteException {
+		synchronized (PClients){
+			PClients.add(p);
+		}
 	}
-
+	
+	/**
+	 * notify players
+	 */
+	public void publishEvent(){
+		
+	}
+	
+	
 	/**
 	 * Runs a five card stud Game
 	 */
@@ -77,7 +90,8 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		curPlayer = doFirstRound();
 		players.get(curPlayer).bet(bringIn);
 		curPlayer = getNextPlayer();
-		doBetting(1);
+		count =1;
+		doBetting();
 
 		// round: 2,3,4
 		while (round < ROUNDS) {
@@ -88,7 +102,10 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 				allInShowdown();
 				break;
 			}
-			doBetting(0);
+			count = 0;
+			curBet =0;
+			curPlayer =0;
+			doBetting();
 			round++;
 		}
 
@@ -127,12 +144,16 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * @param player
 	 *            - player to be removed
 	 * @author mouhyi
+	 * @throws SQLException 
 	 */
 	@Override
-	public synchronized void removePlayer(int userId) throws RemoteException {
+	public void removePlayer(int userId) throws RemoteException {
 		Player player = this.getPlayer(userId);
-		if (player != null) {
-			players.remove(player);
+		synchronized (players){
+			if (player != null) {
+				players.remove(player);
+				player.confirmBet();
+			}
 		}
 	}
 
@@ -141,12 +162,21 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * 
 	 * @param userId
 	 *            - userId of the player making the bet
-	 * @return 0 if player has sufficient chips, -1 otherwise
+	 * @return 0 if player has sufficient chips, -1 otherwise, -2 if it's not player's turn
 	 */
 	@Override
-	public synchronized int call(int userId) throws RemoteException {
+	public int call(int userId) throws RemoteException {
+		
+		if(!this.getPlayer(userId).isTurn()){
+			return -2;
+		}
+		
 		Player player = this.getPlayer(userId);
-		return (player == null) ? -1 : player.bet(curBet);
+		if (player == null || player.bet(curBet)== -1){
+			return -1;
+		}
+		count ++;
+		return 0;
 	}
 
 	/**
@@ -156,18 +186,23 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 *            - userId of the player making the bet player
 	 * @param bet
 	 *            - value of the raise
-	 * @return 0 on success, -1 on failure
+	 * @return 0 on success, -1 on failure, -2 if it's not player's turn
 	 */
 	@Override
-	public synchronized int raise(int userId, double bet)
+	public int raise(int userId, double bet)
 			throws RemoteException {
+		
+		if(!this.getPlayer(userId).isTurn()){
+			return -2;
+		}
+		
 		Player player = this.getPlayer(userId);
 		if (player == null) {
 			return -1;
 		}
-		curBet = bet;
 		if (player.bet(bet) == 0) {
 			curBet = bet;
+			count = 1;
 			return 0;
 		}
 		return -1;
@@ -180,16 +215,21 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 *            - player all in
 	 */
 	@Override
-	public synchronized void allIn(int userId) throws RemoteException {
+	public int allIn(int userId) throws RemoteException {
+		
+		if(!this.getPlayer(userId).isTurn()){
+			return -2;
+		}
 		allIn = true;
 		curBet = getPlayer(userId).getChips();
+		return 0;
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	public synchronized void allInShowdown() {
+	public void allInShowdown() {
 		for (int i = round + 1; i <= ROUNDS; i++) {
 			this.deal();
 		}
@@ -199,12 +239,13 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * Should be called at the end of each betting round to update players chips
 	 * and add the bets to the pot
 	 */
-	public synchronized void confirmBet() {
+	public void confirmBet() {
 		for (Player p : players) {
 			p.bet(curBet);
 			p.confirmBet();
 		}
 		pot += curBet * players.size();
+		curBet =0;
 	}
 
 	/**
@@ -214,7 +255,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * @return player with corresponding userId or null if user not found
 	 * @author mouhyi
 	 */
-	public synchronized Player getPlayer(int userId) {
+	public Player getPlayer(int userId) {
 		for (Player p : players) {
 			if (p.getId() == userId) {
 				return p;
@@ -235,7 +276,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * @return the winner of this game
 	 * @author mouhyi
 	 */
-	public synchronized ArrayList<Player> getWinner() {
+	public ArrayList<Player> getWinner() {
 		for (Player p : players) {
 			p.mergeHand();
 		}
@@ -249,7 +290,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * @return ArrayList<Player>
 	 * @author mouhyi
 	 */
-	public synchronized ArrayList<Player> getBestHand() {
+	public ArrayList<Player> getBestHand() {
 		ArrayList<Player> playersCpy = new ArrayList<Player>(players);
 		Collections.sort(playersCpy);
 		ArrayList<Player> best = new ArrayList<Player>();
@@ -269,7 +310,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * @return the player betting first
 	 * @author mouhyi
 	 */
-	public synchronized int firstToBet() {
+	public int firstToBet() {
 		ArrayList<Player> best = this.getBestHand();
 		int minSeat = -1;
 		for (Player p : best) {
@@ -286,7 +327,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * 
 	 * @author mouhyi
 	 */
-	public synchronized void collectAnte() {
+	public void collectAnte() {
 		for (Player p : players) {
 			p.bet(ante);
 			p.confirmBet();
@@ -301,7 +342,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * @return minSeat - index of player with lowest up card
 	 * @author mouhyi
 	 */
-	public synchronized int doFirstRound() {
+	public int doFirstRound() {
 		for (Player p : players) {
 			p.getCard(deck.drawCard(), true);
 		}
@@ -324,7 +365,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * @author mouhyi
 	 * 
 	 */
-	public synchronized void deal() {
+	public void deal() {
 		for (Player p : players) {
 			p.getCard(deck.drawCard(), false);
 		}
@@ -336,7 +377,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 *            - number of calls to the last bet
 	 */
 	// TODO: implement RMI
-	public synchronized void doBetting(int count) {
+	public void doBetting() {
 		// RMI
 		// betting goes in increasing indices and wraps around
 		// chips are added to pot at the end in confirmBet
@@ -348,22 +389,35 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		 * count=1 for a raise repeat until count = players.size or all-in=true,
 		 * or one player left confirmBet
 		 */
+		while (count<players.size()){
+			players.get(curPlayer).setTurn(true);
+			players.get(curPlayer).setDone(false);
+			// notify curPlayer and wait for him to play
+			// removes him if timeout
+			// notify the other players
+			
+			curPlayer = this.getNextPlayer();
+		}
+		confirmBet();
+		
 	}
 	
 	// Getters
-	public synchronized ArrayList<Player> getPlayers() throws RemoteException {
-		return players;
-	}
+	public ArrayList<Player> getPlayers() throws RemoteException {
+		synchronized(players){
+			return players;
+		}
+	}	
 
-	public synchronized int getRound() throws RemoteException {
+	public int getRound() throws RemoteException {
 		return round;
 	}
 
-	public synchronized double getPot() throws RemoteException {
+	public double getPot() throws RemoteException {
 		return pot;
 	}
 
-	public synchronized double getCurBet() throws RemoteException {
+	public double getCurBet() throws RemoteException {
 		return curBet;
 	}
 
@@ -375,8 +429,8 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		return bringIn;
 	}
 
-	public synchronized int getCurPlayer() throws RemoteException {
-		return curPlayer;
+	public int getCurPlayerId() throws RemoteException {
+		return players.get(curPlayer).getId();
 	}
 
 }

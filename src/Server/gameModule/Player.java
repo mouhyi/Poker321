@@ -22,8 +22,10 @@ public class Player implements Comparable<Player>, Serializable  {
 	// player's stake 
 	private double chips;
 	private double curBet;
-	private boolean myTurn;
+	private boolean turn;
 	private int seat;
+	
+	private boolean done;
 	
 	/**
 	 * Constructor
@@ -35,8 +37,9 @@ public class Player implements Comparable<Player>, Serializable  {
 		userId = id;
 		chips = stake;
 		hand = new Hand();
-		myTurn = false;
+		turn = false;
 		seat =-1;
+		done = false;
 		
 	}
 	
@@ -96,7 +99,7 @@ public class Player implements Comparable<Player>, Serializable  {
 	
 	/**
 	 * Updates this user's chips column in the DB
-	 * Should be called at the end of the game
+	 * Should be called when a player leaves the table (not at the end of the game)
 	 * 
 	 * @return 0 on success, -1 on failure
 	 * @throws SQLException 
@@ -154,12 +157,24 @@ public class Player implements Comparable<Player>, Serializable  {
 		return faceDownCard;
 	}
 
-	public boolean isMyTurn() {
-		return myTurn;
+	public boolean isTurn() {
+		return turn;
 	}
 
 	public int getSeat() {
 		return seat;
+	}
+
+	public void setTurn(boolean turn) {
+		this.turn = turn;
+	}
+
+	public boolean isDone() {
+		return done;
+	}
+
+	public void setDone(boolean done) {
+		this.done = done;
 	}
 
 	

@@ -8,7 +8,7 @@ import java.rmi.server.UnicastRemoteObject;
 import Server.gameModule.RemoteGame;
 import Server.userModule.RemoteUser;
 
-public class PlayerClient  implements PlayerClientRemote {
+public class PlayerClient extends UnicastRemoteObject  implements PlayerClientRemote {
 
 	private static final int PORT = 10002;
 	private static final String HOST_NAME = "localhost";
