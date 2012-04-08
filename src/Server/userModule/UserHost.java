@@ -1,6 +1,8 @@
 package Server.userModule;
 
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -14,6 +16,9 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class UserHost {
 
+	private static final int PORT = 10002;
+	private static final String HOST_NAME = "localhost";
+
 	/**
 	 * This is constructor where the Remote 'User' Object is exported to the RMI
 	 * Registry It must be called on the server before the client initiates an
@@ -26,12 +31,19 @@ public class UserHost {
 			// Create server object
 			RemoteUser user = new UserImpl();
 			// Reference to registry service by creating registry service
-			Registry registry = LocateRegistry.getRegistry();
+			LocateRegistry.createRegistry(PORT);
 			// Register server object to registry with unique name
-			registry.rebind("UserServer", user);
+			String urlString = "//" + HOST_NAME + ":" + Integer.toString(PORT)
+					+ "/" + "UserServer";
+			Naming.rebind(urlString, user);
 
+		} catch (java.rmi.UnknownHostException uhe) {
+			System.out.println("The host computer name you have specified, "
+					+ HOST_NAME + " does not match your real computer name.");
 		} catch (RemoteException re) {
-			re.printStackTrace();
+			System.out.println("Error starting service"+re);
+		} catch (MalformedURLException mURLe) {
+			System.out.println("Internal error" + mURLe);
 		}
 	}
 }

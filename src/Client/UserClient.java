@@ -1,5 +1,6 @@
 package Client;
 
+import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 
 
@@ -17,6 +18,10 @@ import java.util.concurrent.*;
  */
 public class UserClient {
 	
+	private static final int PORT = 10002;
+	private static final String HOST_NAME  = "localhost";
+	
+	
 	// stub to the UserServer object
 	private RemoteUser userProxy;
 	
@@ -26,8 +31,7 @@ public class UserClient {
 	 */
 	public UserClient(){
 		try{
-			Registry registry = LocateRegistry.getRegistry();
-			userProxy = (RemoteUser) registry.lookup("UserServer");
+			userProxy = (RemoteUser) Naming.lookup( "rmi://" + HOST_NAME + ":" + Integer.toString(PORT)+"/UserServer" );;
 		}catch (Exception e) {
             e.printStackTrace();
         }

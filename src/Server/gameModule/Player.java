@@ -1,5 +1,6 @@
 package Server.gameModule;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 
@@ -11,15 +12,16 @@ import Server.userModule.UserObject;
  * @author mouhyi
  *
  */
-public class Player implements Comparable<Player> {
+public class Player implements Comparable<Player>, Serializable  {
 
-	private UserObject user;
+	private static final long serialVersionUID = 1L;
+	
+	private int userId;
 	private Hand hand;
 	private Card faceDownCard;
 	// player's stake 
 	private double chips;
 	private double curBet;
-	private double prevBet;
 	private boolean myTurn;
 	private int seat;
 	
@@ -30,7 +32,7 @@ public class Player implements Comparable<Player> {
 	 * @throws SQLException
 	 */
 	public Player(int id, double stake) throws RemoteException, SQLException{
-		user = (new UserImpl()).getUserObject(id);
+		userId = id;
 		chips = stake;
 		hand = new Hand();
 		myTurn = false;
@@ -43,7 +45,6 @@ public class Player implements Comparable<Player> {
 	 *  
 	 * @param card: card to be added
 	 * @param down: wether the card should be up or down
-	 * @author mouhyi
 	 */
 	public void getCard(Card card, boolean down){
 		if(down) {
@@ -52,6 +53,7 @@ public class Player implements Comparable<Player> {
 		hand.add(card);
 	}
 	
+
 	/**
 	 * Bet an ammount of chips
 	 * @param ammount
@@ -103,6 +105,7 @@ public class Player implements Comparable<Player> {
 	 * 
 	 */
 	public int updateChips() throws RemoteException, SQLException{
+		UserObject user =(new UserImpl()).getUserObject(userId);
 		user.setChips(user.getChips() + chips);
 		return (new UserImpl()).editProfile(user) ;
 	}
@@ -114,7 +117,7 @@ public class Player implements Comparable<Player> {
 	 * @author mouhyi
 	 */
 	public int getId(){
-		return user.getId();
+		return this.userId;
 	}
 	
 	/**
@@ -136,6 +139,27 @@ public class Player implements Comparable<Player> {
 	 */
 	public void mergeHand(){
 		hand.add(faceDownCard);
+	}
+	
+	// Getters
+	public int getUserId() {
+		return userId;
+	}
+
+	public Hand getHand() {
+		return hand;
+	}
+
+	public Card getFaceDownCard() {
+		return faceDownCard;
+	}
+
+	public boolean isMyTurn() {
+		return myTurn;
+	}
+
+	public int getSeat() {
+		return seat;
 	}
 
 	

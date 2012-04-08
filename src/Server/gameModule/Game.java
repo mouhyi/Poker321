@@ -1,50 +1,40 @@
 package Server.gameModule;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import Client.PlayerClient;
+
 /**
- * Implements the rules of the game
+ * Implements the rules of the game This is the Remote Game Object (RMI Server)
  * 
  * @author mouhyi
  * 
  */
-public class Game {
+public class Game extends UnicastRemoteObject implements RemoteGame {
 
 	public final int ROUNDS = 4;
 
 	// player's seat = player's index in the ArrayList
 	private ArrayList<Player> players;
-	int round;
-	ArrayList<Pot> pots;
-	double curBet;
-	Deck deck;
-	double ante;
-	double bringIn;
+	private int round;
+	// no side pots
+	private double pot;
+	private double curBet;
+	private Deck deck;
+	private double ante;
+	private double bringIn;
 	// index of current player in the arrayList
-	int curPlayer;
+	private int curPlayer;
 	// If everybody left is all in
 	private boolean allIn;
-
-	/**
-	 * Wrapper class for poker pots added to handle side pots in all-in
-	 * situations
-	 * 
-	 * @author mouhyi
-	 * 
-	 */
-	private class Pot {
-		double chips;
-		ArrayList<Player> players;
-
-		private Pot(double chips, ArrayList<Player> players) {
-			this.chips = chips;
-			this.players = players;
-		}
-	}
+	private int id;
+	
+	private ArrayList<PlayerClient> PClients;
 
 	/**
 	 * Constructor
@@ -53,7 +43,8 @@ public class Game {
 	 * @param bringIn
 	 * @param list
 	 */
-	public Game(double ante, double bringIn, List<Player> list) {
+	public Game(double ante, double bringIn, List<Player> list, int id)
+			throws RemoteException {
 		players = new ArrayList<Player>(list);
 		this.ante = ante;
 		this.bringIn = bringIn;
@@ -61,56 +52,68 @@ public class Game {
 		curPlayer = 0;
 		round = 1;
 		deck = new Deck();
-		pots.add(new Pot(0.0, players));
+		pot = 0.0;
+		this.id = id;
+		PClients = new ArrayList<PlayerClient> ();
+	}
+
+	/**
+	 * rmi observer
+	 * 
+	 * @param p
+	 */
+	public synchronized void registerPlayer(PlayerClient p) throws RemoteException {
+		PClients.add(p);
 	}
 
 	/**
 	 * Runs a five card stud Game
 	 */
-	public synchronized void play(){
+	@Override
+	public synchronized void play() throws RemoteException {
 		// ante & first round
 		collectAnte();
-		round =1;
+		round = 1;
 		curPlayer = doFirstRound();
 		players.get(curPlayer).bet(bringIn);
 		curPlayer = getNextPlayer();
 		doBetting(1);
-		
+
 		// round: 2,3,4
-		while(round < ROUNDS){
-			if(players.size()<2){
+		while (round < ROUNDS) {
+			if (players.size() < 2) {
 				break;
 			}
-			if(allIn){
+			if (allIn) {
 				allInShowdown();
 				break;
 			}
 			doBetting(0);
-			round ++;
+			round++;
 		}
-		
+
 		// notify players of the winners & amount won and divide pot
-		if(players.size()<2){
-			players.get(0).addChips(pots.get(0).chips);
-			try{
+		if (players.size() < 2) {
+			players.get(0).addChips(pot);
+			try {
 				players.get(0).updateChips();
-			}catch(Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}else{
+		} else {
 			ArrayList<Player> winners = this.getWinner();
 			for (Player p : winners) {
-				p.addChips(pots.get(0).chips / winners.size());
-				try{
+				p.addChips(pot / winners.size());
+				try {
 					p.updateChips();
-				}catch(Exception e){
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		}
 		// Game over
-		
+
 	}
 
 	public int getNextPlayer() {
@@ -125,7 +128,8 @@ public class Game {
 	 *            - player to be removed
 	 * @author mouhyi
 	 */
-	public synchronized void removePlayer(int userId) {
+	@Override
+	public synchronized void removePlayer(int userId) throws RemoteException {
 		Player player = this.getPlayer(userId);
 		if (player != null) {
 			players.remove(player);
@@ -137,9 +141,10 @@ public class Game {
 	 * 
 	 * @param userId
 	 *            - userId of the player making the bet
-	 * @return
+	 * @return 0 if player has sufficient chips, -1 otherwise
 	 */
-	public synchronized int call(int userId) {
+	@Override
+	public synchronized int call(int userId) throws RemoteException {
 		Player player = this.getPlayer(userId);
 		return (player == null) ? -1 : player.bet(curBet);
 	}
@@ -153,8 +158,9 @@ public class Game {
 	 *            - value of the raise
 	 * @return 0 on success, -1 on failure
 	 */
-	// TODO create All-in Buuton
-	public synchronized int raise(int userId, double bet) {
+	@Override
+	public synchronized int raise(int userId, double bet)
+			throws RemoteException {
 		Player player = this.getPlayer(userId);
 		if (player == null) {
 			return -1;
@@ -173,9 +179,14 @@ public class Game {
 	 * @param userId
 	 *            - player all in
 	 */
-	public synchronized void allIn(int userId) {
+	@Override
+	public synchronized void allIn(int userId) throws RemoteException {
 		allIn = true;
 		curBet = getPlayer(userId).getChips();
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public synchronized void allInShowdown() {
@@ -193,7 +204,7 @@ public class Game {
 			p.bet(curBet);
 			p.confirmBet();
 		}
-		pots.get(0).chips += curBet * players.size();
+		pot += curBet * players.size();
 	}
 
 	/**
@@ -214,8 +225,6 @@ public class Game {
 
 	// TODO implement doBetting() used in each round & Game Controller (RMI
 	// callbacks)
-
-	
 
 	/**
 	 * Determines the winner(s) of this game. If there is only one player
@@ -281,7 +290,7 @@ public class Game {
 		for (Player p : players) {
 			p.bet(ante);
 			p.confirmBet();
-			pots.get(0).chips += ante;
+			pot += ante;
 		}
 	}
 
@@ -323,7 +332,8 @@ public class Game {
 
 	/**
 	 * 
-	 * @param count - number of calls to the last bet
+	 * @param count
+	 *            - number of calls to the last bet
 	 */
 	// TODO: implement RMI
 	public synchronized void doBetting(int count) {
@@ -332,15 +342,41 @@ public class Game {
 		// chips are added to pot at the end in confirmBet
 		// or immedialtely if a player folds
 		/*
-		 * notify curplayer(callBack)
-		 * wait for a flag
-		 * if player folds(or timedout) remove him from players
-		 * and confirm his bet and update pot
-		 * else curBet = player's bet (error if bet<curBet)
-		 * count++ for call, count=1 for a raise
-	 	 * repeat until count = players.size or all-in=true, or one player left
-	 	 * confirmBet
+		 * notify curplayer(callBack) wait for a flag if player folds(or
+		 * timedout) remove him from players and confirm his bet and update pot
+		 * else curBet = player's bet (error if bet<curBet) count++ for call,
+		 * count=1 for a raise repeat until count = players.size or all-in=true,
+		 * or one player left confirmBet
 		 */
+	}
+	
+	// Getters
+	public synchronized ArrayList<Player> getPlayers() throws RemoteException {
+		return players;
+	}
+
+	public synchronized int getRound() throws RemoteException {
+		return round;
+	}
+
+	public synchronized double getPot() throws RemoteException {
+		return pot;
+	}
+
+	public synchronized double getCurBet() throws RemoteException {
+		return curBet;
+	}
+
+	public double getAnte() throws RemoteException {
+		return ante;
+	}
+
+	public double getBringIn() throws RemoteException{
+		return bringIn;
+	}
+
+	public synchronized int getCurPlayer() throws RemoteException {
+		return curPlayer;
 	}
 
 }

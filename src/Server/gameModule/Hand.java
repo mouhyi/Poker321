@@ -286,7 +286,6 @@ public class Hand implements Comparable<Hand> {
 	public static int breakTieStraight(ArrayList<Card> c1, ArrayList<Card> c2) {
 		boolean aceLow1 = false, aceLow2 = false, ace1 = false, ace2 = false;
 		for (Card card : c1) {
-			ace1 = false;
 			if (card.getRank() == Rank.Ace) {
 				ace1 = true;
 			}
@@ -297,7 +296,6 @@ public class Hand implements Comparable<Hand> {
 		aceLow1 = aceLow1 && ace1;
 
 		for (Card card : c2) {
-			ace1 = false;
 			if (card.getRank() == Rank.Ace) {
 				ace2 = true;
 			}
