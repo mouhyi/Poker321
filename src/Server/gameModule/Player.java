@@ -2,6 +2,7 @@ package Server.gameModule;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 
 import Server.userModule.UserImpl;
@@ -12,7 +13,7 @@ import Server.userModule.UserObject;
  * @author mouhyi
  *
  */
-public class Player implements Comparable<Player>, Serializable  {
+public class Player extends UnicastRemoteObject implements Comparable<Player>, IPlayer{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -31,15 +32,15 @@ public class Player implements Comparable<Player>, Serializable  {
 	 * Constructor
 	 * @param id
 	 * @throws RemoteException
-	 * @throws SQLException
+	 * @throws SQLExceptionPlayerClient
 	 */
-	public Player(int id, double stake) throws RemoteException, SQLException{
+	public Player(int id) throws RemoteException, SQLException{
 		userId = id;
-		chips = stake;
+		chips = new UserImpl().getUserObject(id).getChips();
 		hand = new Hand();
 		turn = false;
 		seat =-1;
-		done = false;
+		done = true;
 		
 	}
 	
@@ -76,7 +77,7 @@ public class Player implements Comparable<Player>, Serializable  {
 	 * 
 	 * @return chips - player's chips
 	 */
-	public double getChips() {
+	public double getChips() throws RemoteException{
 		return chips;
 	}
 
@@ -114,16 +115,6 @@ public class Player implements Comparable<Player>, Serializable  {
 	}
 	
 	/**
-	 * Retrieves the userId of this player
-	 * 
-	 * @return userId
-	 * @author mouhyi
-	 */
-	public int getId(){
-		return this.userId;
-	}
-	
-	/**
 	 * Implement the comparable interface. IT defines a natural ordering of
 	 * players according to their hand values.
 	 * 
@@ -145,23 +136,23 @@ public class Player implements Comparable<Player>, Serializable  {
 	}
 	
 	// Getters
-	public int getUserId() {
+	public int getUserId() throws RemoteException{
 		return userId;
 	}
 
-	public Hand getHand() {
+	public Hand getHand() throws RemoteException{
 		return hand;
 	}
 
-	public Card getFaceDownCard() {
+	public Card getFaceDownCard() throws RemoteException{
 		return faceDownCard;
 	}
 
-	public boolean isTurn() {
+	public boolean isTurn() throws RemoteException{
 		return turn;
 	}
 
-	public int getSeat() {
+	public int getSeat() throws RemoteException{
 		return seat;
 	}
 

@@ -257,8 +257,13 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 */
 	public Player getPlayer(int userId) {
 		for (Player p : players) {
-			if (p.getId() == userId) {
-				return p;
+			try {
+				if (p.getUserId() == userId) {
+					return p;
+				}
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return null;
@@ -430,7 +435,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	}
 
 	public int getCurPlayerId() throws RemoteException {
-		return players.get(curPlayer).getId();
+		return players.get(curPlayer).getUserId();
 	}
 
 }

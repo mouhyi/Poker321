@@ -1,5 +1,8 @@
 package Server.gameModule;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
 /**
  * Wrapper class for cards
  * 
@@ -8,7 +11,7 @@ package Server.gameModule;
  */
 
 // all methods tested on Mar 31, 03:21pm
-public class Card implements Comparable<Card> {
+public class Card extends UnicastRemoteObject implements Comparable<Card> {
 
 	private Suit suit;
 	private Rank rank;
@@ -19,7 +22,7 @@ public class Card implements Comparable<Card> {
 	 * 
 	 * @author mouhyi
 	 */
-	public Card(Rank rank, Suit suit) {
+	public Card(Rank rank, Suit suit) throws RemoteException {
 		this.rank = rank;
 		this.suit = suit;
 		up = true;
@@ -34,7 +37,7 @@ public class Card implements Comparable<Card> {
 		this.up = false;
 	}
 	
-	public Suit getSuit() {
+	public Suit getSuit() throws RemoteException {
 		return suit;
 	}
 
@@ -42,7 +45,7 @@ public class Card implements Comparable<Card> {
 		this.suit = suit;
 	}
 
-	public Rank getRank() {
+	public Rank getRank() throws RemoteException {
 		return rank;
 	}
 

@@ -68,7 +68,7 @@ public interface RemoteGame extends Remote {
 
 	public int getId() throws RemoteException;
 
-	public ArrayList<Player> getPlayers() throws RemoteException;;
+	public ArrayList<Player> getPlayers() throws RemoteException;
 
 	public int getRound() throws RemoteException;
 

@@ -56,4 +56,8 @@ public class PlayerClient extends UnicastRemoteObject  implements PlayerClientRe
 	public int getGameId() {
 		return gameId;
 	}
+	
+	public boolean canJoin(String playerName){
+		
+	}
 }

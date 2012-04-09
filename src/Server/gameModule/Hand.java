@@ -1,5 +1,7 @@
 package Server.gameModule;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +19,7 @@ import java.util.Map;
  * 
  * @author mouhyi
  */
-public class Hand implements Comparable<Hand> {
+public class Hand extends UnicastRemoteObject implements Comparable<Hand> {
 
 	private final static int HAND_SIZE = 5;
 	private ArrayList<Card> cards;
@@ -27,9 +29,18 @@ public class Hand implements Comparable<Hand> {
 	 * 
 	 * @author mouhyi
 	 */
-	public Hand() {
+	public Hand() throws RemoteException {
 		// ArrayList with initial capacity = size of a poker hand;
 		cards = new ArrayList<Card>(HAND_SIZE);
+	}
+	
+	/**
+	 * Getter
+	 * @author mouhyi
+	 */
+	
+	public ArrayList<Card>  getCards() throws RemoteException {
+		return this.cards;
 	}
 
 	/**
@@ -80,8 +91,9 @@ public class Hand implements Comparable<Hand> {
 	 * 
 	 * @return the value of this hand
 	 * @author mouhyi
+	 * @throws RemoteException 
 	 */
-	public HandType getValue() {
+	public HandType getValue() throws RemoteException {
 		if (isStraightFlush()) {
 			return HandType.STRAIGHT_FLUSH;
 		}
@@ -99,8 +111,9 @@ public class Hand implements Comparable<Hand> {
 	 * 
 	 * @return Boolean: true if flush, false if not
 	 * @author mouhyi
+	 * @throws RemoteException 
 	 */
-	public boolean isFlush() {
+	public boolean isFlush() throws RemoteException {
 		if(cards.size() < HAND_SIZE){
 			return false;
 		}
@@ -118,8 +131,9 @@ public class Hand implements Comparable<Hand> {
 	 * 
 	 * @return Boolean: true if straight, false if not
 	 * @author mouhyi
+	 * @throws RemoteException 
 	 */
-	public boolean isStraight() {
+	public boolean isStraight() throws RemoteException {
 		ArrayList<Card> cardsCpy = new ArrayList<Card>(cards);
 		Collections.sort(cardsCpy);
 		
@@ -164,8 +178,9 @@ public class Hand implements Comparable<Hand> {
 	 * 
 	 * @return Boolean: true if StraightFlush, false if not
 	 * @author mouhyi
+	 * @throws RemoteException 
 	 */
-	public boolean isStraightFlush() {
+	public boolean isStraightFlush() throws RemoteException {
 		return (isStraight() && isFlush());
 	}
 
@@ -175,8 +190,9 @@ public class Hand implements Comparable<Hand> {
 	 * 
 	 * @return HandType
 	 * @author mouhyi
+	 * @throws RemoteException 
 	 */
-	public HandType getPairing() {
+	public HandType getPairing() throws RemoteException {
 		HashMap<Rank, Integer> table = new HashMap<Rank, Integer>(13);
 		for (Rank rank : Rank.values()) {
 			table.put(rank, 0);
@@ -222,19 +238,35 @@ public class Hand implements Comparable<Hand> {
 	 * @author mouhyi
 	 */
 	public int compareTo(Hand h) {
-		int comp = this.getValue().compareTo(h.getValue());
+		int comp=0;
+		try {
+			comp = this.getValue().compareTo(h.getValue());
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (comp != 0) {
 			return comp;
 		}
-		if (this.getValue() == HandType.HIGH_CARD
-				|| this.getValue() == HandType.FLUSH) {
-			return breakTieHighCard(new ArrayList<Card>(this.cards),
-					new ArrayList<Card>(h.cards));
+		try {
+			if (this.getValue() == HandType.HIGH_CARD
+					|| this.getValue() == HandType.FLUSH) {
+				return breakTieHighCard(new ArrayList<Card>(this.cards),
+						new ArrayList<Card>(h.cards));
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		if (this.getValue() == HandType.STRAIGHT
-				|| this.getValue() == HandType.STRAIGHT_FLUSH) {
-			return breakTieStraight(new ArrayList<Card>(this.cards),
-					new ArrayList<Card>(h.cards));
+		try {
+			if (this.getValue() == HandType.STRAIGHT
+					|| this.getValue() == HandType.STRAIGHT_FLUSH) {
+				return breakTieStraight(new ArrayList<Card>(this.cards),
+						new ArrayList<Card>(h.cards));
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		List<Map.Entry<Rank, Integer>> thisList = this.sortCards();
@@ -282,8 +314,9 @@ public class Hand implements Comparable<Hand> {
 	 * @param c2
 	 * @return
 	 * @author mouhyi
+	 * @throws RemoteException 
 	 */
-	public static int breakTieStraight(ArrayList<Card> c1, ArrayList<Card> c2) {
+	public static int breakTieStraight(ArrayList<Card> c1, ArrayList<Card> c2) throws RemoteException {
 		boolean aceLow1 = false, aceLow2 = false, ace1 = false, ace2 = false;
 		for (Card card : c1) {
 			//ace1 = false;
@@ -347,7 +380,7 @@ public class Hand implements Comparable<Hand> {
 	}
 
 	/**
-	 * Sorts hands into a list <Map.Entry<Rank, Integer= freq>>
+	 * Sorts cards by their rank freq into a list <Map.Entry<Rank, Integer= freq>>
 	 * 
 	 * @return sorted list
 	 * @author mouhyi
@@ -356,7 +389,13 @@ public class Hand implements Comparable<Hand> {
 	public List<Map.Entry<Rank, Integer>> sortCards() {
 		HashMap<Rank, Integer> table = new HashMap<Rank, Integer>(HAND_SIZE);
 		for (Card c : cards) {
-			Rank r = c.getRank();
+			Rank r=null;
+			try {
+				r = c.getRank();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			int freq = (table.containsKey(r)) ? table.get(r) : 0;
 			table.put(r, freq + 1);
 		}
