@@ -19,6 +19,7 @@ public class GameTable implements Runnable {
 	private ArrayList<Player> players;
 	private int ante;
 	private double bringIn;
+	private String gameTableName;
 	private static int numberOfTables = 0;
 	private Game curGame;
 
@@ -33,11 +34,16 @@ public class GameTable implements Runnable {
 	 * @author Peter, mouhyi
 	 */
 	public GameTable(int ante, int hostId, ArrayList<Integer> playersId,
-			double bringIn) {
+			double bringIn, String suggestedName) {
 		this.hostId = hostId;
 		this.ante = ante;
 		this.tableId = numberOfTables + 1;
-		this.players = players;
+		players = new ArrayList<Player>();
+		for (Integer id : playersId){
+			Player currentPlayer = Player(id);
+			players.add(currentPlayer);
+		}
+		this. gameTableName = suggestedName;
 		this.bringIn = bringIn;
 		this.numberOfTables++;
 		new Thread(this).run();

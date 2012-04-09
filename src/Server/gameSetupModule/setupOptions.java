@@ -19,8 +19,9 @@ public class setupOptions {
 
 	public GameTable createNewGameTable(int selectedAnte, UserObject host,
 			String suggestedName) throws SQLException {
-		ArrayList<UserObject> playerList = new ArrayList<UserObject>();
-		playerList.add(host);
+		ArrayList<Player> playerList = new ArrayList<Player>();
+		hostPlayerObject = Player(host.getId());
+		playerList.add(hostPlayerObject);
 		GameTable newGameTable = new GameTable(selectedAnte, host,
 				suggestedName, playerList);
 		return newGameTable;
@@ -39,10 +40,11 @@ public class setupOptions {
 
 	public void inviteSelectedFriend(UserObject friend, UserObject user,
 			GameTable currentTable) {
-		pushNotifications inviteFriend = new pushNotifications(
-				"Hey you should join this game with" + user.getName(), 0, user
-						.getName(), friend, currentTable);
-		inviteFriend.sendNotification();
+		//pushNotifications inviteFriend = new pushNotifications(
+		//		"Hey you should join this game with" + user.getName(), 0, user
+		//					.getName(), friend, currentTable);
+		//	inviteFriend.sendNotification();
+		//TODO: Need to figure out pushNotifications
 	}
 
 	/**

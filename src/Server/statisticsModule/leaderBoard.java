@@ -7,7 +7,7 @@ import Server.userModule.UserObject;
 
 public class leaderBoard {
 
-	public String[][] leaderBoardDisplay() throws SQLException{
+	public static String[][] leaderBoardDisplay() throws SQLException{
 		return Data.statistics.createLeaderBoard();
 	}
 	/** 
