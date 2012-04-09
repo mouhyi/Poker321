@@ -61,10 +61,10 @@ public class statistics {
 	public static String[][] createLeaderBoard() throws SQLException{
 		Statement stmt = null;
 		int i=0;
-		String[][] leaderboard = new String[25][3];
+		String[][] leaderboard = new String[20][4];
 		try {
 			Connection con = Methods.connectToDB("5CARD");
-			String query = "SELECT * FROM 5Card.Players ORDER BY gameWinnings DESC LIMIT 25";
+			String query = "SELECT * FROM 5Card.Players ORDER BY gameWinnings DESC LIMIT 20";
 			stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
