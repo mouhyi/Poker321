@@ -37,7 +37,11 @@ public class GameTable implements Runnable {
 		this.hostId = hostId;
 		this.ante = ante;
 		this.tableId = numberOfTables + 1;
-		this.players = players;
+		players = new ArrayList<Player>();
+		for (Integer id : playersId){
+			Player currentPlayer = Player(id);
+			players.add(currentPlayer);
+		}
 		this.bringIn = bringIn;
 		this.numberOfTables++;
 		new Thread(this).run();
