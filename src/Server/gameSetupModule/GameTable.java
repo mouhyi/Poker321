@@ -138,30 +138,35 @@ public class GameTable implements Runnable, IGameTable {
 			}
 		}
 	}
-
-	public int changeAnte(int newAnte) {
-		this.ante = newAnte;
-		return this.ante;
-	}
-
 	/**
 	 * This changes the minimum ante of the game
 	 * 
 	 * @param newante
 	 * @author Peter
 	 */
+	public int changeAnte(int newAnte) {
+		this.ante = newAnte;
+		return this.ante;
+	}
 
+
+	/**
+	 * This returns the bringIn value that the player
+	 *
+	 * @return
+	 * @author Peter
+	 */
 	public double getBringIn() {
 		return this.bringIn;
 	}
 
-	/**
-	 * This returns the bringIn value that the player
-	 * 
-	 * @param newBringIn
-	 * @return
-	 */
 
+	/**
+	 * This changes the Bringin value
+	 * @param newBringin
+	 * @return
+	 * @author Peter
+	 */
 	public double changeBringIn(double newBringIn) {
 		this.bringIn = newBringIn;
 		return this.bringIn;
