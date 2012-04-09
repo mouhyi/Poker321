@@ -1,5 +1,6 @@
 package Server.gameModule;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +27,12 @@ public class Deck {
 		// initialize the deck with cards
 		 for (Suit suit : Suit.values()){
 	            for (Rank rank : Rank.values()){
-	                cards.add(new Card(rank, suit));
+	                try {
+						cards.add(new Card(rank, suit));
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 	            }
 		 }
 		 // shuffle
