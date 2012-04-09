@@ -19,7 +19,8 @@ public interface IPlayer  extends Remote {
 	public Card getFaceDownCard()throws RemoteException;
 
 	public boolean isTurn() throws RemoteException;
-
+	
+	public double getCurBet() throws RemoteException ;
 	
 	
 	

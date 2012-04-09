@@ -45,7 +45,7 @@ public class PlayerClient extends UnicastRemoteObject  implements PlayerClientRe
 	}
 
 	// Getters
-	public RemoteGame getRmGame() {
+	public RemoteGame getGameProxy() {
 		return rmGame;
 	}
 
@@ -57,7 +57,4 @@ public class PlayerClient extends UnicastRemoteObject  implements PlayerClientRe
 		return gameId;
 	}
 	
-	public boolean canJoin(String playerName){
-		
-	}
 }

@@ -1,6 +1,7 @@
 package Server.gameSetupModule;
 
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import Server.gameModule.Game;
 import Server.gameModule.Player;
@@ -19,7 +20,7 @@ public class GameTable implements Runnable {
 	private ArrayList<Player> players;
 	private int ante;
 	private double bringIn;
-	private String gameTableName;
+	private String name;
 	private static int numberOfTables = 0;
 	private Game curGame;
 
@@ -38,12 +39,22 @@ public class GameTable implements Runnable {
 		this.hostId = hostId;
 		this.ante = ante;
 		this.tableId = numberOfTables + 1;
+		// create players
 		players = new ArrayList<Player>();
 		for (Integer id : playersId){
-			Player currentPlayer = Player(id);
+			Player currentPlayer=null;
+			try {
+				currentPlayer = new Player(id);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			players.add(currentPlayer);
 		}
-		this. gameTableName = suggestedName;
+		this.name = suggestedName;
 		this.bringIn = bringIn;
 		this.numberOfTables++;
 		new Thread(this).run();
@@ -89,11 +100,6 @@ public class GameTable implements Runnable {
 	 */
 	public int getAnte() {
 		return this.ante;
-	}
-
-	// TODO implement in Lobby
-	public boolean requestJoin(int playerId) {
-
 	}
 
 	/**
@@ -180,8 +186,13 @@ public class GameTable implements Runnable {
 
 	public Player getPlayer(int userId) {
 		for (Player p : players) {
-			if (p.getId() == userId) {
-				return p;
+			try {
+				if (p.getUserId() == userId) {
+					return p;
+				}
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return null;

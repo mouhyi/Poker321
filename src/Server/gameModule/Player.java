@@ -168,5 +168,9 @@ public class Player extends UnicastRemoteObject implements Comparable<Player>, I
 		this.done = done;
 	}
 
+	public double getCurBet() throws RemoteException {
+		return curBet;
+	}
+
 	
 }
