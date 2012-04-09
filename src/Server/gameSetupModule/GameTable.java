@@ -3,8 +3,7 @@ package Server.gameSetupModule;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import Server.gameModule.Game;
-import Server.gameModule.Player;
+import Server.gameModule.*;
 import Server.userModule.UserObject;
 
 /**
@@ -13,7 +12,7 @@ import Server.userModule.UserObject;
  * @author mouhyi, Peter
  * 
  */
-public class GameTable implements Runnable {
+public class GameTable implements Runnable, IGameTable {
 
 	private int hostId;
 	private int tableId;
@@ -166,6 +165,14 @@ public class GameTable implements Runnable {
 	public double changeBringIn(double newBringIn) {
 		this.bringIn = newBringIn;
 		return this.bringIn;
+	}
+	
+	/**
+	 * 
+	 * @return the current game in the table
+	 */
+	public Game getGame(){
+		return curGame;
 	}
 
 	public void initiateGame() {

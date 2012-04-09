@@ -33,7 +33,6 @@ public class GameTable {
 		this.players = new ArrayList<Player> (list);
 	}
 	
-	//public void newGame
 	
 	
 }

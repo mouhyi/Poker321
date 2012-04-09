@@ -22,6 +22,4 @@ public interface IPlayer  extends Remote {
 	
 	public double getCurBet() throws RemoteException ;
 	
-	
-	
 }	
