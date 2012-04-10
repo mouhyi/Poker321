@@ -125,6 +125,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 		synchronized (players) {
 			if (this.players.size() < 5 && p != null) {
 				this.players.add(p);
+				System.out.println("Player added:"+p.getUserId());
 				return 0;
 			}
 		}
