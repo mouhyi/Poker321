@@ -27,7 +27,7 @@ public interface IGameTable extends Remote {
 	 * @return
 	 * @author Peter
 	 */
-	public ArrayList<Player> getPlayers();
+	public ArrayList<IPlayer> getPlayers();
 
 	/**
 	 * Returns the ante of the game
@@ -79,7 +79,7 @@ public interface IGameTable extends Remote {
 	 * 
 	 * @return the current game in the table
 	 */
-	public Game getGame();
+	public RemoteGame getGame();
 	
 	/**
 	 * 

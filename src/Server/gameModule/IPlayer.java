@@ -14,7 +14,7 @@ public interface IPlayer  extends Remote {
 	
 	public int getUserId() throws RemoteException;
 	
-	public Hand getHand() throws RemoteException;
+	public IHand getHand() throws RemoteException;
 	
 	public Card getFaceDownCard()throws RemoteException;
 

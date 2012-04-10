@@ -19,7 +19,7 @@ import java.util.Map;
  * 
  * @author mouhyi
  */
-public class Hand extends UnicastRemoteObject implements Comparable<Hand> {
+public class Hand extends UnicastRemoteObject implements Comparable<Hand>, IHand {
 
 	private final static int HAND_SIZE = 5;
 	private ArrayList<Card> cards;
@@ -38,9 +38,13 @@ public class Hand extends UnicastRemoteObject implements Comparable<Hand> {
 	 * Getter
 	 * @author mouhyi
 	 */
-	
-	public ArrayList<Card>  getCards() throws RemoteException {
-		return this.cards;
+	@Override
+	public ArrayList<ICard>  getCards() throws RemoteException {
+		ArrayList<ICard> cpy = new ArrayList<ICard>();
+		for(Card c: cards){
+			cpy.add((ICard)c);
+		}
+		return cpy;
 	}
 
 	/**
