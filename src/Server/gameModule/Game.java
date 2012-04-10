@@ -60,7 +60,15 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		PClients = new ArrayList<IPlayerClient> ();
 		count =0;
 	}
-
+	
+	
+	public void addPlayers(List <Player> list){
+		for(Player p: list){
+			if(!players.contains(p)){
+				players.add(p);
+			}	
+		}
+	}
 	
 	/**
 	 * notify players

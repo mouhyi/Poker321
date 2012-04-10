@@ -862,11 +862,11 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * @param evt
      */
     private void joinGameToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinGameToggleButtonActionPerformed
-        String currentTable = clientRequest.getCurrentTable();
+        String currentTable = tableNameLabel.getText();
         
-        if (joinGameToggleButton.isSelected() && !inTable && clientRequest.getCurrentTable() != null) {
+        if (joinGameToggleButton.isSelected() && !inTable && clientRequest.getCurrentTable() == null) {
             clientRequest.joinGameTable(currentTable);
-            openGameFrame(currentTable); // to be removed
+            //openGameFrame(currentTable); // to be removed
             inTable = true;
             
             //openGameFrame(tableNameLabel.getText()); 
