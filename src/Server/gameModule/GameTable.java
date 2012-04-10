@@ -1,6 +1,7 @@
 package Server.gameModule;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import Server.gameModule.*;
@@ -12,7 +13,7 @@ import Server.userModule.UserObject;
  * @author mouhyi, Peter
  * 
  */
-public class GameTable implements IGameTable {
+public class GameTable extends UnicastRemoteObject  implements IGameTable {
 
 	private int hostId;
 	private int tableId;
@@ -34,7 +35,7 @@ public class GameTable implements IGameTable {
 	 * @author Peter, mouhyi
 	 */
 	public GameTable(int ante, int hostId, ArrayList<Integer> playersId,
-			double bringIn, String suggestedName) {
+			double bringIn, String suggestedName) throws RemoteException {
 		this.hostId = hostId;
 		this.ante = ante;
 		this.tableId = numberOfTables + 1;

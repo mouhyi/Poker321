@@ -162,7 +162,7 @@ public class GUIClient {
     public boolean registerNewAccount(String[] accountInfo) throws RemoteException, SQLException {
         UserObject newUser = new UserObject(accountInfo[2], accountInfo[4], accountInfo[3], 500);
         //automatically gives the player 500 
-        for signing up
+        //for signing up
         int i = currentUserClient.getUserProxy().signup(newUser);
         if (i == 0) {
             System.out.println("Account information sent to server, you are now registered.");
@@ -184,7 +184,7 @@ public class GUIClient {
 
         this.currentUser = currentUserClient.getUserProxy().login(email, password);
         if(currentUser!=null)
-            this.userId = currentUser.getId(););
+            this.userId = currentUser.getId();
         System.out.println("You are now logged in," + this.currentUser + ".");
 
         if (this.currentUser != null) {
@@ -415,7 +415,16 @@ public class GUIClient {
      * Gets chips for a particular user.
      */
     public String getChips(String username) {
-        UserObject desiredUser=currentUserClient.getUserProxy().getUserObject(username);
+        UserObject desiredUser=null;
+		try {
+			desiredUser = currentUserClient.getUserProxy().getUserObject(username);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         String chips = ""+desiredUser.getChips();
         return chips;
     }

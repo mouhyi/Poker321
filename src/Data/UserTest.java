@@ -16,7 +16,7 @@ public class UserTest {
 		//testUpdate();
 		//testAddF();
 		//testIsF();
-		//testGetF();
+		testGetF();
 		//testDeleteF();
 
 	}

@@ -25,4 +25,8 @@ public interface GameServer extends Remote {
 	public IGameTable createTable(int ante, int hostId, ArrayList<Integer> playersId,
 			double bringIn, String suggestedName) throws RemoteException;
 	
+	public ArrayList<IGameTable> getAllTables() throws RemoteException;
+	
+	public IGameTable getTable(String name) throws RemoteException;
+	
 }

@@ -4,49 +4,39 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 
-import Server.userModule.RemoteUser;
-import Server.userModule.UserImpl;
-
-/**
- * This class is a server process to host the Remote RMI Game services.
- * 
- * @author mouhyi
- * 
- */
-
-public class GameHost {
+public class RMIServer {
 	
-	private static final int PORT = 10004;
+	private static final int PORT = 10066;
 	private static final String HOST_NAME = "localhost";
-
-	/**
-	 * This is constructor where the Remote 'Game' Object is exported to the RMI
-	 * Registry It must be called on the server before the client initiates an
-	 * RMI connection on a Game object
-	 * 
-	 * @author mouhyi
-	 */
-	public static void RegisterGame(RemoteGame game) {
+	
+	public static void registerGameServer() {
 		try {
+			
+			GameServer gs =new GameServerImpl();
 			
 			// Reference to registry service by creating registry service
 			LocateRegistry.createRegistry(PORT);
 			// Register server object to registry with unique name
 			String urlString = "//" + HOST_NAME + ":" + Integer.toString(PORT)
-					+ "/" + "Game"+game.getId();
-			Naming.rebind(urlString, game);
-
-		} catch (java.rmi.UnknownHostException uhe) {
+					+ "/" + "GameServer";
+			Naming.rebind(urlString, gs);
 			System.out.println("The host computer name you have specified, "
 					+ HOST_NAME + " does not match your real computer name.");
+			
+			
+			
+		} catch (java.rmi.UnknownHostException uhe) {
 		} catch (RemoteException re) {
 			System.out.println("Error starting service"+re);
 		} catch (MalformedURLException mURLe) {
 			System.out.println("Internal error" + mURLe);
 		}
 		
+	}
+	
+	
+	public static void main(String [] args){
+		registerGameServer();
 	}
 }
