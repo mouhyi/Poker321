@@ -16,6 +16,17 @@ public class setupOptions {
 	 * 
 	 * @author Peter
 	 **/
+	 
+	 	/**
+	 * Checks if there is a game with the host's suggested name and then creates
+	 * it if there is not such a game, sends an error message if there is not
+	 * such a game
+	 * 
+	 * @param friend
+	 * @param user
+	 * @param currentTable
+	 */
+
 
 	public GameTable createNewGameTable(int selectedAnte, UserObject host,
 			String suggestedName) throws SQLException {
@@ -29,15 +40,15 @@ public class setupOptions {
 	}
 
 	/**
-	 * Checks if there is a game with the host's suggested name and then creates
-	 * it if there is not such a game, sends an error message if there is not
-	 * such a game
+	 * This sends a message to the selected friend
 	 * 
 	 * @param friend
 	 * @param user
 	 * @param currentTable
+	 * @author Peter
+	 * @throws SQLException
+	 * @throws RemoteException
 	 */
-
 	public void inviteSelectedFriend(UserObject friend, UserObject user,
 			GameTable currentTable) {
 		//pushNotifications inviteFriend = new pushNotifications(
@@ -48,16 +59,14 @@ public class setupOptions {
 	}
 
 	/**
-	 * This sends a message to the selected friend
+	 * This gets the online friends of the user and returns and ArrayList of
+	 * them
 	 * 
-	 * @param friend
 	 * @param user
-	 * @param currentTable
-	 * @author Peter
 	 * @throws SQLException
 	 * @throws RemoteException
+	 * @author Peter
 	 */
-
 	private ArrayList<UserObject> getOnlineFriends(UserObject user)
 			throws RemoteException, SQLException {
 		ArrayList<UserObject> onlineUsers = new ArrayList<UserObject>();
@@ -72,16 +81,16 @@ public class setupOptions {
 		return onlineUsers;
 	}
 
+
 	/**
-	 * This gets the online friends of the user and returns and ArrayList of
-	 * them
+	 * Creates a list of usernames of the friends that are online for display in
+	 * a table
 	 * 
-	 * @param user
-	 * @throws SQLException
+	 * @param host
 	 * @throws RemoteException
+	 * @throws SQLException
 	 * @author Peter
 	 */
-
 	public ArrayList<String> getOnlineFriendNames(UserObject host)
 			throws RemoteException, SQLException {
 
@@ -94,12 +103,9 @@ public class setupOptions {
 	}
 
 	/**
-	 * Creates a list of usernames of the friends that are online for display in
-	 * a table
+	 * This gets the users that are currently in the game
 	 * 
-	 * @param host
-	 * @throws RemoteException
-	 * @throws SQLException
+	 * @param currentGameTable
 	 * @author Peter
 	 */
 	public ArrayList<String> getUsersInGame(GameTable currentGameTable) {
@@ -112,17 +118,6 @@ public class setupOptions {
 	}
 
 	/**
-	 * This gets the users that are currently in the game
-	 * 
-	 * @param currentGameTable
-	 * @author Peter
-	 */
-	public ArrayList<UserObject> addUserToGame(UserObject user,
-			GameTable desiredTable) {
-		return desiredTable.addPlayer(user);
-	}
-
-	/**
 	 * This adds a user to the game returns true if successful
 	 * 
 	 * @param u_id
@@ -130,11 +125,11 @@ public class setupOptions {
 	 * @return
 	 * @author Peter
 	 */
-
-	public ArrayList<UserObject> deleteUserFromGame(UserObject user,
-			GameTable game) {
-		return game.removePlayer(user);
+	public ArrayList<UserObject> addUserToGame(UserObject user,
+			GameTable desiredTable) {
+		return desiredTable.addPlayer(user);
 	}
+
 
 	/**
 	 * This deletes the user from the game
@@ -144,10 +139,12 @@ public class setupOptions {
 	 * @return
 	 * @author Peter
 	 */
-
-	public int changeLevelOfAnte(int selectedLevel, GameTable game) {
-		return game.changeAnte(selectedLevel);
+	public ArrayList<UserObject> deleteUserFromGame(UserObject user,
+			GameTable game) {
+		return game.removePlayer(user);
 	}
+
+	
 	/**
 	 * From a drop down menu the user will select a level of ante this changes
 	 * the level of ante of the game, returns chosen level
@@ -157,5 +154,9 @@ public class setupOptions {
 	 * @return
 	 * @author Peter
 	 */
+	public int changeLevelOfAnte(int selectedLevel, GameTable game) {
+		return game.changeAnte(selectedLevel);
+	}
+
 
 }
