@@ -52,7 +52,7 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	@Override
 	public int deleteFriend(int userId, int friendId) throws SQLException {
 		return UserData.deleteFriend(userId, friendId);
-
+		
 	}
 
 	/**
@@ -175,7 +175,7 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	/**
 	 * Searchs a user by email
 	 * 
-	 * @param email
+	 * @param email or username
 	 * @return UserObject corresponding to email
 	 * @throws RemoteException
 	 * @throws SQLException

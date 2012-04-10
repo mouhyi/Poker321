@@ -40,10 +40,15 @@ public class UserHost {
 		} catch (java.rmi.UnknownHostException uhe) {
 			System.out.println("The host computer name you have specified, "
 					+ HOST_NAME + " does not match your real computer name.");
+			System.out.println( "Bindings Finished, waiting for client requests." );
 		} catch (RemoteException re) {
 			System.out.println("Error starting service"+re);
 		} catch (MalformedURLException mURLe) {
 			System.out.println("Internal error" + mURLe);
 		}
+	}
+	
+	public static void main(String [] args){
+		UserHost user = new UserHost();
 	}
 }
