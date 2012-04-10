@@ -1,6 +1,9 @@
 package Server.gameModule;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+
+import Server.gameSetupModule.GameTable;
 
 /**
  * This class represents the ongoing games
@@ -11,4 +14,21 @@ import java.util.ArrayList;
  */
 public class GameLobby {
 	private ArrayList<GameTable> pokerTables;
+	
+	public ArrayList<GameTable> getTables(){
+		return pokerTables;
+	}
+	
+	public GameTable getTableByName(String name){
+		for (GameTable t: pokerTables){
+			try {
+				if(t.getName().equals(name)){
+					return t;
+				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 }

@@ -183,6 +183,10 @@ public class GameTable implements Runnable, IGameTable {
 		}
 	}
 
+	public String getName() throws RemoteException {
+		return name;
+	}
+
 	public void run() {
 		try {
 			curGame.play();

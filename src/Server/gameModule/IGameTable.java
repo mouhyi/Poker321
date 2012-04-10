@@ -80,6 +80,13 @@ public interface IGameTable extends Remote {
 	 * @return the current game in the table
 	 */
 	public Game getGame();
+	
+	/**
+	 * 
+	 * @return The name of this table
+	 * @throws RemoteException
+	 */
+	public String getName() throws RemoteException ;
 
 	public void initiateGame();
 }
