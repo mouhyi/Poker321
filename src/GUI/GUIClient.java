@@ -182,7 +182,8 @@ public class GUIClient {
     public boolean testEmailPassword(String email, String password) throws RemoteException, SQLException {
 
         this.currentUser = currentUserClient.getUserProxy().login(email, password);
-        this.userId = currentUser.getId();
+        if(currentUser!=null)
+            this.userId = currentUser.getId(););
         System.out.println("You are now logged in," + this.currentUser + ".");
 
         if (this.currentUser != null) {
