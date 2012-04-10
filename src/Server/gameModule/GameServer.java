@@ -1,12 +1,28 @@
 package Server.gameModule;
 
 import java.rmi.*;
+import java.util.ArrayList;
 /**
- *  This class implements the game rules and logic
+ *  Main RMI Server
  *  
  * @author mouhyi
  *
  */
-public interface GameServer {
-
+public interface GameServer extends Remote {
+	
+	/**
+	 * Creates a new GameTable on the server and returns a reference to it
+	 * 
+	 * @param ante
+	 * @param hostId
+	 * @param playersId
+	 * @param bringIn
+	 * @param suggestedName
+	 * @return IGameTable- the new GameTable created
+	 * @throws RemoteException
+	 * @author mouhyi
+	 */
+	public IGameTable createTable(int ante, int hostId, ArrayList<Integer> playersId,
+			double bringIn, String suggestedName) throws RemoteException;
+	
 }

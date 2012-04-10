@@ -87,6 +87,14 @@ public interface IGameTable extends Remote {
 	 * @throws RemoteException
 	 */
 	public String getName() throws RemoteException ;
-
-	public void initiateGame();
+	
+	/**
+	 * Initiates a new game
+	 */
+	public void initiateGame() throws RemoteException ;
+	
+	/**
+	 * Starts a new Game
+	 */
+	public void startGame()throws RemoteException ;
 }

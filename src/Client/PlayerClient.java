@@ -26,7 +26,7 @@ public class PlayerClient extends UnicastRemoteObject  implements PlayerClientRe
 	// Looks up the server object
 	// Registers itself
 	// Invokes the business methods on the server object:
-	public static PlayerClient createPlayerProxy(int userId, int gameId)
+	public static PlayerClient createPlayerProxy (int userId, int gameId)
 			throws RemoteException {
 
 		PlayerClient playerCl = new PlayerClient(userId, gameId);

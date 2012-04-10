@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Server.gameModule.Game;
+import Server.gameModule.GameTable;
 import Server.userModule.UserImpl;
 import Server.userModule.UserObject;
 

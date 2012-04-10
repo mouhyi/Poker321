@@ -3,7 +3,6 @@ package Server.gameModule;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import Server.gameSetupModule.GameTable;
 
 /**
  * This class represents the ongoing games
