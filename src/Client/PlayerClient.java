@@ -14,7 +14,7 @@ public class PlayerClient extends UnicastRemoteObject  implements PlayerClientRe
 	private int userId;
 	private int gameId;
 
-	protected PlayerClient(int userId, int gameId) throws RemoteException {
+	public PlayerClient(int userId, int gameId) throws RemoteException {
 		this.userId = userId;
 		this.gameId = gameId;
 	}

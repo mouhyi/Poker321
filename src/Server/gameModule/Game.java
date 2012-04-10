@@ -246,7 +246,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * @return player with corresponding userId or null if user not found
 	 * @author mouhyi
 	 */
-	public Player getPlayer(int userId) {
+	public Player getPlayer(int userId) throws RemoteException {
 		for (Player p : players) {
 			try {
 				if (p.getUserId() == userId) {

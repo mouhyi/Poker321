@@ -82,4 +82,6 @@ public interface RemoteGame extends Remote {
 	public double getBringIn() throws RemoteException;
 
 	public int getCurPlayerId() throws RemoteException;
+	
+	public IPlayer getPlayer(int userId) throws RemoteException;
 }
