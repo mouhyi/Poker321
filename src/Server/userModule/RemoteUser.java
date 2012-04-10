@@ -137,4 +137,7 @@ public interface RemoteUser extends Remote {
 	 */
 	public UserObject getUserObject(String email)
 			throws RemoteException, SQLException;
+			
+	public UserObject getUserObject(int userId)
+			throws RemoteException, SQLException;
 }
