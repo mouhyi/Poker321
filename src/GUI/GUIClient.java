@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 import Server.gameModule.GameServer;
+import Server.gameModule.ICard;
 import Server.gameModule.IGameTable;
 import Server.gameModule.Player;
 import Server.userModule.UserObject;
@@ -588,6 +589,7 @@ public class GUIClient {
 	 * Return the current table a user is apart of.
 	 * 
 	 * @return table name string
+	 * @author Peter
 	 */
 	public String getCurrentTable() {
 		if (this.usersGameTable != null)
@@ -599,7 +601,8 @@ public class GUIClient {
 	 * Tells the server that a user has left the table
 	 * 
 	 * @param table
-	 * @return completed
+	 * @return boolean: successful or not
+	 * @author Peter
 	 */
 	public boolean leaveGameTable(String table) {
 		if (usersGameTable != null) {
@@ -616,7 +619,8 @@ public class GUIClient {
 	 * Method called if a host wishes to start the game.
 	 * 
 	 * @param table
-	 * @return request answer
+	 * @return successful or not
+	 * @author Peter
 	 */
 	public boolean startGameRequest(String table) {
 		if (usersGameTable != null && usersGameTable.getHostId() == userId) {
@@ -635,7 +639,8 @@ public class GUIClient {
 	 * 
 	 * @param table
 	 * @param friend
-	 * @return completed
+	 * @return successful or not
+	 * @author Peter
 	 */
 	public static boolean inviteFriendToTable(String table, String friend) {
 
@@ -648,63 +653,136 @@ public class GUIClient {
 	/**
 	 * This gets the leader board from the server
 	 * 
-	 * @return
+	 * @return arrayOfStrings [20][5]
+	 * @author Peter
 	 */
 	public static String[][] retrieveStatistics() throws SQLException {
 		return Server.statisticsModule.leaderBoard.leaderBoardDisplay();
 	}
 
+	/**
+	 * This sends the players bet to the Server
+	 * @param bet
+	 * @return
+	 * @author Peter
+	 */
 	public boolean sendBet(double bet) {
-		return true;
-	}
-
-	public boolean fold() {
-		return true;
-	}
-
-	public boolean allIn() {
-		return true;
-	}
-
-	public boolean call() {
-		return true;
+		if (usersGameTable != null){
+			if(bet>currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getCurBet()){
+				int i =currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().raise(userId, bet);
+				if (i==0)return true;
+				else return false;
+			}
+			if(bet==currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getCurBet()){
+				int i=currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().call(userId);
+				if(i==0)return true;
+				else return false;
+			}
+		}
+		return false;
 	}
 
 	/**
+	 * This folds the player from the current game
+	 * @return
+	 * @author Peter
+	 */
+	public boolean fold() {
+		if(usersGameTable !=null){
+			currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().removePlayer(userId);
+		return true;
+		}
+		return false;
+	}
+
+	/**
+	 * This puts the player all in
+	 * @return
+	 * @author Peter
+	 */
+	public boolean allIn() {
+		if(usersGameTable !=null){
+			int i=currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().allIn(userId);
+			if(i==0)return true;
+			return false;
+		}
+		return false;
+	}
+
+
+	/**
 	 * Gets chips for a particular user.
+	 * @param username
+	 * @return
+	 * @author Peter
 	 */
 	public String getChips(String username) {
-		UserObject desiredUser = currentUserClient.getUserProxy()
-				.getUserObject(username);
-		String chips = "" + desiredUser.getChips();
-		return chips;
-		// This is in Game.... Change.....
+		if(usersGameTable !=null){
+			String i=""+currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPlayer(userId).getChips();
+			return i;
+		}
+		return "Couldn't get chips";
 	}
 
 	/**
 	 * Gets the running pot of a table.
+	 * 
 	 */
 	public String getPot(String table) {
-
-    	
-        return "8675309";
+		if(usersGameTable !=null){
+			String i=""+currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPot();
+			return i;
+		}
+		return "Couldn't get pot";
     }
 
 	/**
-	 * Returns the current mimimum bet at a table.
+	 * Returns the current minimum bet at a table.
+	 * @param table
+	 * @return
+	 * @author Peter
 	 */
 	public String getMinimumBet(String table) {
-
-		return "15";
+		if(usersGameTable !=null){
+			String i=""+currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getCurBet();
+		}
+		return "Couldn't get min bet";
 	}
 
 	public String[] getPlayerCards() {
-		// "clubs-5-150.png"
-		// return String array of the number of cards that I have
+		 if(usersGameTable !=null){
+				ArrayList<ICard> cards = currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPlayer(userId).getHand().getCards();
+				if(currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPlayer(userId).getFaceDownCard()!=null){
+				cards.add( currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPlayer(userId).getFaceDownCard());}
+				else return null;
+				if(cards !=null){
+					int i=0;
+					String[] cardStrings = new String[cards.size()];
+					for (ICard element : cards){
+						cardStrings[i]=""+element.getSuit()+"-"+element.getRank()+"-150.png";
+					}
+					return cardStrings;
+				}
+		 }
+	return null;
 	}
 
 	public String[] getOpponentCards(String username) {
-
+		 if(usersGameTable !=null){
+			 int playerId = currentUserClient.getUserProxy().getUserObject(username).getId();
+				if(currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPlayer(playerId).getHand().getCards()!=null){
+						ArrayList<ICard> cards = currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPlayer(playerId).getHand().getCards();
+				else return null;
+				if(cards !=null){
+					int i=0;
+					String[] cardStrings = new String[cards.size()];
+					for (ICard element : cards){
+						cardStrings[i]=""+element.getSuit()+"-"+element.getRank()+"-75.png";
+					}
+					return cardStrings;
+				}
+		 }
+	return null;
 	}
 
 	public boolean leaveGame() {
