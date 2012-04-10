@@ -17,7 +17,7 @@ public class UserTest {
 		//testAddF();
 		//testIsF();
 		//testGetF();
-		testDeleteF();
+		//testDeleteF();
 
 	}
 
@@ -71,5 +71,9 @@ public class UserTest {
 	
 	public static void testDeleteF() throws SQLException{
 		System.out.println(UserData.deleteFriend(1,3));
+	}
+	
+	public static testStats(){
+		
 	}
 }

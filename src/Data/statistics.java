@@ -6,34 +6,47 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import Server.userModule.UserObject;
 
 public class statistics {
-
-	public static int updateUserStatistics(UserObject user, double newGameWinnings, boolean gameWon) throws SQLException {
+	
+	
+	/** 
+	 * This updates the statistics in the database for a user
+	 * @param user
+	 * @param newGameWinnings
+	 * @param gameWon
+	 * @return
+	 * @author Peter, mouhyi
+	 * @throws SQLException 
+	 */
+	
+	public static int updateUserStatistics(int userId, double newGameWinnings, boolean gameWon) throws SQLException {
 		int updated = -1;
 		PreparedStatement pstmt = null;
 
 		// return -1 if the user does not exist
-		if (!UserData.exists(user.getId()))
+		if (!UserData.exists(userId))
 			return -1;
+		
+
 
 		try {
 			Connection con = Methods.connectToDB("5CARD");
 			String query = "UPDATE 5CARD.Players SET gameWinnings=? wins=?, losses=?"
 					+ " WHERE u_id=?";
 			pstmt = con.prepareStatement(query);
-			pstmt.setString(1, user.getName());
-			pstmt.setDouble(2, user.getChips()+newGameWinnings);
-			pstmt.setBoolean(3, user.isOnline());
-			pstmt.setDouble(4, user.getGameWinnings()+newGameWinnings);
+			
+			double [] stats = getPlayerStats(userId);
+			
+			
+			pstmt.setDouble(1, stats[0]+newGameWinnings);
 			if(gameWon){
-				pstmt.setInt(5, user.getWins()+1);
+				pstmt.setInt(2, (int)stats[1]+1);
 			}
 			if(!gameWon){
-				pstmt.setInt(6, user.setLosses()+1);
+				pstmt.setInt(3, (int) stats[2]+1);
 			}
-			pstmt.setInt(7, user.getId());
+			pstmt.setInt(4, userId);
 
 			System.out.println(pstmt.toString());
 
@@ -48,16 +61,11 @@ public class statistics {
 			return updated;
 		}
 	}
-	/** 
-	 * This updates the statistics in the database for a user
-	 * @param user
-	 * @param newGameWinnings
-	 * @param gameWon
+	/**
+	 * This generates an array of Strings that is the leaderboard of top 25, ordered by game winnings
 	 * @return
 	 * @author Peter
-	 * @throws SQLException 
 	 */
-	
 	public static String[][] createLeaderBoard() throws SQLException{
 		Statement stmt = null;
 		int i=0;
@@ -86,9 +94,36 @@ public class statistics {
 		}
 		
 	}
+	
 	/**
-	 * This generates an array of Strings that is the leaderboard of top 25, ordered by game winnings
+	 * Retrieves a row of the 'players' table
+	 * @param userId
 	 * @return
-	 * @author Peter
+	 * @throws SQLException
+	 * @author mouhyi
 	 */
+	public static double[] getPlayerStats(int userId) throws SQLException{
+		Statement stmt = null;
+		double [] stats = new double[3];
+		try {
+			Connection con = Methods.connectToDB("5CARD");
+			String query = "SELECT * FROM 5Card.Player WHERE u_id='"+userId+"'";
+			stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				stats[0] = rs.getDouble("GameWinnings");
+				stats[1] = rs.getInt("wons");
+				stats[2] = rs.getInt("losses");
+			}
+		}catch (SQLException e) {
+			Methods.printSQLException(e);
+		} finally {
+			if (stmt != null) {
+				stmt.close();
+			}
+			return stats;
+		}
+	}
+	
 }
+	

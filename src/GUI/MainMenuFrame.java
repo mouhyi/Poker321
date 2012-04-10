@@ -1060,7 +1060,10 @@ public class MainMenuFrame extends javax.swing.JFrame {
      */
     private void deleteFriendMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFriendMenuItemActionPerformed
         String friend = JOptionPane.showInputDialog(this, "Friend: ", "Delete Friend", JOptionPane.PLAIN_MESSAGE);
-        boolean completed = GUIClient.deleteFriend(friend);
+        boolean completed = false;
+		try {
+			completed = clientRequest.deleteFriend(friend);
+		} catch (RemoteException e) {} catch (SQLException e) {}
         if (completed) 
             JOptionPane.showMessageDialog(this, friend + " has been removed from your friends", "Done!", JOptionPane.INFORMATION_MESSAGE);
         else 
