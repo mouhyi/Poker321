@@ -10,10 +10,6 @@ import Server.userModule.RemoteUser;
 
 public class PlayerClient extends UnicastRemoteObject  implements PlayerClientRemote {
 
-	private static final int PORT = 10002;
-	private static final String HOST_NAME = "localhost";
-	private static final long serialVersionUID = 1L;
-
 	private RemoteGame rmGame;
 	private int userId;
 	private int gameId;
@@ -31,17 +27,10 @@ public class PlayerClient extends UnicastRemoteObject  implements PlayerClientRe
 
 		PlayerClient playerCl = new PlayerClient(userId, gameId);
 
-		if (System.getSecurityManager() == null)
-			System.setSecurityManager(new RMISecurityManager());
-		try {
-			playerCl.rmGame = (RemoteGame) Naming.lookup("rmi://" + HOST_NAME
-					+ ":" + Integer.toString(PORT) + "/Game" + gameId);
-			playerCl.rmGame.registerPlayer(playerCl);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			return playerCl;
-		}
+		playerCl.rmGame.registerPlayer((IPlayerClient)playerCl);
+	
+		return playerCl;
+
 	}
 
 	// Getters

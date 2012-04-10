@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import Client.IPlayerClient;
 import Client.PlayerClient;
 
 /**
@@ -36,7 +37,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	// counts the number of matched calls in a betting round
 	private int count;
 	
-	private ArrayList<PlayerClient> PClients;
+	private ArrayList<IPlayerClient> PClients;
 
 	/**
 	 * Constructor
@@ -56,20 +57,10 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		deck = new Deck();
 		pot = 0.0;
 		this.id = id;
-		PClients = new ArrayList<PlayerClient> ();
+		PClients = new ArrayList<IPlayerClient> ();
 		count =0;
 	}
 
-	/**
-	 * rmi observer
-	 * 
-	 * @param p
-	 */
-	public void registerPlayer(PlayerClient p) throws RemoteException {
-		synchronized (PClients){
-			PClients.add(p);
-		}
-	}
 	
 	/**
 	 * notify players
@@ -408,9 +399,13 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	}
 	
 	// Getters
-	public ArrayList<Player> getPlayers() throws RemoteException {
+	public ArrayList<IPlayer> getPlayers() throws RemoteException {
 		synchronized(players){
-			return players;
+			ArrayList<IPlayer> cpy = new ArrayList<IPlayer>();
+			for(Player p: players){
+				cpy.add((IPlayer)p);
+			}
+			return cpy;
 		}
 	}	
 
@@ -436,6 +431,14 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 
 	public int getCurPlayerId() throws RemoteException {
 		return players.get(curPlayer).getUserId();
+	}
+
+	@Override
+	public void registerPlayer(IPlayerClient p) throws RemoteException {
+		synchronized (PClients){
+			PClients.add(p);
+		}
+		
 	}
 
 }

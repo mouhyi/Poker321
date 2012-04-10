@@ -1,10 +1,11 @@
 package Server.gameModule;
 
 import java.rmi.Remote;
+
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import Client.PlayerClient;
+import Client.IPlayerClient;
 
 /**
  * This interface defines all of the remote features offered by the Game server
@@ -32,7 +33,7 @@ public interface RemoteGame extends Remote {
 	 * 
 	 * @param p
 	 */
-	public void registerPlayer(PlayerClient p) throws RemoteException;
+	public void registerPlayer(IPlayerClient p) throws RemoteException;
 
 	/**
 	 * Updates the game state with a player calling the current bet
@@ -68,7 +69,7 @@ public interface RemoteGame extends Remote {
 
 	public int getId() throws RemoteException;
 
-	public ArrayList<Player> getPlayers() throws RemoteException;
+	public ArrayList<IPlayer> getPlayers() throws RemoteException;
 
 	public int getRound() throws RemoteException;
 

@@ -4,6 +4,8 @@ import java.rmi.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import Client.IUserClient;
+
 /**
  * This interface defines all of the remote features offered by the User service
  * 
@@ -22,6 +24,13 @@ public interface RemoteUser extends Remote {
 	 * @author mouhyi
 	 */
 	public int signup(UserObject user) throws RemoteException, SQLException;
+	
+	
+	
+	/**
+	 * Registers user with RMI server for callbacks 
+	 */
+	public void registerUser(IUserClient ucl) throws RemoteException;
 
 	/**
 	 * This method implements the login functionality

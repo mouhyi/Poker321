@@ -16,7 +16,7 @@ import java.util.concurrent.*;
  * @author mouhyi
  *
  */
-public class UserClient {
+public class UserClient implements IUserClient {
 	
 	private static final int PORT = 10002;
 	private static final String HOST_NAME  = "localhost";
@@ -31,7 +31,8 @@ public class UserClient {
 	 */
 	public UserClient(){
 		try{
-			userProxy = (RemoteUser) Naming.lookup( "rmi://" + HOST_NAME + ":" + Integer.toString(PORT)+"/UserServer" );;
+			userProxy = (RemoteUser) Naming.lookup( "rmi://" + HOST_NAME + ":" + Integer.toString(PORT)+"/UserServer" );
+			userProxy.registerUser(this);
 		}catch (Exception e) {
             e.printStackTrace();
         }

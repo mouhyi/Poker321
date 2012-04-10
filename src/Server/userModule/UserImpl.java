@@ -1,10 +1,10 @@
 package Server.userModule;
 
 import java.rmi.RemoteException;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
+import Client.IUserClient;
 import Data.UserData;
 
 /**
@@ -16,6 +16,9 @@ import Data.UserData;
 public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 		RemoteUser {
 
+	
+	private ArrayList<IUserClient> userClients;
+	
 	// Implementations must have an explicit constructor in order
 	// to declare the RemoteException exception
 	public UserImpl() throws RemoteException {
@@ -197,5 +200,11 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	public UserObject getUserObject(int userId) throws RemoteException,
 			SQLException {
 		return UserData.getUserObject(userId);
+	}
+
+	@Override
+	public void registerUser(IUserClient ucl) throws RemoteException {
+		userClients.add(ucl);
+		
 	}
 }
