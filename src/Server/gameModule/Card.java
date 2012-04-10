@@ -11,7 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
  */
 
 // all methods tested on Mar 31, 03:21pm
-public class Card extends UnicastRemoteObject implements Comparable<Card> {
+public class Card extends UnicastRemoteObject implements Comparable<Card>, ICard {
 
 	private Suit suit;
 	private Rank rank;

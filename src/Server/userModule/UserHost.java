@@ -16,7 +16,7 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class UserHost {
 
-	private static final int PORT = 10002;
+	private static final int PORT = 10012;
 	private static final String HOST_NAME = "localhost";
 
 	/**

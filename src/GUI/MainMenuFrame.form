@@ -2,8 +2,6 @@
 
 <Form version="1.5" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
-    <Component class="javax.swing.JSeparator" name="jSeparator1">
-    </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="pokerMenu">
@@ -96,12 +94,12 @@
             <Property name="text" type="java.lang.String" value="Options"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="changeEmailMenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="purchaseChipsMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Change Email"/>
+                <Property name="text" type="java.lang.String" value="Purchase Chips"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changeEmailMenuItemActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="purchaseChipsMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="changeUsernameMenuItem">
@@ -165,6 +163,9 @@
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -326,16 +327,16 @@
                                       <Component id="tablePlayersScrollPane" min="-2" pref="88" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="openChatToggleButton" min="-2" pref="46" max="-2" attributes="0"/>
-                                      <Component id="joinGameToggleButton" alignment="0" min="-2" pref="46" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="joinGameToggleButton" max="32767" attributes="0"/>
+                                      <Component id="openChatToggleButton" max="32767" attributes="0"/>
                                   </Group>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="jLabel3" pref="103" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jLabel3" pref="138" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="gameLobbySeparator" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="gameLobbyConsoleScrollPane" min="-2" pref="90" max="-2" attributes="0"/>
+                                  <Component id="gameLobbyConsoleScrollPane" min="-2" pref="78" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -429,7 +430,9 @@
                               <Font name="Rockwell Extra Bold" size="36" style="0"/>
                             </Property>
                             <Property name="horizontalAlignment" type="int" value="0"/>
-                            <Property name="text" type="java.lang.String" value="321 Poker"/>
+                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                              <Image iconType="3" name="/GUI/images/filler_Image.jpg"/>
+                            </Property>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -782,9 +785,9 @@
                               <Component id="numberOfChipsProfileLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace pref="40" max="32767" attributes="0"/>
                               <Component id="serverIPProfileLabel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="ipProfileLabel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>

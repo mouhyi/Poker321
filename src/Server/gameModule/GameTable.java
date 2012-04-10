@@ -67,7 +67,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	 * @return
 	 * @author Peter
 	 */
-	public int getHostId() {
+	public int getHostId() throws RemoteException{
 		return this.hostId;
 	}
 
@@ -77,7 +77,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	 * @return
 	 * @author Peter
 	 */
-	public int getTableId() {
+	public int getTableId() throws RemoteException{
 		return this.tableId;
 	}
 
@@ -87,8 +87,15 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	 * @return
 	 * @author Peter
 	 */
-	public ArrayList<Player> getPlayers() {
-		return this.players;
+	public ArrayList<IPlayer> getPlayers() throws RemoteException {
+		ArrayList<IPlayer> cpy;
+		synchronized(players){
+			cpy = new ArrayList<IPlayer>();
+			for(Player p: players){
+				cpy.add((IPlayer)p);
+			}
+		}
+		return cpy;
 	}
 
 	/**
@@ -97,7 +104,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	 * @return
 	 * @author Peter
 	 */
-	public int getAnte() {
+	public int getAnte() throws RemoteException {
 		return this.ante;
 	}
 
@@ -108,7 +115,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	 * @return
 	 * @author Peter, Mouhyi
 	 */
-	public int addPlayer(int playerId) {
+	public int addPlayer(int playerId) throws RemoteException {
 		Player p = null;
 		try {
 			p = new Player(playerId);
@@ -130,7 +137,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	 * @param player
 	 * @author mouhyi
 	 */
-	public void removePlayer(int userId) {
+	public void removePlayer(int userId)  throws RemoteException{
 		Player player = this.getPlayer(userId);
 		synchronized (players) {
 			if (player != null) {
@@ -144,7 +151,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	 * @param newante
 	 * @author Peter
 	 */
-	public int changeAnte(int newAnte) {
+	public int changeAnte(int newAnte)  throws RemoteException{
 		this.ante = newAnte;
 		return this.ante;
 	}
@@ -156,7 +163,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	 * @return
 	 * @author Peter
 	 */
-	public double getBringIn() {
+	public double getBringIn() throws RemoteException {
 		return this.bringIn;
 	}
 
@@ -167,7 +174,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	 * @return
 	 * @author Peter
 	 */
-	public double changeBringIn(double newBringIn) {
+	public double changeBringIn(double newBringIn) throws RemoteException {
 		this.bringIn = newBringIn;
 		return this.bringIn;
 	}
@@ -176,7 +183,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	 * 
 	 * @return the current game in the table
 	 */
-	public Game getGame(){
+	public Game getGame() throws RemoteException{
 		return curGame;
 	}
 
@@ -196,7 +203,7 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 		}
 	}
 
-	public Player getPlayer(int userId) {
+	public Player getPlayer(int userId) throws RemoteException {
 		for (Player p : players) {
 			try {
 				if (p.getUserId() == userId) {

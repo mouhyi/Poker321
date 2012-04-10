@@ -10,6 +10,7 @@ public class GameServerImpl extends UnicastRemoteObject  implements GameServer  
 	
 	public GameServerImpl()  throws RemoteException{
 		super();
+		pokerTables = new ArrayList<IGameTable>();
 	}
 	
 	@Override

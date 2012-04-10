@@ -23,6 +23,7 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	// to declare the RemoteException exception
 	public UserImpl() throws RemoteException {
 		super();
+		userClients = new ArrayList<IUserClient>();
 	}
 
 	/**

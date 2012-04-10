@@ -15,6 +15,8 @@ import javax.swing.JOptionPane;
 public class LoginFrame extends javax.swing.JFrame {
 
     public static GUIClient clientRequest; 
+    public static ServerListener serverListener; 
+    
     public static String presetIP; 
     
     /**
@@ -27,6 +29,7 @@ public class LoginFrame extends javax.swing.JFrame {
         this.setIconImage(new ImageIcon(GUIClient.class.getResource("images/login_icon.png")).getImage());
         
         clientRequest = new GUIClient();
+        serverListener = new ServerListener();
         
         
         presetIP = GUIClient.getIp();
@@ -42,7 +45,7 @@ public class LoginFrame extends javax.swing.JFrame {
         String passwordString = new String(passwordField.getPassword());
         
         if (emailString.equals("")) {
-            JOptionPane.showMessageDialog(this, "Username Field Empty", "Error Message", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Email Field Empty", "Error Message", JOptionPane.ERROR_MESSAGE);
             return false; 
         }
  
@@ -53,16 +56,24 @@ public class LoginFrame extends javax.swing.JFrame {
        
         else if (ipTextField.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Server IP Field Empty", "Error Message", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
-               
-        return clientRequest.testEmailPassword(emailString, passwordString);
+        
+        boolean loginAccepted = clientRequest.testEmailPassword(emailString, passwordString);
+        
+        if (!loginAccepted) {
+            JOptionPane.showMessageDialog(this, "The server hates you.", "Error Message", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }    
+        
+        return true;
     }
     
     /**
      * Opens the main menu screen and destroys the LoginFrame.
      */
     private void openMainMenu() throws RemoteException, SQLException {
-        MainMenuFrame mm = new MainMenuFrame(clientRequest);
+        MainMenuFrame mm = new MainMenuFrame(clientRequest, serverListener);
         mm.setVisible(true);   
         this.setVisible(false); 
         this.dispose();
@@ -252,9 +263,8 @@ public class LoginFrame extends javax.swing.JFrame {
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         try {
             if (loginAction() == true) 
-             openMainMenu();
+                openMainMenu();
         } catch (RemoteException ex) {} catch (SQLException ex) {}
-        
     }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
@@ -277,7 +287,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_passwordRecoveryButtonActionPerformed
 
     /**
-     * When the new account button is pressed, a new regististration frame is 
+     * When the new account button is pressed, a new registration frame is 
      * created.
      * @param evt 
      */
@@ -298,13 +308,7 @@ public class LoginFrame extends javax.swing.JFrame {
          */
         try {
             com.jtattoo.plaf.noire.NoireLookAndFeel.setTheme("Small-Font");
-            // Select Look and Feel
             javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
-            // List of look and feels
-            // Noire: com.jtattoo.plaf.noire.NoireLookAndFeel
-            // HiFi: com.jtattoo.plaf.hifi.HiFiLookAndFeel
-            // Acryl: com.jtattoo.plaf.acryl.AcrylLookAndFeel
-            // Smart: com.jtattoo.plaf.smart.SmartLookAndFeel
         }
         catch (Exception ex) {
             ex.printStackTrace();

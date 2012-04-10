@@ -21,12 +21,12 @@ public class RMIServer {
 			String urlString = "//" + HOST_NAME + ":" + Integer.toString(PORT)
 					+ "/" + "GameServer";
 			Naming.rebind(urlString, gs);
-			System.out.println("The host computer name you have specified, "
-					+ HOST_NAME + " does not match your real computer name.");
-			
 			
 			
 		} catch (java.rmi.UnknownHostException uhe) {
+			System.out.println("The host computer name you have specified, "
+					+ HOST_NAME + " does not match your real computer name.");
+			
 		} catch (RemoteException re) {
 			System.out.println("Error starting service"+re);
 		} catch (MalformedURLException mURLe) {

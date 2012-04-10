@@ -11,7 +11,7 @@ public interface IGameTable extends Remote {
 	 * @return
 	 * @author Peter
 	 */
-	public int getHostId();
+	public int getHostId() throws RemoteException;
 
 	/**
 	 * Returns the table id
@@ -19,7 +19,7 @@ public interface IGameTable extends Remote {
 	 * @return
 	 * @author Peter
 	 */
-	public int getTableId();
+	public int getTableId()throws RemoteException;
 
 	/**
 	 * Returns the list of players in the game
@@ -27,7 +27,7 @@ public interface IGameTable extends Remote {
 	 * @return
 	 * @author Peter
 	 */
-	public ArrayList<IPlayer> getPlayers();
+	public ArrayList<IPlayer> getPlayers()throws RemoteException;
 
 	/**
 	 * Returns the ante of the game
@@ -35,7 +35,7 @@ public interface IGameTable extends Remote {
 	 * @return
 	 * @author Peter
 	 */
-	public int getAnte();
+	public int getAnte() throws RemoteException;
 
 	/**
 	 * This adds a player to the player list
@@ -44,21 +44,21 @@ public interface IGameTable extends Remote {
 	 * @return
 	 * @author Peter, Mouhyi
 	 */
-	public int addPlayer(int playerId);
+	public int addPlayer(int playerId) throws RemoteException;
 	/**
 	 * This removes a player from the player list
 	 * 
 	 * @param player
 	 * @author mouhyi
 	 */
-	public void removePlayer(int userId) ;
+	public void removePlayer(int userId) throws RemoteException;
 	
 	/**
 	 * Changes the ante parameter of this table
 	 * @param newAnte
 	 * @return
 	 */
-	public int changeAnte(int newAnte) ;
+	public int changeAnte(int newAnte) throws RemoteException;
 	
 	/**
 	 * This returns the bringIn value
@@ -66,20 +66,20 @@ public interface IGameTable extends Remote {
 	 * @param newBringIn
 	 * @return
 	 */
-	public double getBringIn();
+	public double getBringIn() throws RemoteException;
 	
 	/**
 	 * Changes the bringIn parameters of the game
 	 * @param newBringIn
 	 * @return
 	 */
-	public double changeBringIn(double newBringIn);
+	public double changeBringIn(double newBringIn) throws RemoteException;
 	
 	/**
 	 * 
 	 * @return the current game in the table
 	 */
-	public RemoteGame getGame();
+	public RemoteGame getGame() throws RemoteException;
 	
 	/**
 	 * 

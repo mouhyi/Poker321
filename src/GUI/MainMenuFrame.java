@@ -18,6 +18,8 @@ import javax.swing.tree.DefaultTreeModel;
 public class MainMenuFrame extends javax.swing.JFrame {
 
     public static GUIClient clientRequest;
+    public static ServerListener serverListener;
+   
     
     public static boolean inTable = false; 
     // public static boolean chatToggleButtonState = false;
@@ -25,16 +27,18 @@ public class MainMenuFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainMenuScreen.
      */
-    public MainMenuFrame(GUIClient guic) throws RemoteException, SQLException {
+    public MainMenuFrame(GUIClient guic, ServerListener sl) throws RemoteException, SQLException {
         initComponents();
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((screenSize.width/2)-(this.getWidth()/2), (screenSize.height/2)-(this.getHeight()/2));  
         this.setIconImage(new ImageIcon(GUIClient.class.getResource("images/icon_playing_card.png")).getImage());
         
         clientRequest = guic; 
+        serverListener = sl;
+        serverListener.setMainMenuFrame(this);
         
         updateGameTree();
-        updateGamePanel(GUIClient.getListOfGameTables()[0].toString());
+        updateGamePanel(clientRequest.getListOfGameTables()[0].toString());
         //updateFriendsPanel(GUIClient.getUsername());
         
         //updateGamePanel(clientRequest.getListOfGameTables()[0].toString());
@@ -45,9 +49,32 @@ public class MainMenuFrame extends javax.swing.JFrame {
     /**
      * Pop-Up method to be called by server to alert user
      * @param message 
+     * @return completed 
      */
-    public void displayPopUp(String message) {
+    public boolean displayPopUp(String message) {
         JOptionPane.showMessageDialog(this, message, "Message!", JOptionPane.INFORMATION_MESSAGE);
+        return true;
+    }
+    
+    /**
+     * Method to be called by the server to add a new message to the game 
+     * lobby console.
+     * @param message
+     * @return completed
+     */
+    public boolean addGameLobbyConsoleMessage(String message) {
+        gameLobbyConsoleTextArea.append("  " + message + "\n");
+        return true;
+    }
+    
+    /**
+     * Method to be called by server instructing main menu to enter game frame.
+     * @return 
+     */
+    public boolean enterGameFrame() {
+        // Should check for errors here
+        openGameFrame(clientRequest.getCurrentTable());
+        return true;
     }
     
     /**
@@ -55,7 +82,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
      */
     private void updateGamePanel(String gameTable) {
         tableNameLabel.setText(gameTable);
-        tablePlayersList.setListData(GUIClient.getPlayersAtGameTable(gameTable));
+        tablePlayersList.setListData(clientRequest.getPlayersAtGameTable(gameTable));
         tableAnteLabel.setText("Ante:   $" + Integer.toString(clientRequest.getTableAnte(gameTable)));
         tableBringInLabel.setText("Bring In:    $" + Double.toString(clientRequest.getTableBringIn(gameTable)));
         tableHostLabel.setText("Host:   " + clientRequest.getTableHost(gameTable));
@@ -71,15 +98,12 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * Update the game tree with the tables from the server.
      */
     private void updateGameTree() {
-        // Optional to remove root node 
-        //gameTree.setRootVisible(false); 
-        
         DefaultMutableTreeNode rootServer = new DefaultMutableTreeNode(GUIClient.getIp()); 
    
-        String[] gameTables = GUIClient.getListOfGameTables();
+        String[] gameTables = clientRequest.getListOfGameTables();
         for (int i = 0; i < gameTables.length; i++) {
             DefaultMutableTreeNode table = new DefaultMutableTreeNode(gameTables[i]);
-            String[] players = GUIClient.getPlayersAtGameTable(gameTables[i]); 
+            String[] players = clientRequest.getPlayersAtGameTable(gameTables[i]); 
             for (int j = 0; j < players.length; j++) {
                 table.add(new DefaultMutableTreeNode(players[j]));
             }
@@ -101,7 +125,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
      */
     private void updateFriendsPanel(String username) throws RemoteException, SQLException {
         usernameFriendsPanelLabel.setText(username);
-        avatarFriendsPanelLabel.setIcon(GUIClient.getAvatar(username));
+        avatarFriendsPanelLabel.setIcon(clientRequest.getAvatar(username));
         worthFriendsPanelLabel.setText(clientRequest.getUsersWorth(username));
        
         String[] friends = clientRequest.getFriends(clientRequest.getUsername());
@@ -113,8 +137,9 @@ public class MainMenuFrame extends javax.swing.JFrame {
     }
    
     private void openGameFrame(String table) {
-        GameFrame newGame = new GameFrame(clientRequest, table);
+        GameFrame newGame = new GameFrame(clientRequest, serverListener, table);
         newGame.setVisible(true);
+        serverListener.releaseMainMenuFrame();
         this.setVisible(false);
         this.dispose();
     }
@@ -130,7 +155,6 @@ public class MainMenuFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSeparator1 = new javax.swing.JSeparator();
         mainPanel = new javax.swing.JPanel();
         mainTabbedPane = new javax.swing.JTabbedPane();
         gameLobbyPanel = new javax.swing.JPanel();
@@ -193,7 +217,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
         addFriendMenuItem = new javax.swing.JMenuItem();
         deleteFriendMenuItem = new javax.swing.JMenuItem();
         optionsMenu = new javax.swing.JMenu();
-        changeEmailMenuItem = new javax.swing.JMenuItem();
+        purchaseChipsMenuItem = new javax.swing.JMenuItem();
         changeUsernameMenuItem = new javax.swing.JMenuItem();
         changePasswordMenuItem = new javax.swing.JMenuItem();
         uploadNewAvatarMenuItem = new javax.swing.JMenuItem();
@@ -204,6 +228,11 @@ public class MainMenuFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Main Menu ");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         gameLobbyPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -261,7 +290,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Rockwell Extra Bold", 0, 36)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("321 Poker");
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/images/filler_Image.jpg"))); // NOI18N
 
         org.jdesktop.layout.GroupLayout gameDetailsPanelLayout = new org.jdesktop.layout.GroupLayout(gameDetailsPanel);
         gameDetailsPanel.setLayout(gameDetailsPanelLayout);
@@ -305,15 +334,15 @@ public class MainMenuFrame extends javax.swing.JFrame {
                         .add(tableHostLabel))
                     .add(tablePlayersScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 88, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(gameDetailsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(openChatToggleButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(joinGameToggleButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                .add(gameDetailsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(joinGameToggleButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(openChatToggleButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 138, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(gameLobbySeparator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(gameLobbyConsoleScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(gameLobbyConsoleScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 78, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -582,9 +611,9 @@ public class MainMenuFrame extends javax.swing.JFrame {
                 .add(numberOfChipsProfileLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 40, Short.MAX_VALUE)
                 .add(serverIPProfileLabel)
-                .add(18, 18, 18)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(ipProfileLabel)
-                .addContainerGap())
+                .add(12, 12, 12))
         );
 
         creditsPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -756,13 +785,13 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
         optionsMenu.setText("Options");
 
-        changeEmailMenuItem.setText("Change Email");
-        changeEmailMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        purchaseChipsMenuItem.setText("Purchase Chips");
+        purchaseChipsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                changeEmailMenuItemActionPerformed(evt);
+                purchaseChipsMenuItemActionPerformed(evt);
             }
         });
-        optionsMenu.add(changeEmailMenuItem);
+        optionsMenu.add(purchaseChipsMenuItem);
 
         changeUsernameMenuItem.setText("Change Username");
         changeUsernameMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -830,6 +859,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     
     /**
      * Join game toggle button pressed.
+     * @param evt
      */
     private void joinGameToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinGameToggleButtonActionPerformed
         String currentTable = clientRequest.getCurrentTable();
@@ -849,13 +879,14 @@ public class MainMenuFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_joinGameToggleButtonActionPerformed
 
     /**
-     * When the chat toggle button pressed, a new chat window opens. 
+     * When the chat toggle button pressed, a new chat window opens.
+     * @param evt
      */
     private void openChatToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openChatToggleButtonActionPerformed
 
         ChatFrame lobbyChat = null;
         try {
-            lobbyChat = new ChatFrame(clientRequest, GUIClient.getOpponentsAtGameTable(clientRequest.getUsername(), tableNameLabel.getText()));
+            lobbyChat = new ChatFrame(clientRequest, serverListener, clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), tableNameLabel.getText()));
         } catch (RemoteException ex) {} catch (SQLException ex) {}
         lobbyChat.setDefaultCloseOperation(ChatFrame.DISPOSE_ON_CLOSE);
         lobbyChat.setVisible(true); 
@@ -864,25 +895,28 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
     /**
      * When the game lobby panel is shown, it updates.
+     * @param evt
      */
     private void gameLobbyPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_gameLobbyPanelComponentShown
         System.out.println("Game Lobby Panel Shown");
         updateGameTree();
-        updateGamePanel(GUIClient.getListOfGameTables()[0].toString());
+        updateGamePanel(clientRequest.getListOfGameTables()[0]);
     }//GEN-LAST:event_gameLobbyPanelComponentShown
 
     /**
      * When the friends panel is shown, it updates.
+     * @param evt
      */
     private void friendsPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_friendsPanelComponentShown
         System.out.println("Friends Panel Shown");
-        // Update friends panel 
-        //System.out.println(friendsList.getSelectedValue().toString());
-        
+        try {
+            updateFriendsPanel(clientRequest.getUsername());
+        } catch (RemoteException ex) {} catch (SQLException ex) {}
     }//GEN-LAST:event_friendsPanelComponentShown
     
     /**
      * When the statistics panel is shown, the statistics table updates. 
+     * @param evt
      */
     private void statisticsPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_statisticsPanelComponentShown
         System.out.println("Statistics Panel Shown");
@@ -903,6 +937,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
     /**
      * When the profile panel is shown, it updates.
+     * @param evt
      */
     private void profilePanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_profilePanelComponentShown
         System.out.println("Options Panel Shown");
@@ -910,9 +945,11 @@ public class MainMenuFrame extends javax.swing.JFrame {
         lastNameProfileLabel.setText("Last Name Here");
         emailProfileLabel.setText(clientRequest.getEmail());
         usernameProfileLabel.setText(clientRequest.getUsername());
-        accountNumberProfileLabel.setText("Account Number Here");
-        fundsProfileLabel.setText("$(Funds)");
-        numberOfChipsProfileLabel.setText(clientRequest.getChips(clientRequest.getUsername()));
+        accountNumberProfileLabel.setText(clientRequest.getAccountNumber());
+        fundsProfileLabel.setText("$324345");
+        try {
+            numberOfChipsProfileLabel.setText(clientRequest.getUsersWorth(clientRequest.getUsername()));
+        } catch (RemoteException ex) {} catch (SQLException ex) {}
         ipProfileLabel.setText(GUIClient.getIp()); 
         
     }//GEN-LAST:event_profilePanelComponentShown
@@ -933,11 +970,12 @@ public class MainMenuFrame extends javax.swing.JFrame {
      /**
      * If a table name in the tree is selected, the game panel is told to 
      * display its information.
+     * @param evt
      */
     private void gameTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_gameTreeValueChanged
         if (gameTree.getLastSelectedPathComponent() != null) {
             String selection = gameTree.getLastSelectedPathComponent().toString();
-            String[] listOfTables = GUIClient.getListOfGameTables();
+            String[] listOfTables = clientRequest.getListOfGameTables();
             for (int i = 0; i < listOfTables.length; i++) {
                 if (selection.equals(listOfTables[i])) {
                     updateGamePanel(selection);    
@@ -966,6 +1004,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private void toLoginMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toLoginMenuItemActionPerformed
         LoginFrame lf = new LoginFrame();
         lf.setVisible(true);
+        serverListener.releaseMainMenuFrame();
         this.setVisible(false); 
         this.dispose();
         try {
@@ -978,6 +1017,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * @param evt 
      */
     private void quitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitMenuItemActionPerformed
+        serverListener.releaseMainMenuFrame();
         this.setVisible(false); 
         this.dispose();
         try {
@@ -1029,8 +1069,8 @@ public class MainMenuFrame extends javax.swing.JFrame {
             boolean request = clientRequest.startGameRequest(currentTable); 
             if (request = false)
                 JOptionPane.showMessageDialog(this, "The server hates you.", "Start Game Request Denied", JOptionPane.ERROR_MESSAGE);
-            else 
-                openGameFrame(currentTable); 
+            //else 
+              //  openGameFrame(currentTable); 
         }
         else if (inTable = false)
             JOptionPane.showMessageDialog(this, "You are not part of a table", "Start Game Request Denied", JOptionPane.ERROR_MESSAGE);
@@ -1061,9 +1101,9 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private void deleteFriendMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFriendMenuItemActionPerformed
         String friend = JOptionPane.showInputDialog(this, "Friend: ", "Delete Friend", JOptionPane.PLAIN_MESSAGE);
         boolean completed = false;
-		try {
-			completed = clientRequest.deleteFriend(friend);
-		} catch (RemoteException e) {} catch (SQLException e) {}
+        try {
+            completed = clientRequest.deleteFriend(friend);
+        } catch (RemoteException ex) {} catch (SQLException ex) {}
         if (completed) 
             JOptionPane.showMessageDialog(this, friend + " has been removed from your friends", "Done!", JOptionPane.INFORMATION_MESSAGE);
         else 
@@ -1093,26 +1133,23 @@ public class MainMenuFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_changeUsernameMenuItemActionPerformed
 
     /**
-     * Attempts to change a uses email.
+     * Attempts to purchase chips.
      * @param evt 
      */
-    private void changeEmailMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeEmailMenuItemActionPerformed
-        String newEmail = JOptionPane.showInputDialog(this, "New Email: ", "Change Email", JOptionPane.PLAIN_MESSAGE);
-        if (newEmail.equals(""))
-            JOptionPane.showMessageDialog(this, "Email field blank", "Error", JOptionPane.ERROR_MESSAGE);
-        else if (newEmail.equals(clientRequest.getEmail()))    
-            JOptionPane.showMessageDialog(this, "This is already your email", "Error", JOptionPane.ERROR_MESSAGE);
-        else {
-            boolean changed = false;
-            try {
-                changed = clientRequest.setEmail(newEmail);
-            } catch (RemoteException ex) {} catch (SQLException ex) {}
-            if (changed)
-                    JOptionPane.showMessageDialog(this, "Email Changed", "Success!", JOptionPane.INFORMATION_MESSAGE);
-                else
-                    JOptionPane.showMessageDialog(this, "The server hates you.", "Error", JOptionPane.ERROR_MESSAGE);
-        }   
-    }//GEN-LAST:event_changeEmailMenuItemActionPerformed
+    private void purchaseChipsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchaseChipsMenuItemActionPerformed
+        String chipsString = JOptionPane.showInputDialog(this, "Number of Chips: ", "Purchase Chips", JOptionPane.PLAIN_MESSAGE);
+        if (chipsString.equals(""))
+            JOptionPane.showMessageDialog(this, "Please enter an amount", "Error", JOptionPane.ERROR_MESSAGE);
+        double chips = Double.parseDouble(chipsString);
+        
+        boolean purchased = clientRequest.purchaseChips(chips);
+        if (purchased) {
+            JOptionPane.showMessageDialog(this, "Email Changed", "Success!", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "The server hates you.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_purchaseChipsMenuItemActionPerformed
 
     /**
      * Attempts to change a uses password.
@@ -1163,12 +1200,16 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private void documentationMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_documentationMenuItemActionPerformed
         JOptionPane.showMessageDialog(this, "Documentation Missing", "Error", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_documentationMenuItemActionPerformed
+    
+    /**
+     * When the frame closes, server listener releases its main menu frame.
+     * @param evt 
+     */
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        serverListener.releaseMainMenuFrame();
+    }//GEN-LAST:event_formWindowClosing
  
-    
-    
-    
-    
-   
+
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
@@ -1179,7 +1220,6 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JLabel avatarProfileLabel;
     private javax.swing.JPanel avatarProfilePanel;
     private javax.swing.JLabel bankAccountProfileLabel;
-    private javax.swing.JMenuItem changeEmailMenuItem;
     private javax.swing.JMenuItem changePasswordMenuItem;
     private javax.swing.JMenuItem changeUsernameMenuItem;
     private javax.swing.JLabel chipsProfileLabel;
@@ -1212,7 +1252,6 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToggleButton joinGameToggleButton;
     private javax.swing.JLabel lastNameProfileLabel;
     private javax.swing.JPanel mainPanel;
@@ -1223,6 +1262,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JMenu optionsMenu;
     private javax.swing.JMenu pokerMenu;
     private javax.swing.JPanel profilePanel;
+    private javax.swing.JMenuItem purchaseChipsMenuItem;
     private javax.swing.JMenuItem quitMenuItem;
     private javax.swing.JLabel serverIPProfileLabel;
     private javax.swing.JMenuItem startGameMenuItem;

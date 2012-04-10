@@ -1,4 +1,3 @@
-
 package GUI;
 
 import java.awt.Dimension;
@@ -16,18 +15,23 @@ import javax.swing.JOptionPane;
 public class ChatFrame extends javax.swing.JFrame {
 
     public static GUIClient clientRequest;
+    public static ServerListener serverListener;
+    
+    
     private String[] usersInChat; 
     
     /**
      * Creates new form ChatScreen.
      */
-    public ChatFrame(GUIClient guic, String[] recipients) throws RemoteException, SQLException {
+    public ChatFrame(GUIClient guic, ServerListener sl, String[] recipients) throws RemoteException, SQLException {
         initComponents();
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((screenSize.width/2)-(this.getWidth()/2), (screenSize.height/2)-(this.getHeight()/2));
         this.setIconImage(new ImageIcon(GUIClient.class.getResource("images/chat_icon.png")).getImage());
         
         clientRequest = guic; 
+        serverListener = sl; 
+        serverListener.setChatFrame(this);
         
         usersInChat = recipients; 
         
@@ -60,10 +64,20 @@ public class ChatFrame extends javax.swing.JFrame {
      * @param username
      * @param message 
      */
-    public void addMessageToChat(String username, String message) {
-        chatTextArea.append(username + ": " + message + "\n");
+    public boolean addMessageToChat(String username, String message) {
+        if (!username.equals(clientRequest.getUsername()))
+            chatTextArea.append(username + ": " + message + "\n");
+        return true;
     }
     
+    /**
+     * Method called whenever the chat frame closes.
+     */
+    private void exitChat() {
+        serverListener.releaseChatFrame();
+        this.setVisible(false); 
+        this.dispose();
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -86,6 +100,11 @@ public class ChatFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Chat");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         chatTextArea.setColumns(20);
         chatTextArea.setEditable(false);
@@ -166,10 +185,22 @@ public class ChatFrame extends javax.swing.JFrame {
         }       
     }//GEN-LAST:event_chatTextFieldKeyPressed
 
+    /**
+     * Exit chat closes the chat window. 
+     * @param evt 
+     */
     private void exitChatMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitChatMenuItemActionPerformed
-        this.setVisible(false); 
-        this.dispose();       
+        exitChat();     
     }//GEN-LAST:event_exitChatMenuItemActionPerformed
+    
+    /**
+     * When the form window closes, the server listener releases its chat frame 
+     * reference.
+     * @param evt 
+     */
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        exitChat();
+    }//GEN-LAST:event_formWindowClosing
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu chatMenu;

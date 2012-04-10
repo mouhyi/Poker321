@@ -15,20 +15,25 @@ import javax.swing.JOptionPane;
 public class GameFrame extends javax.swing.JFrame {
 
     public static GUIClient clientRequest;
+    public static ServerListener serverListener;
     
     private final String TABLE;
     private final int ANTE; 
+            
+    private boolean yourTurn = false;
     
     /**
      * Creates new form GameScreen.
      */
-    public GameFrame(GUIClient guic, String tableName) {
+    public GameFrame(GUIClient guic, ServerListener sl, String tableName) {
         initComponents();
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((screenSize.width/2)-(this.getWidth()/2), (screenSize.height/2)-(this.getHeight()/2));
         this.setIconImage(new ImageIcon(GUIClient.class.getResource("images/icon_playing_card.png")).getImage());
     
         clientRequest = guic;
+        serverListener = sl;
+        serverListener.setGameFrame(this);
         
         TABLE = tableName;
         ANTE = clientRequest.getTableAnte(TABLE);
@@ -48,7 +53,7 @@ public class GameFrame extends javax.swing.JFrame {
         opponent4AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent4NameLabel.getText()));
         
         updateBettingSystem();
-        clearCardIcons();
+        clearAllCardIcons();
         
         gameConsoleTextArea.append("  Welcome to Five Card Stud\n\n  Please wait until the game starts.\n");
         
@@ -59,22 +64,30 @@ public class GameFrame extends javax.swing.JFrame {
     /**
      * Clear the game panel of card icons.
      */
-    private void clearCardIcons() {
-        String[] listOfOpponents = GUIClient.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);
+    private void clearAllCardIcons() {
+        String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);
+        clearCardIconsForUser(clientRequest.getUsername());
+        for (int i = 0; i < listOfOpponents.length; i++)
+            clearCardIconsForUser(listOfOpponents[i]);
+    }
+    
+    /**
+     * Clear a users card icons. 
+     * @param username 
+     */
+    private void clearCardIconsForUser(String username) {
         ImageIcon emptyIcon = new ImageIcon(""); 
         ImageIcon[] emptyIconSet = {emptyIcon,emptyIcon,emptyIcon,emptyIcon,emptyIcon};
-        
-        updateCards(clientRequest.getUsername(), emptyIconSet);
-        for (int i = 0; i < listOfOpponents.length; i++)
-            updateCards(listOfOpponents[i], emptyIconSet);
+        setCardIconsForUser(username, emptyIconSet);
     }
     
     /**
      * Updates the cards for a particular user.
      * @param username
      * @param cards 
+     * @return completed
      */
-    public void updateCards(String username, ImageIcon[] cards) {
+    private boolean setCardIconsForUser(String username, ImageIcon[] cards) {
         if (username.equals(playerNameLabel.getText())) {
             playerCardLabel1.setIcon(cards[0]);
             playerCardLabel2.setIcon(cards[1]);
@@ -114,42 +127,210 @@ public class GameFrame extends javax.swing.JFrame {
             opponent4CardLabel4.setIcon(cards[3]);
             opponent4CardLabel5.setIcon(cards[4]);
         }
+        return true;
     }
+    
+    /**
+     * Method to be called by the server telling the GameFrame to update a 
+     * users cards.
+     * @param username
+     * @return completed
+     */
+    public boolean updateCardsForUser(String username) {
+        String[] iconPaths = null;
+        if (username.equals(clientRequest.getUsername())) 
+            iconPaths = clientRequest.getPlayerCards();
+        else if (!username.equals(clientRequest.getUsername())) 
+            iconPaths = clientRequest.getOpponentCards(username);
+        
+        if (iconPaths == null) {
+            clearCardIconsForUser(username); 
+            return true; 
+        }
+        
+        int numberOfCards = iconPaths.length;   
+           
+        ImageIcon emptyIcon = new ImageIcon(""); 
+        ImageIcon[] cardIcons = {emptyIcon,emptyIcon,emptyIcon,emptyIcon,emptyIcon};        
+        
+        for (int i = 0; i < numberOfCards; i++) 
+            cardIcons[i] = new ImageIcon(GUIClient.class.getResource(iconPaths[i]));
+       
+        setCardIconsForUser(username, cardIcons);        
+                
+        return true;
+    } 
     
     /**
      * Updates the betting fields across the game panel.
      */
-    private void updateBettingSystem() {
-        playerChipsLabel.setText(clientRequest.getChips(playerNameLabel.getText()));
-        opponent1ChipsLabel.setText(clientRequest.getChips(opponent1NameLabel.getText()) + " chips"); 
-        opponent2ChipsLabel.setText(clientRequest.getChips(opponent2NameLabel.getText()) + " chips");
-        opponent3ChipsLabel.setText(clientRequest.getChips(opponent3NameLabel.getText()) + " chips");
-        opponent4ChipsLabel.setText(clientRequest.getChips(opponent4NameLabel.getText()) + " chips");
+    public boolean updateBettingSystem() {
+        String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);
+        for (int i = 0; i < listOfOpponents.length; i++) 
+            updateChipsForUser(listOfOpponents[i]);
+
+        updatePot();
+        updateCurrentBet();
         
-        currentBetLabel.setText("Current minimum bet: " + clientRequest.getMinimumBet(TABLE));
+        return true;
+    }
+    
+    /**
+     * Changes the username label for a particular user.
+     * @param oldUsername
+     * @param newUsername
+     * @return 
+     */
+    public boolean setUsernameLabelForUser(String oldUsername, String newUsername) {
+        if (oldUsername.equals(playerNameLabel.getText())) 
+            playerNameLabel.setText(newUsername);
+        
+        else if (oldUsername.equals(opponent1NameLabel.getText())) 
+            opponent1NameLabel.setText(newUsername);   
+       
+        else if (oldUsername.equals(opponent2NameLabel.getText())) 
+            opponent2NameLabel.setText(newUsername);
+
+        else if (oldUsername.equals(opponent3NameLabel.getText())) 
+            opponent3NameLabel.setText(newUsername);
+
+        else if (oldUsername.equals(opponent4NameLabel.getText())) 
+            opponent4NameLabel.setText(newUsername);
+ 
+        return true;
+    }
+    
+    /**
+     * Updates the pot label.
+     * @return 
+     */
+    public boolean updatePot() {
         gamePotLabel.setText("$" + clientRequest.getPot(TABLE));
+        return true;
+    }
+    
+    /**
+     * Updates the current bet label.
+     * @return 
+     */
+    public boolean updateCurrentBet() {
+        currentBetLabel.setText("Current minimum bet: " + clientRequest.getMinimumBet(TABLE));
+        return true;
+    }
+            
+    /**
+     * Changes the chips label for a particular user.
+     * @param username
+     * @param chips
+     * @return 
+     */
+    public boolean updateChipsForUser(String username) {
+        if (username.equals(playerNameLabel.getText())) 
+            playerChipsLabel.setText(clientRequest.getChips(username) + " chips");
+        
+        else if (username.equals(opponent1NameLabel.getText())) 
+            opponent1ChipsLabel.setText(clientRequest.getChips(username) + " chips");   
+       
+        else if (username.equals(opponent2NameLabel.getText())) 
+            opponent2ChipsLabel.setText(clientRequest.getChips(username) + " chips");
+
+        else if (username.equals(opponent3NameLabel.getText())) 
+            opponent3ChipsLabel.setText(clientRequest.getChips(username) + " chips");
+
+        else if (username.equals(opponent4NameLabel.getText())) 
+            opponent4ChipsLabel.setText(clientRequest.getChips(username) + " chips");
+ 
+        return true;
+    } 
+    
+    /**
+     * Changes the avatar label for a particular user.
+     * @param username
+     * @param avatar
+     * @return 
+     */
+    public boolean setAvatarIconForUser(String username, ImageIcon avatar) {
+        if (username.equals(playerNameLabel.getText())) 
+            playerAvatarLabel.setIcon(avatar);
+        
+        else if (username.equals(opponent1NameLabel.getText())) 
+            opponent1AvatarLabel.setIcon(avatar);   
+       
+        else if (username.equals(opponent2NameLabel.getText())) 
+            opponent2AvatarLabel.setIcon(avatar);
+
+        else if (username.equals(opponent3NameLabel.getText())) 
+            opponent3AvatarLabel.setIcon(avatar);
+
+        else if (username.equals(opponent4NameLabel.getText())) 
+            opponent4AvatarLabel.setIcon(avatar);
+ 
+        return true;
+    }
+    
+    /**
+     * Removes a users icons from the game.
+     * @param username
+     * @return 
+     */
+    public boolean removeUserFromGame(String username) {
+             
+        clearCardIconsForUser(username);
+        setAvatarIconForUser(username, new ImageIcon(""));
+        
+        addMessageToInGameConsole(username + " has left the game");
+        
+        return true;        
+    }
+    
+    public boolean startTurn() {
+        yourTurn = true;
+        enableBettingInputFields(yourTurn);
+        playerBetTextField.setText(clientRequest.getMinimumBet(TABLE));
+        return true;
+    }
+    
+    public boolean endTurn() {
+        yourTurn = false;
+        enableBettingInputFields(yourTurn);
+        return true;
+    }
+    
+    public boolean resetGame() {
+        clearAllCardIcons();
+        return true; 
+    }
+    
+    /**
+     * Returns to the main menu screen. 
+     */
+    public boolean exitGame() throws RemoteException, SQLException {
+        MainMenuFrame mm = new MainMenuFrame(clientRequest, serverListener);
+        mm.setVisible(true);
+        serverListener.releaseGameFrame();
+        this.setVisible(false);
+        this.dispose();
+        return true;
     }
     
     /**
      * Updates the game console with a list of new messages.
      * @param newMessages 
      */
-    private void updateGameConsole(String[] newMessages) {
-        for (int i = 0; i < newMessages.length; i++)
-            gameConsoleTextArea.append("  " + newMessages[i] + "\n");
+    public boolean addMessageToInGameConsole(String message) {
+        //for (int i = 0; i < newMessages.length; i++)
+            //gameConsoleTextArea.append("  " + newMessages[i] + "\n");
+        gameConsoleTextArea.append("  " + message + "\n");
+        return true;
     }
    
     
-    /**
-     * Returns to the main menu screen. 
-     */
-    private void returnToMainMenu() throws RemoteException, SQLException {
-        MainMenuFrame mm = new MainMenuFrame(clientRequest);
-        mm.setVisible(true);
-        this.setVisible(false);
-        this.dispose();
+    private void enableBettingInputFields(boolean enabled) {
+        playerBetTextField.enableInputMethods(enabled);
+        betCheckButton.enableInputMethods(enabled);
+        foldButton.enableInputMethods(enabled);
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -462,7 +643,7 @@ public class GameFrame extends javax.swing.JFrame {
 
         gamePotLabel.setFont(new java.awt.Font("Lucida Grande", 0, 36)); // NOI18N
         gamePotLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        gamePotLabel.setText("$ (in pot)");
+        gamePotLabel.setText("$ 0");
         gamePotLabel.setBounds(0, 0, 390, 60);
         gamePotLayeredPane.add(gamePotLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
@@ -558,10 +739,9 @@ public class GameFrame extends javax.swing.JFrame {
      * @param evt 
      */
     private void openChatMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openChatMenuItemActionPerformed
-        // TODO add your handling code here:
         ChatFrame chatScreen = null; 
         try {
-            chatScreen = new ChatFrame(clientRequest, GUIClient.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE));
+            chatScreen = new ChatFrame(clientRequest, serverListener, clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE));
         } catch (RemoteException ex) {} catch (SQLException ex) {}
         chatScreen.setDefaultCloseOperation(ChatFrame.DISPOSE_ON_CLOSE); 
         chatScreen.setVisible(true);
@@ -589,7 +769,7 @@ public class GameFrame extends javax.swing.JFrame {
      */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
-            returnToMainMenu();
+            exitGame();
         } catch (RemoteException ex) {} catch (SQLException ex) {}
     }//GEN-LAST:event_formWindowClosing
 
@@ -599,7 +779,7 @@ public class GameFrame extends javax.swing.JFrame {
      */
     private void exitGameMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitGameMenuItemActionPerformed
         try {
-            returnToMainMenu();
+            exitGame();
         } catch (RemoteException ex) {} catch (SQLException ex) {}
     }//GEN-LAST:event_exitGameMenuItemActionPerformed
 
@@ -608,8 +788,10 @@ public class GameFrame extends javax.swing.JFrame {
      * @param evt 
      */
     private void quitFiveCardStudMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitFiveCardStudMenuItemActionPerformed
+        serverListener.releaseGameFrame();
         this.setVisible(false); 
         this.dispose();
+        
         try {
             clientRequest.logout();
         } catch (RemoteException ex) {} catch (SQLException ex) {}
@@ -625,16 +807,33 @@ public class GameFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameRulesMenuItemActionPerformed
 
     private void betCheckButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_betCheckButtonActionPerformed
-        double bet = Double.parseDouble(playerBetTextField.getText());
+        double yourBet = Double.parseDouble(playerBetTextField.getText());
+        double yourChips = Double.parseDouble(clientRequest.getChips(clientRequest.getUsername()));
+        double minimumBet = Double.parseDouble(clientRequest.getMinimumBet(TABLE));
         
-        // send bet to server
+        if (yourBet < minimumBet) 
+            JOptionPane.showMessageDialog(this, "Your bet is lower than the minimum bet", "Error", JOptionPane.ERROR_MESSAGE);
         
-        // send all in to server 
+        else if (yourBet >= minimumBet) {
+            
+            if (yourBet < yourChips) {
+                clientRequest.sendBet(yourBet);
+                addMessageToInGameConsole("You bet " + yourBet);
+            }
+                
+            else if (yourBet >= yourChips) {
+                clientRequest.allIn();
+                addMessageToInGameConsole("You have gone all in " + yourBet);
+            }    
+              
+            endTurn();
+        }
     }//GEN-LAST:event_betCheckButtonActionPerformed
 
     private void foldButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_foldButtonActionPerformed
-        
-        // send fold to server 
+        clientRequest.fold();
+        clearCardIconsForUser(clientRequest.getUsername());
+        endTurn();
     }//GEN-LAST:event_foldButtonActionPerformed
 
     
