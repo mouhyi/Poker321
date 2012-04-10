@@ -999,6 +999,7 @@ public class GUIClient {
 	}
 
 	public boolean leaveGame() {
+		currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().removePlayer(userId);
 		return false;
 	}
 
@@ -1007,11 +1008,9 @@ public class GUIClient {
 	/**
 	 * Sends a chat message to server.
 	 */
-	public static boolean sendChatMessage(String usernameSender,
+	public boolean sendChatMessage(String usernameSender,
 			String[] usernameRecipients, String message) {
-
-		System.out.println("String message sent to server");
-
+		currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().sendMessage(usernameSender+": "+message);
 		return true;
 	}
 
