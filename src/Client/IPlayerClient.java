@@ -11,4 +11,6 @@ public interface IPlayerClient extends Remote {
 	
 	public int getUserId() throws RemoteException;
 	
+	
+	public int foo() throws RemoteException;
 }

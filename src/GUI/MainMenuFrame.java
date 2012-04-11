@@ -869,8 +869,8 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private void joinGameToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinGameToggleButtonActionPerformed
         String selectedTable = tableNameLabel.getText();
         //ystem.out.println(selectedTable);
-        if (joinGameToggleButton.isSelected() && !inTable && clientRequest.getCurrentTable()==null) {
-        	System.out.println("Its calling joing game now");
+        if (joinGameToggleButton.isSelected() && clientRequest.getCurrentTable()==null) { // && !inTable
+        	System.out.println("JOIN TABLE");
             clientRequest.joinGameTable(selectedTable);
             //openGameFrame(selectedTable); // to be removed
             inTable = true;
@@ -878,8 +878,9 @@ public class MainMenuFrame extends javax.swing.JFrame {
             //openGameFrame(tableNameLabel.getText()); 
         }
         
-        else if (joinGameToggleButton.isSelected() && inTable && clientRequest.getCurrentTable().equals(tableNameLabel.getText())) {
+        else if (!joinGameToggleButton.isSelected() && clientRequest.getCurrentTable().equals(tableNameLabel.getText())) { //inTable
             clientRequest.leaveGameTable(selectedTable);
+            System.out.println("LEAVE TABLE");
             inTable = false;
         }
     }//GEN-LAST:event_joinGameToggleButtonActionPerformed
@@ -988,7 +989,9 @@ public class MainMenuFrame extends javax.swing.JFrame {
                     break;
                 }    
             }               
-        }    
+        }
+        
+        
     }//GEN-LAST:event_gameTreeValueChanged
 
     /*
@@ -1073,12 +1076,12 @@ public class MainMenuFrame extends javax.swing.JFrame {
         String currentTable = clientRequest.getCurrentTable();
         if (inTable = true && clientRequest.getTableHost(currentTable).equals(clientRequest.getUsername())) {
             boolean request = clientRequest.startGameRequest(currentTable); 
-            if (request = false)
+            if (request == false){
                 JOptionPane.showMessageDialog(this, "The server hates you.", "Start Game Request Denied", JOptionPane.ERROR_MESSAGE);
-            //else 
+            }//else 
               //  openGameFrame(currentTable); 
         }
-        else if (inTable = false)
+        else if (inTable == false)
             JOptionPane.showMessageDialog(this, "You are not part of a table", "Start Game Request Denied", JOptionPane.ERROR_MESSAGE);
         else if (!clientRequest.getTableHost(currentTable).equals(clientRequest.getUsername()))
             JOptionPane.showMessageDialog(this, "You are not the host", "Start Game Request Denied", JOptionPane.ERROR_MESSAGE);

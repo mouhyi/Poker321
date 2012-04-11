@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import GUI.ServerListener;
+import GUI.InitiateGameDisplayThread;
 import Server.gameModule.RemoteGame;
 import Server.userModule.RemoteUser;
 
@@ -39,14 +40,16 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 	
 	public void InitiateGameDisplay()  throws RemoteException{
 		System.out.println("Call back for game init");
-		listener.enterGameFrame();
-		//listener.initializeGame();
+		(new InitiateGameDisplayThread(listener)).start();
 		//listener.addInGameConsoleMessage("Welcome to the game!");
 	}
 	
 	public void updateDuringRound(String msg)  throws RemoteException{
 		listener.updateCurrentBet();
+		listener.updatePot();
 		listener.addInGameConsoleMessage(msg);
+		if(rmGame.getPlayer(userId).isTurn())
+			listener.notifyPlayerTurn();
 	}
 	
 	public void updateAfterRound(String msg)  throws RemoteException{
@@ -74,4 +77,8 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		this.listener = listener;
 	}
 	
+	public int foo() throws RemoteException{
+		System.out.println("FOOOOOOO"); 
+		return 123;
+	}
 }

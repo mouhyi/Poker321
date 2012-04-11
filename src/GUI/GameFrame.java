@@ -35,32 +35,35 @@ public class GameFrame extends javax.swing.JFrame {
         
         clientRequest = guic;
         serverListener = sl;
-        //serverListener.setGameFrame(this); 
+        serverListener.setGameFrame(this); 
         System.out.println("Game frame init");
         
         TABLE = tableName;
-        //ANTE = clientRequest.getTableAnte(TABLE);
+        ANTE = clientRequest.getTableAnte(TABLE);
+  
+        String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);       
         
-        //clientRequest.startGameRequest(TABLE);
-        
-        //String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);       
-        
-        //playerNameLabel.setText(clientRequest.getUsername());
-        /*opponent1NameLabel.setText(listOfOpponents[0]);
-        opponent2NameLabel.setText(listOfOpponents[1]);
-        opponent3NameLabel.setText(listOfOpponents[2]);
-        opponent4NameLabel.setText(listOfOpponents[3]);
+        playerNameLabel.setText(clientRequest.getUsername());
+        if (listOfOpponents.length >= 1)
+        	opponent1NameLabel.setText(listOfOpponents[0]);
+        if (listOfOpponents.length >= 2)
+        	opponent2NameLabel.setText(listOfOpponents[1]);
+        if (listOfOpponents.length >= 3)
+        	opponent3NameLabel.setText(listOfOpponents[2]);
+        if (listOfOpponents.length == 4)
+        	opponent4NameLabel.setText(listOfOpponents[3]);
         
         playerAvatarLabel.setIcon(GUIClient.getAvatarIcon(playerNameLabel.getText()));
         opponent1AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent1NameLabel.getText()));
         opponent2AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent2NameLabel.getText()));
         opponent3AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent3NameLabel.getText()));
         opponent4AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent4NameLabel.getText()));
-        */
-        /*updateBettingSystem();
-        clearAllCardIcons();*/
         
-        //gameConsoleTextArea.append("  Welcome to Five Card Stud\n\n  Please wait until the game starts.\n");
+        updateBettingSystem();
+        clearAllCardIcons();
+        
+        gameConsoleTextArea.append("  Welcome to Five Card Stud\n\n  Please wait until the game starts.\n");
+        
         
     }
     
@@ -72,8 +75,10 @@ public class GameFrame extends javax.swing.JFrame {
     private void clearAllCardIcons() {
         String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);
         clearCardIconsForUser(clientRequest.getUsername());
-        for (int i = 0; i < listOfOpponents.length; i++)
-            clearCardIconsForUser(listOfOpponents[i]);
+        for (int i = 0; i < listOfOpponents.length; i++) {
+        	if (!listOfOpponents[i].equals("Empty"))
+        		clearCardIconsForUser(listOfOpponents[i]);
+        }    
     }
     
     /**
@@ -168,8 +173,10 @@ public class GameFrame extends javax.swing.JFrame {
     
     public boolean updateAllCards() {
     	String[] usersInGame = clientRequest.getPlayersAtGameTable(TABLE);
-    	for (int i = 0; i < usersInGame.length; i++)
-    		updateCardsForUser(usersInGame[i]);
+    	for (int i = 0; i < usersInGame.length; i++) {
+    		if (!usersInGame.equals("Empty"))
+    			updateCardsForUser(usersInGame[i]);
+    	}	
     	return true;
     }
     
@@ -182,7 +189,7 @@ public class GameFrame extends javax.swing.JFrame {
         String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);
         for (int i = 0; i < listOfOpponents.length; i++) 
             updateChipsForUser(listOfOpponents[i]);
-
+        updateChipsForUser(clientRequest.getUsername());
         updatePot();
         updateCurrentBet();
         
@@ -239,7 +246,9 @@ public class GameFrame extends javax.swing.JFrame {
      * @return 
      */
     public boolean updateChipsForUser(String username) {
-        if (username.equals(playerNameLabel.getText())) 
+        if (username.equals("Empty"))
+        	return true;
+    	if (username.equals(playerNameLabel.getText())) 
             playerChipsLabel.setText(clientRequest.getChips(username) + " chips");
         
         else if (username.equals(opponent1NameLabel.getText())) 
@@ -853,10 +862,10 @@ public class GameFrame extends javax.swing.JFrame {
 
     
     
-    public static void main(String args[]) {
-        /*
+    /*public static void main(String args[]) {
+        
          * Sets the JTattoo look and feel
-         */
+         
         try {
             com.jtattoo.plaf.noire.NoireLookAndFeel.setTheme("Small-Font");
             javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
@@ -865,16 +874,16 @@ public class GameFrame extends javax.swing.JFrame {
             ex.printStackTrace();
         }
 
-        /*
+        
          * Create and display the form
-         */
+         
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
                 new GameFrame(null, null, TABLE).setVisible(true);
             }
         });
-    }
+    }*/
     
     
     

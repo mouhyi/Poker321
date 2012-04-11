@@ -95,16 +95,17 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 * Runs a five card stud Game
 	 */
 	@Override
-	public synchronized void play() throws RemoteException {
+	public void play() throws RemoteException {
 		
 		System.out.println("Start Game");
 		for(IPlayerClient pcl: PClients){
 			pcl.InitiateGameDisplay();
+		//	pcl.foo();
 		}
 		
-		
+		System.out.println("Returned from call back");
 		// ante & first round
-		collectAnte();
+		/*collectAnte();
 		round = 1;
 		curPlayer = doFirstRound();
 		players.get(curPlayer).bet(bringIn);
@@ -152,7 +153,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 				}
 
 			}
-		}
+		}*/
 		// Game over
 
 	}

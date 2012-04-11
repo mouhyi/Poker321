@@ -595,7 +595,7 @@ public class GUIClient {
 		int i = 0;
 		int j = 0;
 		while (i < 5) {
-			if (listOfPlayers[i].equals(username)) {
+			if (!listOfPlayers[i].equals(username)) {
 				listOfOpponents[j] = listOfPlayers[i];
 				j++;
 			}
@@ -639,7 +639,7 @@ public class GUIClient {
 			}
 			//currentUserClient.getUserProxy().setGameTable(userId)
 			try {
-				this.currentPlayerClient.createPlayerProxy(userId, currentGameTableClient.getUserProxy().getTable(desiredTable.getName()).getGame(), sl);
+				currentPlayerClient = PlayerClient.createPlayerProxy(userId, currentGameTableClient.getUserProxy().getTable(desiredTable.getName()).getGame(), sl);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -707,7 +707,8 @@ public class GUIClient {
 					.getTable(table);
 			
 			//currentUserClient.getUserProxy().getUserTable(userId);
-			currentPlayerClient.createPlayerProxy(userId,currentGameTableClient.getUserProxy()
+			
+			currentPlayerClient = PlayerClient.createPlayerProxy(userId,currentGameTableClient.getUserProxy()
 					.getTable(table).getGame(),sl);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -771,13 +772,17 @@ public class GUIClient {
 		try {
 			if (usersGameTable != null && usersGameTable.getHostId() == userId) {
 				try {
-					IGameTable t = currentGameTableClient.getUserProxy().getTable(table);
-							t.startGame();
+					currentGameTableClient.getUserProxy().getTable(table).startGame();
+							
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+				/*sl.enterGameFrame();
+				sl.initializeGame();*/
+				//currentPlayerClient.InitiateGameDisplay();
+			//	(new TestStGame(sl)).start();
+				System.out.println("GUI LS PROXY");
 				return true;
 			}
 		} catch (RemoteException e) {
@@ -910,11 +915,20 @@ public class GUIClient {
 	public String getChips(String username) {
 		if (usersGameTable != null) {
 			String i = "";
+			UserObject desiredPlayer = null;
 			try {
-				i = ""
-						+ currentGameTableClient.getUserProxy().getTable(
-								usersGameTable.getName()).getGame().getPlayer(
-								userId).getChips();
+				desiredPlayer = currentUserClient.getUserProxy().getUserObject(username);
+			} catch (RemoteException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				i = ""+ currentGameTableClient.getUserProxy().getTable(
+								usersGameTable.getName()).getGame().getPlayer(desiredPlayer.getId()
+								).getChips();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

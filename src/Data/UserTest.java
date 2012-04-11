@@ -73,7 +73,7 @@ public class UserTest {
 		System.out.println(UserData.deleteFriend(1,3));
 	}
 	
-	public static testStats(){
+	public static void testStats(){
 		
 	}
 }
