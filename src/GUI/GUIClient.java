@@ -32,12 +32,13 @@ public class GUIClient {
 	private GameClient currentGameTableClient;
 	private IGameTable usersGameTable;
 	private PlayerClient currentPlayerClient;
+	private ServerListener sl;
 
 	/**
 	 * This a constructor for the GUIClient class which retrieves data from the
 	 * server and displays it in the GUI
 	 */
-	public GUIClient() {
+	public GUIClient(ServerListener sl) {
 		try {
 			currentUserClient = new UserClient();
 		} catch (RemoteException e) {
@@ -45,12 +46,16 @@ public class GUIClient {
 			e.printStackTrace();
 		}
 		currentGameTableClient = new GameClient();
+		this.sl = sl;
 	}
 
 	public GUIClient(String ip) {
 
 	}
 
+	public ServerListener getServerListener(){
+		return this.sl;
+	}
 	// #BeginLoginandUserMethods
 	/**
 	 * This allows the user to change his username if he is logged on
@@ -128,6 +133,24 @@ public class GUIClient {
 		// Returns the worth of a particular player
 
 		return worth;
+	}
+/**
+ * Returns whether a user is online or not
+ * @param username
+ * @return
+ * @author Peter
+ */
+	public boolean userOnline(String username){
+		try {
+			return currentUserClient.getUserProxy().getUserObject(username).isOnline();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**
@@ -608,7 +631,19 @@ public class GUIClient {
 		}
 		if (desiredTable != null) {
 			this.usersGameTable = desiredTable;
+			try {
+				currentGameTableClient.getUserProxy().getTable(desiredTable.getName()).initiateGame();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			//currentUserClient.getUserProxy().setGameTable(userId)
+			try {
+				this.currentPlayerClient.createPlayerProxy(userId, currentGameTableClient.getUserProxy().getTable(desiredTable.getName()).getGame(), sl);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return true;
 		}
 		return false;
@@ -666,14 +701,14 @@ public class GUIClient {
 		try {
 			i = currentGameTableClient.getUserProxy().getTable(table)
 					.addPlayer(userId);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
+		
+		
 			this.usersGameTable = currentGameTableClient.getUserProxy()
 					.getTable(table);
+			
 			//currentUserClient.getUserProxy().getUserTable(userId);
+			currentPlayerClient.createPlayerProxy(userId,currentGameTableClient.getUserProxy()
+					.getTable(table).getGame(),sl);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -736,13 +771,8 @@ public class GUIClient {
 		try {
 			if (usersGameTable != null && usersGameTable.getHostId() == userId) {
 				try {
-					currentGameTableClient.getUserProxy().getTable(table)
-							.initiateGame();
-					currentPlayerClient = new PlayerClient(userId,
-							currentGameTableClient.getUserProxy().getTable(
-									table).getGame().getId());
-					currentGameTableClient.getUserProxy().getTable(table)
-							.startGame();
+					IGameTable t = currentGameTableClient.getUserProxy().getTable(table);
+							t.startGame();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

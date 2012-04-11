@@ -17,8 +17,8 @@ public class GameFrame extends javax.swing.JFrame {
     public static GUIClient clientRequest;
     public static ServerListener serverListener;
     
-    private final String TABLE;
-    private final int ANTE; 
+    private  String TABLE;
+    private int ANTE; 
             
     private boolean yourTurn = false;
     
@@ -26,22 +26,27 @@ public class GameFrame extends javax.swing.JFrame {
      * Creates new form GameScreen.
      */
     public GameFrame(GUIClient guic, ServerListener sl, String tableName) {
-        initComponents();
+        initComponents(); 
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((screenSize.width/2)-(this.getWidth()/2), (screenSize.height/2)-(this.getHeight()/2));
         this.setIconImage(new ImageIcon(GUIClient.class.getResource("images/icon_playing_card.png")).getImage());
     
+        this.setVisible(true);
+        
         clientRequest = guic;
         serverListener = sl;
-        serverListener.setGameFrame(this);
+        //serverListener.setGameFrame(this); 
+        System.out.println("Game frame init");
         
         TABLE = tableName;
-        ANTE = clientRequest.getTableAnte(TABLE);
+        //ANTE = clientRequest.getTableAnte(TABLE);
         
-        String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);       
+        //clientRequest.startGameRequest(TABLE);
         
-        playerNameLabel.setText(clientRequest.getUsername());
-        opponent1NameLabel.setText(listOfOpponents[0]);
+        //String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);       
+        
+        //playerNameLabel.setText(clientRequest.getUsername());
+        /*opponent1NameLabel.setText(listOfOpponents[0]);
         opponent2NameLabel.setText(listOfOpponents[1]);
         opponent3NameLabel.setText(listOfOpponents[2]);
         opponent4NameLabel.setText(listOfOpponents[3]);
@@ -51,11 +56,11 @@ public class GameFrame extends javax.swing.JFrame {
         opponent2AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent2NameLabel.getText()));
         opponent3AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent3NameLabel.getText()));
         opponent4AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent4NameLabel.getText()));
+        */
+        /*updateBettingSystem();
+        clearAllCardIcons();*/
         
-        updateBettingSystem();
-        clearAllCardIcons();
-        
-        gameConsoleTextArea.append("  Welcome to Five Card Stud\n\n  Please wait until the game starts.\n");
+        //gameConsoleTextArea.append("  Welcome to Five Card Stud\n\n  Please wait until the game starts.\n");
         
     }
     
@@ -160,6 +165,15 @@ public class GameFrame extends javax.swing.JFrame {
                 
         return true;
     } 
+    
+    public boolean updateAllCards() {
+    	String[] usersInGame = clientRequest.getPlayersAtGameTable(TABLE);
+    	for (int i = 0; i < usersInGame.length; i++)
+    		updateCardsForUser(usersInGame[i]);
+    	return true;
+    }
+    
+    
     
     /**
      * Updates the betting fields across the game panel.
@@ -298,6 +312,7 @@ public class GameFrame extends javax.swing.JFrame {
     
     public boolean resetGame() {
         clearAllCardIcons();
+        updateBettingSystem();
         return true; 
     }
     
@@ -836,6 +851,34 @@ public class GameFrame extends javax.swing.JFrame {
         endTurn();
     }//GEN-LAST:event_foldButtonActionPerformed
 
+    
+    
+    public static void main(String args[]) {
+        /*
+         * Sets the JTattoo look and feel
+         */
+        try {
+            com.jtattoo.plaf.noire.NoireLookAndFeel.setTheme("Small-Font");
+            javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        /*
+         * Create and display the form
+         */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                new GameFrame(null, null, TABLE).setVisible(true);
+            }
+        });
+    }
+    
+    
+    
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel backgroundLabel;

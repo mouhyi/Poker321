@@ -77,17 +77,42 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		
 	}
 	
+	public IPlayerClient getPClient(int id){
+		for(IPlayerClient pcl: PClients){
+			try {
+				if (pcl.getUserId() == id){
+					return pcl;
+				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	
 	/**
 	 * Runs a five card stud Game
 	 */
 	@Override
 	public synchronized void play() throws RemoteException {
+		
+		System.out.println("Start Game");
+		for(IPlayerClient pcl: PClients){
+			pcl.InitiateGameDisplay();
+		}
+		
+		
 		// ante & first round
 		collectAnte();
 		round = 1;
 		curPlayer = doFirstRound();
 		players.get(curPlayer).bet(bringIn);
+		
+		for(IPlayerClient pcl: PClients){
+			pcl.updateDuringRound("Player has bet bringin ");
+		}
+		
 		curPlayer = getNextPlayer();
 		count =1;
 		doBetting();

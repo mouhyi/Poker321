@@ -27,9 +27,10 @@ public class LoginFrame extends javax.swing.JFrame {
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((screenSize.width/2)-(this.getWidth()/2), (screenSize.height/2)-(this.getHeight()/2));  
         this.setIconImage(new ImageIcon(GUIClient.class.getResource("images/login_icon.png")).getImage());
-        
-        clientRequest = new GUIClient();
+       
         serverListener = new ServerListener();
+        clientRequest = new GUIClient(serverListener);
+        
         
         
         presetIP = GUIClient.getIp();

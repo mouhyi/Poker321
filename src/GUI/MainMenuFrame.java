@@ -44,6 +44,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
         //updateGamePanel(clientRequest.getListOfGameTables()[0].toString());
         updateFriendsPanel(clientRequest.getUsername());
         
+        
     }
     
     /**
@@ -73,6 +74,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
      */
     public boolean enterGameFrame() {
         // Should check for errors here
+    	System.out.println("mmf: current table" + clientRequest.getCurrentTable());
         openGameFrame(clientRequest.getCurrentTable());
         return true;
     }
@@ -131,12 +133,15 @@ public class MainMenuFrame extends javax.swing.JFrame {
         String[] friends = clientRequest.getFriends(clientRequest.getUsername());
         String[] usernames = new String[friends.length + 1];
         usernames[0] = clientRequest.getUsername();
-        for (int i = 0; i < friends.length; i++)
-            usernames[i + 1] = friends[i];
+        for (int i = 0; i < friends.length; i++) {
+            String onlineOrOffline = clientRequest.userOnline(friends[i]) ? "Online":"Offline"; 
+            usernames[i + 1] = friends[i] + "   (" + onlineOrOffline + ")";
+        }    
         friendsList.setListData(usernames);
     }
    
     private void openGameFrame(String table) {
+    	System.out.println("mmf: open game frame");
         GameFrame newGame = new GameFrame(clientRequest, serverListener, table);
         newGame.setVisible(true);
         serverListener.releaseMainMenuFrame();
@@ -862,18 +867,19 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * @param evt
      */
     private void joinGameToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinGameToggleButtonActionPerformed
-        String currentTable = tableNameLabel.getText();
-        
-        if (joinGameToggleButton.isSelected() && !inTable && clientRequest.getCurrentTable() == null) {
-            clientRequest.joinGameTable(currentTable);
-            //openGameFrame(currentTable); // to be removed
+        String selectedTable = tableNameLabel.getText();
+        //ystem.out.println(selectedTable);
+        if (joinGameToggleButton.isSelected() && !inTable && clientRequest.getCurrentTable()==null) {
+        	System.out.println("Its calling joing game now");
+            clientRequest.joinGameTable(selectedTable);
+            //openGameFrame(selectedTable); // to be removed
             inTable = true;
             
             //openGameFrame(tableNameLabel.getText()); 
         }
         
         else if (joinGameToggleButton.isSelected() && inTable && clientRequest.getCurrentTable().equals(tableNameLabel.getText())) {
-            clientRequest.leaveGameTable(currentTable);
+            clientRequest.leaveGameTable(selectedTable);
             inTable = false;
         }
     }//GEN-LAST:event_joinGameToggleButtonActionPerformed

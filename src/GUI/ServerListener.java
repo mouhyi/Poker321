@@ -100,8 +100,12 @@ public class ServerListener {
      * @return 
      */
     public boolean enterGameFrame() {
-        if (mainMenuFrame != null) 
-            return mainMenuFrame.enterGameFrame();
+    	System.out.println("Sl: enter game frame");
+        if (mainMenuFrame != null) {
+        	System.out.println("Sl: mmf not null");
+            return mainMenuFrame.enterGameFrame();                      
+        }
+            
         return false;
     }
     
@@ -110,6 +114,28 @@ public class ServerListener {
      * Game push notifications.
      */
     
+    
+    /**
+     * Method called by server to initialize all game fields.
+     * @return 
+     */
+    public boolean initializeGame() {
+    	System.out.println("Sl: init game");
+        if (gameFrame != null) 
+            return gameFrame.resetGame();   
+        return false;
+    }
+    
+    /**
+     * Tells the game frame to update all player cards.
+     * @param username
+     * @return 
+     */
+    public boolean updateAllCards() {
+        if (gameFrame != null) 
+            return gameFrame.updateAllCards();
+        return false;
+    }
     
     /**
      * Tells the game frame to update a players hand.
@@ -186,14 +212,7 @@ public class ServerListener {
             return gameFrame.removeUserFromGame(username);
         return false;
     }
-    
-    public boolean resetGame() {
-        if (gameFrame != null) 
-            return gameFrame.resetGame();
-        return false;
-    }
-    
-    
+
     /**
      * Tell the game frame to close and open the main menu frame.
      * @return completed

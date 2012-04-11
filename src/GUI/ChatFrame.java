@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Dimension;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JOptionPane;
@@ -177,7 +179,8 @@ public class ChatFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
             chatTextArea.append("Player: " + chatTextField.getText() + "\n");
-            boolean sent = GUIClient.sendChatMessage(clientRequest.getUsername(), usersInChat, chatTextField.getText());
+            boolean sent = false;
+            sent = clientRequest.sendChatMessage(clientRequest.getUsername(), usersInChat, chatTextField.getText());
             if (sent)
                 chatTextField.setText("");
             else if(!sent) 

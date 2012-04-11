@@ -9,7 +9,7 @@ import GUI.ServerListener;
 import Server.gameModule.RemoteGame;
 import Server.userModule.RemoteUser;
 
-public class PlayerClient extends UnicastRemoteObject  implements PlayerClientRemote {
+public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient {
 
 	private RemoteGame rmGame;
 	private int userId;
@@ -37,30 +37,41 @@ public class PlayerClient extends UnicastRemoteObject  implements PlayerClientRe
 
 	}
 	
-	
-	public void updateDuringRound(){
-		
+	public void InitiateGameDisplay()  throws RemoteException{
+		System.out.println("Call back for game init");
+		listener.enterGameFrame();
+		//listener.initializeGame();
+		//listener.addInGameConsoleMessage("Welcome to the game!");
 	}
 	
-	public void updateAfterRound(){
-		
+	public void updateDuringRound(String msg)  throws RemoteException{
+		listener.updateCurrentBet();
+		listener.addInGameConsoleMessage(msg);
 	}
 	
-	public void InitiateGameDisplay(){
-		
+	public void updateAfterRound(String msg)  throws RemoteException{
+		listener.updateAllCards();
+		listener.updateBettingSystem();
+		listener.addInGameConsoleMessage(msg);
 	}
+	
+	
 
 	// Getters
 	public RemoteGame getGameProxy() {
 		return rmGame;
 	}
 
-	public int getUserId() {
+	public int getUserId() throws RemoteException{
 		return userId;
 	}
 
 	public int getGameId() {
 		return gameId;
+	}
+	
+	public void setListener(ServerListener listener){
+		this.listener = listener;
 	}
 	
 }
