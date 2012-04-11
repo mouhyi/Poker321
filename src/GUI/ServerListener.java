@@ -27,6 +27,7 @@ public class ServerListener {
      * @param mmf 
      */
     public void setMainMenuFrame(MainMenuFrame mmf) {
+    	System.out.println("sl: set main menu frame");
         mainMenuFrame = mmf;
     }
     
@@ -35,6 +36,7 @@ public class ServerListener {
      * @param gf 
      */
     public void setGameFrame(GameFrame gf) {
+    	System.out.println("sl: set game frame");
         gameFrame = gf;
     }
     
@@ -50,6 +52,7 @@ public class ServerListener {
      * Sets main menu reference to null.
      */
     public void releaseMainMenuFrame() {
+    	System.out.println("sl: release main menu frame");
         mainMenuFrame = null;
     }
     
@@ -57,6 +60,8 @@ public class ServerListener {
      * Sets game frame reference to null.
      */
     public void releaseGameFrame() {
+    	System.out.println("sl: release game frame");
+    	if (gameFrame==null) System.out.println("gameFrameNull in server listener");
         gameFrame = null;
     }
     
@@ -132,6 +137,7 @@ public class ServerListener {
      * @return 
      */
     public boolean updateAllCards() {
+    	System.out.println("now in updateAllcards: server listener");
         if (gameFrame != null) 
             return gameFrame.updateAllCards();
         return false;
@@ -143,8 +149,9 @@ public class ServerListener {
      * @return 
      */
     public boolean updatePlayerHand(String username) {
-        if (gameFrame != null) 
-            return gameFrame.updateCardsForUser(username);
+        if (gameFrame != null) {
+        	System.out.println("in server listener update player hand");
+            return gameFrame.updateCardsForUser(username);}
         return false;
     }
     
@@ -231,8 +238,12 @@ public class ServerListener {
      * @return completed
      */
     public boolean addInGameConsoleMessage(String message) {
-        if (gameFrame != null) 
-            return gameFrame.addMessageToInGameConsole(message);
+    	System.out.println("sl: send in game console message - before null check ");
+    	if (gameFrame==null) System.out.println("gameFrameNull in server listener");
+    	if (gameFrame != null) { 
+            System.out.println("sl: send in game console message - " + message);
+        	return gameFrame.addMessageToInGameConsole(message);
+        }
         return false;
     }
    

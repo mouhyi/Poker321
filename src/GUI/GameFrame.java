@@ -38,9 +38,10 @@ public class GameFrame extends javax.swing.JFrame {
         serverListener.setGameFrame(this); 
         System.out.println("Game frame init");
         
+        
         TABLE = tableName;
         ANTE = clientRequest.getTableAnte(TABLE);
-  
+        
         String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);       
         
         playerNameLabel.setText(clientRequest.getUsername());
@@ -64,6 +65,7 @@ public class GameFrame extends javax.swing.JFrame {
         
         gameConsoleTextArea.append("  Welcome to Five Card Stud\n\n  Please wait until the game starts.\n");
         
+        enableInputMethods(false);
         
     }
     
@@ -148,13 +150,15 @@ public class GameFrame extends javax.swing.JFrame {
      */
     public boolean updateCardsForUser(String username) {
         String[] iconPaths = null;
-        if (username.equals(clientRequest.getUsername())) 
-            iconPaths = clientRequest.getPlayerCards();
-        else if (!username.equals(clientRequest.getUsername())) 
+        if (username.equals(clientRequest.getUsername())) {
+        	System.out.println("gets player cards for username game frame");
+            iconPaths = clientRequest.getPlayerCards();}
+        else if (!username.equals(clientRequest.getUsername()) && !username.equals("empty")) 
             iconPaths = clientRequest.getOpponentCards(username);
         
         if (iconPaths == null) {
             clearCardIconsForUser(username); 
+            System.out.println("iconpaths is null in game fram");
             return true; 
         }
         
@@ -165,10 +169,8 @@ public class GameFrame extends javax.swing.JFrame {
         
         for (int i = 0; i < numberOfCards; i++) 
             cardIcons[i] = new ImageIcon(GUIClient.class.getResource(iconPaths[i]));
-       
-        setCardIconsForUser(username, cardIcons);        
-                
-        return true;
+         System.out.println("finishing game frame");
+        return setCardIconsForUser(username, cardIcons);
     } 
     
     public boolean updateAllCards() {
@@ -831,10 +833,18 @@ public class GameFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameRulesMenuItemActionPerformed
 
     private void betCheckButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_betCheckButtonActionPerformed
-        double yourBet = Double.parseDouble(playerBetTextField.getText());
+    	String betString = playerBetTextField.getText();
+    	
+    	try{
+    		double d = Double.parseDouble(betString); 
+        } catch(NumberFormatException e) {
+        	JOptionPane.showMessageDialog(this, "Not a number.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    	double yourBet = Double.parseDouble(betString);
         double yourChips = Double.parseDouble(clientRequest.getChips(clientRequest.getUsername()));
         double minimumBet = Double.parseDouble(clientRequest.getMinimumBet(TABLE));
-        
+
         if (yourBet < minimumBet) 
             JOptionPane.showMessageDialog(this, "Your bet is lower than the minimum bet", "Error", JOptionPane.ERROR_MESSAGE);
         

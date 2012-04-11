@@ -128,11 +128,15 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private void updateFriendsPanel(String username) throws RemoteException, SQLException {
         usernameFriendsPanelLabel.setText(username);
         avatarFriendsPanelLabel.setIcon(clientRequest.getAvatar(username));
-        worthFriendsPanelLabel.setText(clientRequest.getUsersWorth(username));
-       
+        
+        if (clientRequest.getUsersWorth(username) != null)
+        	worthFriendsPanelLabel.setText(clientRequest.getUsersWorth(username));
+        else if (clientRequest.getUsersWorth(username) == null)
+        	worthFriendsPanelLabel.setText("getUsersWorth server error");
+        
         String[] friends = clientRequest.getFriends(clientRequest.getUsername());
         String[] usernames = new String[friends.length + 1];
-        usernames[0] = clientRequest.getUsername();
+        usernames[0] = clientRequest.getUsername() + "   (Me)";
         for (int i = 0; i < friends.length; i++) {
             String onlineOrOffline = clientRequest.userOnline(friends[i]) ? "Online":"Offline"; 
             usernames[i + 1] = friends[i] + "   (" + onlineOrOffline + ")";
@@ -141,10 +145,15 @@ public class MainMenuFrame extends javax.swing.JFrame {
     }
    
     private void openGameFrame(String table) {
-    	System.out.println("mmf: open game frame");
-        GameFrame newGame = new GameFrame(clientRequest, serverListener, table);
-        newGame.setVisible(true);
-        serverListener.releaseMainMenuFrame();
+    	
+    	System.out.println("mmf: open game frame 1");
+    	
+        GameFrame newGameFrame = new GameFrame(clientRequest, serverListener, table);
+        System.out.println("mmf: open game frame 2");
+        System.out.println("mmf: open game frame 3");
+        
+        newGameFrame.setVisible(true);
+        serverListener.releaseMainMenuFrame();       
         this.setVisible(false);
         this.dispose();
     }
@@ -1124,12 +1133,12 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * @param evt 
      */
     private void changeUsernameMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeUsernameMenuItemActionPerformed
-        String newUsername = JOptionPane.showInputDialog(this, "New Username: ", "Change Username", JOptionPane.PLAIN_MESSAGE);
+        String newUsername = "" + JOptionPane.showInputDialog(this, "New Username: ", "Change Username", JOptionPane.PLAIN_MESSAGE);
         if (newUsername.equals(""))
             JOptionPane.showMessageDialog(this, "Username field blank", "Error", JOptionPane.ERROR_MESSAGE);
         else if (newUsername.equals(clientRequest.getUsername()))    
             JOptionPane.showMessageDialog(this, "This is already your username", "Error", JOptionPane.ERROR_MESSAGE);
-        else {
+        else if (!newUsername.equals("")) {
             boolean changed = false;
             try {
                 changed = clientRequest.setUsername(newUsername);
@@ -1148,12 +1157,19 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private void purchaseChipsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchaseChipsMenuItemActionPerformed
         String chipsString = JOptionPane.showInputDialog(this, "Number of Chips: ", "Purchase Chips", JOptionPane.PLAIN_MESSAGE);
         if (chipsString.equals(""))
-            JOptionPane.showMessageDialog(this, "Please enter an amount", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please enter an amount.", "Error", JOptionPane.ERROR_MESSAGE);
+ 
+        try{
+        	double d = Double.parseDouble(chipsString); 
+        } catch(NumberFormatException e) {
+        	JOptionPane.showMessageDialog(this, "Not a number.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
         double chips = Double.parseDouble(chipsString);
         
         boolean purchased = clientRequest.purchaseChips(chips);
         if (purchased) {
-            JOptionPane.showMessageDialog(this, "Email Changed", "Success!", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Email Changed.", "Success!", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "The server hates you.", "Error", JOptionPane.ERROR_MESSAGE);
         }

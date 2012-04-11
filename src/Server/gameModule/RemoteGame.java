@@ -84,4 +84,6 @@ public interface RemoteGame extends Remote {
 	public int getCurPlayerId() throws RemoteException;
 	
 	public IPlayer getPlayer(int userId) throws RemoteException;
+
+	public void sendMessage(String from, String message) throws RemoteException;
 }

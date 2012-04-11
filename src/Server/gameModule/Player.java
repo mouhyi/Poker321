@@ -53,8 +53,9 @@ public class Player extends UnicastRemoteObject implements Comparable<Player>, I
 	public void getCard(Card card, boolean down){
 		if(down) {
 			faceDownCard = card;
-		}
-		hand.add(card);
+		}else{
+			hand.add(card);
+		}	
 	}
 	
 

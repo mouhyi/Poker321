@@ -47,15 +47,25 @@ public class GUIClient {
 		}
 		currentGameTableClient = new GameClient();
 		this.sl = sl;
+
+		/*
+		 * // Code to create an actual default table IGameTable desiredTable =
+		 * null; try { desiredTable =
+		 * currentGameTableClient.getUserProxy().createTable( 10, 1, new
+		 * ArrayList<Integer>(), 10, "The Default Table"); } catch
+		 * (RemoteException e) {
+		 * System.out.println("Default table not created"); }
+		 */
 	}
 
 	public GUIClient(String ip) {
 
 	}
 
-	public ServerListener getServerListener(){
+	public ServerListener getServerListener() {
 		return this.sl;
 	}
+
 	// #BeginLoginandUserMethods
 	/**
 	 * This allows the user to change his username if he is logged on
@@ -129,20 +139,28 @@ public class GUIClient {
 		String worth = "Broke";
 		UserObject desiredUser = currentUserClient.getUserProxy()
 				.getUserObject(email);
-		worth = "" + desiredUser.getChips();
+		try {
+			worth = "" + desiredUser.getChips();
+		} catch (NullPointerException e) {
+			System.out.println("Can not get chips for " + desiredUser
+					+ " from server");
+		}
 		// Returns the worth of a particular player
 
 		return worth;
 	}
-/**
- * Returns whether a user is online or not
- * @param username
- * @return
- * @author Peter
- */
-	public boolean userOnline(String username){
+
+	/**
+	 * Returns whether a user is online or not
+	 * 
+	 * @param username
+	 * @return
+	 * @author Peter
+	 */
+	public boolean userOnline(String username) {
 		try {
-			return currentUserClient.getUserProxy().getUserObject(username).isOnline();
+			return currentUserClient.getUserProxy().getUserObject(username)
+					.isOnline();
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -258,7 +276,7 @@ public class GUIClient {
 		String[] friendsNames = new String[friends.size()];
 		int i = 0;
 		for (UserObject element : friends) {
-			friendsNames[i] = element.getName();
+			friendsNames[i] = new String(element.getName());
 			i++;
 		}
 		System.out.println("Get list of friends for user," + username
@@ -503,7 +521,8 @@ public class GUIClient {
 	public String getTableHost(String table) {
 		IGameTable desiredGameTable = null;
 		try {
-			if (currentGameTableClient.getUserProxy().getAllTables().size() != 0&& !table.equals("Default Table")) {
+			if (currentGameTableClient.getUserProxy().getAllTables().size() != 0
+					&& !table.equals("Default Table")) {
 				try {
 					desiredGameTable = currentGameTableClient.getUserProxy()
 							.getTable(table);
@@ -541,7 +560,12 @@ public class GUIClient {
 		IGameTable desiredTable = null;
 		String[] listOfPlayers = { "Empty", "Empty", "Empty", "Empty", "Empty" };
 		try {
-			if (currentGameTableClient.getUserProxy().getAllTables().size() != 0 && !tableId.equals("Default Table")) {
+			System.out.println("GUIC: get all tables .size = "
+					+ currentGameTableClient.getUserProxy().getAllTables()
+							.size());
+
+			if (currentGameTableClient.getUserProxy().getAllTables().size() != 0
+					&& !tableId.equals("Default Table")) {
 				try {
 
 					desiredTable = currentGameTableClient.getUserProxy()
@@ -632,14 +656,17 @@ public class GUIClient {
 		if (desiredTable != null) {
 			this.usersGameTable = desiredTable;
 			try {
-				currentGameTableClient.getUserProxy().getTable(desiredTable.getName()).initiateGame();
+				currentGameTableClient.getUserProxy().getTable(
+						desiredTable.getName()).initiateGame();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//currentUserClient.getUserProxy().setGameTable(userId)
+			// currentUserClient.getUserProxy().setGameTable(userId)
 			try {
-				currentPlayerClient = PlayerClient.createPlayerProxy(userId, currentGameTableClient.getUserProxy().getTable(desiredTable.getName()).getGame(), sl);
+				currentPlayerClient = PlayerClient.createPlayerProxy(userId,
+						currentGameTableClient.getUserProxy().getTable(
+								desiredTable.getName()).getGame(), sl);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -658,7 +685,8 @@ public class GUIClient {
 	 */
 	public int getTableAnte(String table) {
 		try {
-			if (currentGameTableClient.getUserProxy().getAllTables().size() != 0&& !table.equals("Default Table"))
+			if (currentGameTableClient.getUserProxy().getAllTables().size() != 0
+					&& !table.equals("Default Table"))
 				return currentGameTableClient.getUserProxy().getTable(table)
 						.getAnte();
 		} catch (RemoteException e) {
@@ -677,7 +705,8 @@ public class GUIClient {
 	 */
 	public double getTableBringIn(String table) {
 		try {
-			if (currentGameTableClient.getUserProxy().getAllTables().size() != 0&& !table.equals("Default Table"))
+			if (currentGameTableClient.getUserProxy().getAllTables().size() != 0
+					&& !table.equals("Default Table"))
 				return currentGameTableClient.getUserProxy().getTable(table)
 						.getBringIn();
 		} catch (RemoteException e) {
@@ -701,15 +730,15 @@ public class GUIClient {
 		try {
 			i = currentGameTableClient.getUserProxy().getTable(table)
 					.addPlayer(userId);
-		
-		
+
 			this.usersGameTable = currentGameTableClient.getUserProxy()
 					.getTable(table);
-			
-			//currentUserClient.getUserProxy().getUserTable(userId);
-			
-			currentPlayerClient = PlayerClient.createPlayerProxy(userId,currentGameTableClient.getUserProxy()
-					.getTable(table).getGame(),sl);
+
+			// currentUserClient.getUserProxy().getUserTable(userId);
+
+			currentPlayerClient = PlayerClient.createPlayerProxy(userId,
+					currentGameTableClient.getUserProxy().getTable(table)
+							.getGame(), sl);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -733,9 +762,9 @@ public class GUIClient {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			else{
-			//	currentUserClient.getUserProxy().getUserTable(userId);
-			}
+		else {
+			// currentUserClient.getUserProxy().getUserTable(userId);
+		}
 		return null;
 	}
 
@@ -772,16 +801,18 @@ public class GUIClient {
 		try {
 			if (usersGameTable != null && usersGameTable.getHostId() == userId) {
 				try {
-					currentGameTableClient.getUserProxy().getTable(table).startGame();
-							
+					currentGameTableClient.getUserProxy().getTable(table)
+							.startGame();
+
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				/*sl.enterGameFrame();
-				sl.initializeGame();*/
-				//currentPlayerClient.InitiateGameDisplay();
-			//	(new TestStGame(sl)).start();
+				/*
+				 * sl.enterGameFrame(); sl.initializeGame();
+				 */
+				// currentPlayerClient.InitiateGameDisplay();
+				// (new TestStGame(sl)).start();
 				System.out.println("GUI LS PROXY");
 				return true;
 			}
@@ -917,7 +948,8 @@ public class GUIClient {
 			String i = "";
 			UserObject desiredPlayer = null;
 			try {
-				desiredPlayer = currentUserClient.getUserProxy().getUserObject(username);
+				desiredPlayer = currentUserClient.getUserProxy().getUserObject(
+						username);
 			} catch (RemoteException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -926,16 +958,17 @@ public class GUIClient {
 				e1.printStackTrace();
 			}
 			try {
-				i = ""+ currentGameTableClient.getUserProxy().getTable(
-								usersGameTable.getName()).getGame().getPlayer(desiredPlayer.getId()
-								).getChips();
+				i = ""
+						+ currentGameTableClient.getUserProxy().getTable(
+								usersGameTable.getName()).getGame().getPlayer(
+								desiredPlayer.getId()).getChips();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return i;
 		}
-		return "Couldn't get chips";
+		return "0";
 	}
 
 	/**
@@ -980,6 +1013,7 @@ public class GUIClient {
 	}
 
 	public String[] getPlayerCards() {
+		System.out.println("now we're in the guiclient getting player cards");
 		if (usersGameTable != null) {
 			ArrayList<ICard> cards;
 			try {
@@ -998,8 +1032,8 @@ public class GUIClient {
 					int i = 0;
 					String[] cardStrings = new String[cards.size()];
 					for (ICard element : cards) {
-						cardStrings[i] = "" + element.getSuit() + "-"
-								+ element.getRank() + "-150.png";
+						cardStrings[i] = "cards150px/" + element.getSuit()
+								+ "-" + element.getRank() + "-150.png";
 					}
 					return cardStrings;
 				}
@@ -1012,25 +1046,26 @@ public class GUIClient {
 	}
 
 	public String[] getOpponentCards(String username) {
+		System.out.println("getting opponent cards gui client");
 		ArrayList<ICard> cards = null;
 		if (usersGameTable != null) {
 			int playerId;
 			try {
 				playerId = currentUserClient.getUserProxy().getUserObject(
 						username).getId();
-				if (currentGameTableClient.getUserProxy().getTable(
+				// if (currentGameTableClient.getUserProxy().getTable(
+				// usersGameTable.getName()).getGame().getPlayer(playerId)
+				// .getHand().getCards() != null) {
+				cards = currentGameTableClient.getUserProxy().getTable(
 						usersGameTable.getName()).getGame().getPlayer(playerId)
-						.getHand().getCards() != null) {
-					cards = currentGameTableClient.getUserProxy().getTable(
-							usersGameTable.getName()).getGame().getPlayer(
-							playerId).getHand().getCards();
-				} else
-					return null;
+						.getHand().getCards();
+				// } else return null;
 				if (cards != null) {
-					int i = 0;
-					String[] cardStrings = new String[cards.size()];
+					int i = 1;
+					String[] cardStrings = new String[cards.size() + 1];
+					cardStrings[0] = "cards75px/back-blue-75-1.png";
 					for (ICard element : cards) {
-						cardStrings[i] = "" + element.getSuit() + "-"
+						cardStrings[i] = "cards75px/" + element.getSuit() + "-"
 								+ element.getRank() + "-75.png";
 					}
 					return cardStrings;
@@ -1065,9 +1100,14 @@ public class GUIClient {
 	 */
 	public boolean sendChatMessage(String usernameSender,
 			String[] usernameRecipients, String message) {
-		currentGameTableClient.getUserProxy()
-				.getTable(usersGameTable.getName()).getGame().sendMessage(
-						usernameSender + ": " + message);
+		try {
+			currentGameTableClient.getUserProxy().getTable(
+					usersGameTable.getName()).getGame().sendMessage(
+					usernameSender, message);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return true;
 	}
 

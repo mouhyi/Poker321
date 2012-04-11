@@ -104,11 +104,28 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		}
 		
 		System.out.println("Returned from call back");
+		
+		
 		// ante & first round
-		/*collectAnte();
+		collectAnte();
+		
+		// update clients
+		for(IPlayerClient pcl: PClients){
+			pcl.updateAfterRound("Ante Collected");
+		}
+		
+		
+		System.out.println("Ante Server");
+		
 		round = 1;
 		curPlayer = doFirstRound();
-		players.get(curPlayer).bet(bringIn);
+		
+		for(IPlayerClient pcl: PClients){
+			pcl.updateDuringRound("First Round");
+			pcl.updateAfterRound("Ante Collected");
+		}
+		
+		/*players.get(curPlayer).bet(bringIn);
 		
 		for(IPlayerClient pcl: PClients){
 			pcl.updateDuringRound("Player has bet bringin ");
@@ -117,7 +134,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		curPlayer = getNextPlayer();
 		count =1;
 		doBetting();
-
+		
 		// round: 2,3,4
 		while (round < ROUNDS) {
 			if (players.size() < 2) {
@@ -475,4 +492,14 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		
 	}
 
+	public void sendMessage(String from, String message){
+		for (IPlayerClient element : PClients){
+			try {
+				element.getChatMessage(from, message);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }
