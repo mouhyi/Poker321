@@ -811,8 +811,8 @@ public class GUIClient {
 				/*
 				 * sl.enterGameFrame(); sl.initializeGame();
 				 */
-				// currentPlayerClient.InitiateGameDisplay();
-				// (new TestStGame(sl)).start();
+				/*currentPlayerClient.InitiateGameDisplay();
+				currentPlayerClient.updateAfterRound("IVE");*/
 				System.out.println("GUI LS PROXY");
 				return true;
 			}

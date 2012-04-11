@@ -59,7 +59,16 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 	
 	public void InitiateGameDisplay()  throws RemoteException{
 		
-		System.out.println("Call back for game init");
+		/*System.out.println("Call back for game init");
+		
+		
+		System.out.println("TESTSTGAME");
+		listener.enterGameFrame();
+		
+		System.out.println( " INIIIII  TESTSTGAME");
+		listener.initializeGame();*/
+		
+		
 		(new InitiateGameDisplayThread(listener)).start();
 		//listener.addInGameConsoleMessage("Welcome to the game!");
 		
@@ -75,8 +84,16 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		}
 		semA.release();
 		
-		(new UpdateDuringRoundThread(listener, rmGame, userId, msg)).start();
-		
+		//(new UpdateDuringRoundThread(listener, rmGame, userId, msg)).start();
+		listener.updateCurrentBet();
+		listener.updatePot();
+		listener.addInGameConsoleMessage(msg);
+		try {
+			if(rmGame.getPlayer(userId).isTurn())
+				listener.notifyPlayerTurn();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 		
 		semB.release();
 	}
@@ -90,7 +107,14 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		}
 		
 		System.out.println("Now in playerclient, update after round");
-		(new UpdateAfterRoundThread(listener, msg)).start();
+		//(new UpdateAfterRoundThread(listener, msg)).start();
+		
+		listener.updateAllCards();
+	 	System.out.println("updated cards ");
+		listener.updateBettingSystem();
+		System.out.println("updated bets");
+		listener.addInGameConsoleMessage(msg);
+		System.out.println("updated message");
 		
 	}
 	

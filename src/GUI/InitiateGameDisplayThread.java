@@ -11,6 +11,8 @@ public class InitiateGameDisplayThread extends Thread {
 	public void run(){
 		System.out.println("TESTSTGAME");
 		sl.enterGameFrame();
+		
+		System.out.println( " INIIIII  TESTSTGAME");
 		sl.initializeGame();
 		
 	}

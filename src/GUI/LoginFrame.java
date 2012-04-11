@@ -325,7 +325,7 @@ public class LoginFrame extends javax.swing.JFrame {
             }
         });
     }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variablesq
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JTextField emailTextField;

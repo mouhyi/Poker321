@@ -100,7 +100,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		System.out.println("Start Game");
 		for(IPlayerClient pcl: PClients){
 			pcl.InitiateGameDisplay();
-		//	pcl.foo();
+			//pcl.foo();
 		}
 		
 		System.out.println("Returned from call back");
@@ -110,9 +110,9 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		collectAnte();
 		
 		// update clients
-		for(IPlayerClient pcl: PClients){
+		/*for(IPlayerClient pcl: PClients){
 			pcl.updateAfterRound("Ante Collected");
-		}
+		}*/
 		
 		
 		System.out.println("Ante Server");

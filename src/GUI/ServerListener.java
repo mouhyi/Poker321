@@ -126,6 +126,7 @@ public class ServerListener {
      */
     public boolean initializeGame() {
     	System.out.println("Sl: init game");
+    	if (gameFrame ==null) System.out.println("GameFrame Null in initializeGame...");
         if (gameFrame != null) 
             return gameFrame.resetGame();   
         return false;
