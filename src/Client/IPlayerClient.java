@@ -11,6 +11,8 @@ public interface IPlayerClient extends Remote {
 	public void getChatMessage(String from, String message)throws RemoteException;
 	public int getUserId() throws RemoteException;
 	
+	public boolean isDone() throws RemoteException;
 	
 	public int foo() throws RemoteException;
+
 }

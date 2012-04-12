@@ -19,13 +19,21 @@ public class UpdateAfterRoundThread extends Thread {
 	
 	public void run(){
 		
-		try {
+		/*try {
 			playerCl.semB.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
-		playerCl.semB.release();
+		playerCl.semB.release();*/
+		
+		
+		try {
+			playerCl.mainSem.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	
 		
 		System.out.println("Now in playerclient, update after round*********");
 		
@@ -35,6 +43,8 @@ public class UpdateAfterRoundThread extends Thread {
 		System.out.println("updated bets");
 		listener.addInGameConsoleMessage(msg);
 		System.out.println("updated message");
+		
+		playerCl.mainSem.release();
 		
 	}
 }

@@ -23,6 +23,8 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 	public Semaphore semA;
 	public Semaphore semB;
 	
+	public Semaphore mainSem;
+	
 	private ServerListener listener;
 
 	public PlayerClient(int userId, RemoteGame rmGame, ServerListener listener) throws RemoteException {
@@ -30,19 +32,23 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		this.rmGame = rmGame;
 		this.listener = listener;
 		
-		semA = new Semaphore(1, false);
+		semA = new Semaphore(1, true);
 		try {
 			semA.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		semB = new Semaphore(1, false);
+		semB = new Semaphore(1, true);
 		try {
 			semB.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		mainSem = new Semaphore(1);
+
 	}
+
 
 	// Looks up the server object
 	// Registers itself
@@ -73,6 +79,9 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		
 		// FINAL: Has to be in a new Thread
 		(new InitiateGameDisplayThread(listener, this)).start();
+		
+		// wont work, create another blck method to call fromserver
+		
 		//listener.addInGameConsoleMessage("Welcome to the game!");
 		
 		//semA.release();
@@ -92,7 +101,7 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		
 		
 		(new UpdateDuringRoundThread(listener, rmGame, userId, msg, this)).start();
-		
+
 		
 		/*listener.updateCurrentBet();
 		listener.updatePot();
@@ -119,6 +128,7 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		
 		(new UpdateAfterRoundThread(listener, msg, this)).start();
 		
+		
 		/*listener.updateAllCards();
 	 	System.out.println("updated cards ");
 		listener.updateBettingSystem();
@@ -127,6 +137,19 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		System.out.println("updated message");*/
 		
 	}
+	
+	
+	public synchronized boolean isDone() throws RemoteException{
+		/*try {
+			mainSem.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return false;
+		}
+		mainSem.release();*/
+		return true;
+	}
+	
 	
 	public void getChatMessage(String from, String message)throws RemoteException{
 		listener.addChatMessage(from, message);

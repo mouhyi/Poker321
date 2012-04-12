@@ -23,7 +23,20 @@ public class UpdateDuringRoundThread extends Thread{
 	
 	public void run(){
 		
+		
+		
+		
+		try {
+			playerCl.mainSem.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		System.out.println( " Pcl.update********* START ***********");
+		
+		
 		try {
 			playerCl.semA.acquire();
 		} catch (InterruptedException e) {
@@ -31,7 +44,7 @@ public class UpdateDuringRoundThread extends Thread{
 		}
 		playerCl.semA.release();	// remove
 		
-		System.out.println( " Pcl.update*********** END *********");
+		//System.out.println( " Pcl.update*********** END *********");
 		
 		
 		listener.updateCurrentBet();
@@ -45,6 +58,11 @@ public class UpdateDuringRoundThread extends Thread{
 		}
 		
 		System.out.println( " Pcl.update*********** END *********");
+		
+		
 		playerCl.semB.release();
+		
+		playerCl.mainSem.release();
+		
 	}
 }

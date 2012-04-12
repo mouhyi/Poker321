@@ -13,6 +13,15 @@ public class InitiateGameDisplayThread extends Thread {
 	}
 	
 	public void run(){
+		
+		/*try {
+			playerCl.semA.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+		//synchronized(playerCl)
 		System.out.println("INIT ENTER FM     ****************");
 		sl.enterGameFrame();
 		
@@ -20,8 +29,11 @@ public class InitiateGameDisplayThread extends Thread {
 		sl.initializeGame();
 		
 		System.out.println( " INIT RELEASE SEM     *****************");
+		
+		
 		playerCl.semA.release();
 		
+		//playerCl.mainSem.release();
 	}
 
 }
