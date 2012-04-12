@@ -170,7 +170,7 @@ public class GameFrame extends javax.swing.JFrame {
         	System.out.println("gets player cards for username game frame");
             iconPaths = clientRequest.getPlayerCards();
         }
-        else if (!username.equals(clientRequest.getUsername()) && !username.equals("Empty")){
+        else if (!username.equals(clientRequest.getUsername()) && !username.equals("Empty") && username!=null){
             iconPaths = clientRequest.getOpponentCards(username);
         }    
         
