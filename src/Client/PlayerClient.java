@@ -20,7 +20,8 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 	private int userId;
 	private int gameId;
 	
-	Semaphore semA, semB;
+	public Semaphore semA;
+	public Semaphore semB;
 	
 	private ServerListener listener;
 
@@ -66,26 +67,34 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		listener.enterGameFrame();
 		
 		System.out.println( " INIIIII  TESTSTGAME");
-		listener.initializeGame();*/
+		//listener.initializeGame();
+		semA.release();*/
+		  
 		
-		
-		(new InitiateGameDisplayThread(listener)).start();
+		// FINAL: Has to be in a new Thread
+		(new InitiateGameDisplayThread(listener, this)).start();
 		//listener.addInGameConsoleMessage("Welcome to the game!");
 		
-		semA.release();
+		//semA.release();
 	}
 	
 	public void updateDuringRound(String msg)  throws RemoteException{
 		
+		/*System.out.println( " Pcl.update********* START ***********");
 		try {
 			semA.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		semA.release();
+		//semA.release();	// remove
 		
-		//(new UpdateDuringRoundThread(listener, rmGame, userId, msg)).start();
-		listener.updateCurrentBet();
+		System.out.println( " Pcl.update*********** END *********");*/
+		
+		
+		(new UpdateDuringRoundThread(listener, rmGame, userId, msg, this)).start();
+		
+		
+		/*listener.updateCurrentBet();
 		listener.updatePot();
 		listener.addInGameConsoleMessage(msg);
 		try {
@@ -93,28 +102,29 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 				listener.notifyPlayerTurn();
 		} catch (RemoteException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
-		semB.release();
+		//semB.release();
 	}
 	
 	public void updateAfterRound(String msg)  throws RemoteException{
 		
-		try {
+		/*try {
 			semB.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
-		System.out.println("Now in playerclient, update after round");
-		//(new UpdateAfterRoundThread(listener, msg)).start();
+		System.out.println("Now in playerclient, update after round*********");*/
 		
-		listener.updateAllCards();
+		(new UpdateAfterRoundThread(listener, msg, this)).start();
+		
+		/*listener.updateAllCards();
 	 	System.out.println("updated cards ");
 		listener.updateBettingSystem();
 		System.out.println("updated bets");
 		listener.addInGameConsoleMessage(msg);
-		System.out.println("updated message");
+		System.out.println("updated message");*/
 		
 	}
 	

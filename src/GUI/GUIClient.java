@@ -1032,8 +1032,25 @@ public class GUIClient {
 					int i = 0;
 					String[] cardStrings = new String[cards.size()];
 					for (ICard element : cards) {
-						cardStrings[i] = "cards150px/" + element.getSuit()
-								+ "-" + element.getRank() + "-150.png";
+						String rank = "Nothing";
+						String r = element.getRank().toString();
+						if(r.equals("Deuce")) rank="2";
+						if(r.equals("Three")) rank="3";
+						if(r.equals("Four")) rank="4";
+						if(r.equals("Five")) rank="5";
+						if(r.equals("Six")) rank ="6";
+						if(r.equals("Seven")) rank="7";
+						if(r.equals("Eight")) rank="8";
+						if(r.equals("Nine")) rank="9";
+						if(r.equals("Ten")) rank="10";
+						if(r.equals("Jack")) rank= "j";
+						if(r.equals("Queen")) rank="q";
+						if(r.equals("King")) rank="k";
+						if(r.equals("Ace")) rank="a";
+						
+						cardStrings[i] = "cards150px/" + element.getSuit().toString().toLowerCase()
+								+ "-" + rank + "-150.png";
+					i++;
 					}
 					return cardStrings;
 				}
@@ -1062,11 +1079,28 @@ public class GUIClient {
 				// } else return null;
 				if (cards != null) {
 					int i = 1;
+					
 					String[] cardStrings = new String[cards.size() + 1];
 					cardStrings[0] = "cards75px/back-blue-75-1.png";
 					for (ICard element : cards) {
-						cardStrings[i] = "cards75px/" + element.getSuit() + "-"
-								+ element.getRank() + "-75.png";
+						String rank = "Nothing";
+						String r = element.getRank().toString();
+						if(r.equals("Deuce")) rank="2";
+						if(r.equals("Three")) rank="3";
+						if(r.equals("Four")) rank="4";
+						if(r.equals("Five")) rank="5";
+						if(r.equals("Six")) rank ="6";
+						if(r.equals("Seven")) rank="7";
+						if(r.equals("Eight")) rank="8";
+						if(r.equals("Nine")) rank="9";
+						if(r.equals("Ten")) rank="10";
+						if(r.equals("Jack")) rank= "j";
+						if(r.equals("Queen")) rank="q";
+						if(r.equals("King")) rank="k";
+						if(r.equals("Ace")) rank="a";
+						cardStrings[i] = "cards75px/" + element.getSuit().toString().toLowerCase() + "-"
+								+ rank + "-75.png";
+						i++;
 					}
 					return cardStrings;
 				}

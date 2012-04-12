@@ -1,6 +1,7 @@
 package Server.gameModule;
 
 import java.rmi.RemoteException;
+
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -100,30 +101,50 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		System.out.println("Start Game");
 		for(IPlayerClient pcl: PClients){
 			pcl.InitiateGameDisplay();
-			//pcl.foo();
+			//pcl.updateDuringRound("FOo");
 		}
 		
 		System.out.println("Returned from call back");
 		
 		
-		// ante & first round
+		System.out.println("Ante Server");
+		
+		// ante
 		collectAnte();
 		
 		// update clients
-		/*for(IPlayerClient pcl: PClients){
-			pcl.updateAfterRound("Ante Collected");
-		}*/
+		for(IPlayerClient pcl: PClients){
+		 	pcl.updateDuringRound("Ante collected");
+			//pcl.updateAfterRound("Ante Collected");
+		}
 		
-		
-		System.out.println("Ante Server");
+		// first round
 		
 		round = 1;
 		curPlayer = doFirstRound();
 		
+		System.out.println("1st round Done");
+		
 		for(IPlayerClient pcl: PClients){
-			pcl.updateDuringRound("First Round");
-			pcl.updateAfterRound("Ante Collected");
+		 	//pcl.updateDuringRound("Ante collected");
+			pcl.updateAfterRound("First Round");
 		}
+		
+		
+		/*try {
+			Thread.sleep(20000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		
+		for(IPlayerClient pcl: PClients){
+			//pcl.updateDuringRound("First Round");
+			pcl.updateAfterRound("Ante Collected");
+		}*/
+		
+		System.out.println("1st round UPdated");
 		
 		/*players.get(curPlayer).bet(bringIn);
 		

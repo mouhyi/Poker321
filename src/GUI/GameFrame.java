@@ -60,7 +60,7 @@ public class GameFrame extends javax.swing.JFrame {
         opponent3AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent3NameLabel.getText()));
         opponent4AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent4NameLabel.getText()));
         
-        updateBettingSystem();
+        //updateBettingSystem();
         clearAllCardIcons();
         
         gameConsoleTextArea.append("  Welcome to Five Card Stud\n\n  Please wait until the game starts.\n");
@@ -152,9 +152,11 @@ public class GameFrame extends javax.swing.JFrame {
         String[] iconPaths = null;
         if (username.equals(clientRequest.getUsername())) {
         	System.out.println("gets player cards for username game frame");
-            iconPaths = clientRequest.getPlayerCards();}
-        else if (!username.equals(clientRequest.getUsername()) && !username.equals("empty")) 
+            iconPaths = clientRequest.getPlayerCards();
+        }
+        else if (!username.equals(clientRequest.getUsername()) && !username.equals("Empty")){
             iconPaths = clientRequest.getOpponentCards(username);
+        }    
         
         if (iconPaths == null) {
             clearCardIconsForUser(username); 
@@ -167,8 +169,12 @@ public class GameFrame extends javax.swing.JFrame {
         ImageIcon emptyIcon = new ImageIcon(""); 
         ImageIcon[] cardIcons = {emptyIcon,emptyIcon,emptyIcon,emptyIcon,emptyIcon};        
         
-        for (int i = 0; i < numberOfCards; i++) 
-            cardIcons[i] = new ImageIcon(GUIClient.class.getResource(iconPaths[i]));
+        for (int i = 0; i < numberOfCards; i++) {
+        	//if(!cardIcons[i].equals(emptyIcon))
+        	try{
+        		cardIcons[i] = new ImageIcon(GUIClient.class.getResource(iconPaths[i]));
+        	} catch (NullPointerException e) { System.out.println("NULL FORMAT");}
+        }	
          System.out.println("finishing game frame");
         return setCardIconsForUser(username, cardIcons);
     } 
