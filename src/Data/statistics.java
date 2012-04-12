@@ -72,11 +72,11 @@ public class statistics {
 		String[][] leaderboard = new String[20][5];
 		try {
 			Connection con = Methods.connectToDB("5CARD");
-			String query = "SELECT * FROM 5Card.Players ORDER BY gameWinnings DESC LIMIT 20";
+			String query = "SELECT * FROM Players ORDER BY gameWinnings DESC LIMIT 20";
 			stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
-				leaderboard[i][0]=rs.getString("name");
+				leaderboard[i][0]=rs.getString("u_id");
 				leaderboard[i][1]=rs.getString("gameWinnings");
 				leaderboard[i][2]=rs.getString("wins");
 				leaderboard[i][3]=rs.getString("losses");
