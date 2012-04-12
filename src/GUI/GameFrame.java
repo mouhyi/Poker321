@@ -74,7 +74,7 @@ public class GameFrame extends javax.swing.JFrame {
         
         gameConsoleTextArea.append("  Welcome to Five Card Stud\n\n  Please wait until the game starts.\n");
         
-        enableInputMethods(false);
+        //enableInputMethods(false);
 
         clientRequest.clientGameFrameDoneInitializing();
     }
@@ -333,14 +333,14 @@ public class GameFrame extends javax.swing.JFrame {
     
     public boolean startTurn() {
         yourTurn = true;
-        enableBettingInputFields(yourTurn);
+       //enableBettingInputFields(yourTurn);
         playerBetTextField.setText(clientRequest.getMinimumBet(TABLE));
         return clientRequest.clientNeedsGameFrameUpdate();
     }
     
     public boolean endTurn() {
         yourTurn = false;
-        enableBettingInputFields(yourTurn);
+        //enableBettingInputFields(yourTurn);
         return true;
     }
     
@@ -862,33 +862,38 @@ public class GameFrame extends javax.swing.JFrame {
 
     private void betCheckButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_betCheckButtonActionPerformed
     	String betString = playerBetTextField.getText();
-    	
+    	boolean isNumber = false;
     	try{
     		double d = Double.parseDouble(betString); 
+    		isNumber = true;
         } catch(NumberFormatException e) {
         	JOptionPane.showMessageDialog(this, "Not a number.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+		if (isNumber) {
+			double yourBet = Double.parseDouble(betString);
+			double yourChips = Double.parseDouble(clientRequest
+					.getChips(clientRequest.getUsername()));
+			double minimumBet = Double.parseDouble(clientRequest
+					.getMinimumBet(TABLE));
 
-    	double yourBet = Double.parseDouble(betString);
-        double yourChips = Double.parseDouble(clientRequest.getChips(clientRequest.getUsername()));
-        double minimumBet = Double.parseDouble(clientRequest.getMinimumBet(TABLE));
+			if (yourBet < minimumBet)
+				JOptionPane.showMessageDialog(this,
+						"Your bet is lower than the minimum bet", "Error",
+						JOptionPane.ERROR_MESSAGE);
 
-        if (yourBet < minimumBet) 
-            JOptionPane.showMessageDialog(this, "Your bet is lower than the minimum bet", "Error", JOptionPane.ERROR_MESSAGE);
-        
-        else if (yourBet >= minimumBet) {
-            
-            if (yourBet < yourChips) {
-                clientRequest.sendBet(yourBet);
-                addMessageToInGameConsole("You bet " + yourBet);
-            }
-                
-            else if (yourBet >= yourChips) {
-                clientRequest.allIn();
-                addMessageToInGameConsole("You have gone all in " + yourBet);
-            }    
-              
-            endTurn();
+			else if (yourBet >= minimumBet) {
+				if (yourBet < yourChips) {
+					clientRequest.sendBet(yourBet);
+					//addMessageToInGameConsole("You bet " + yourBet);
+				}
+
+				else if (yourBet >= yourChips) {
+					clientRequest.allIn();
+					//addMessageToInGameConsole("You have gone all in " + yourBet);
+				}
+
+				endTurn();
+			}
         }
     }//GEN-LAST:event_betCheckButtonActionPerformed
 

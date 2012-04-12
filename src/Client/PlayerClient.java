@@ -30,13 +30,13 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		this.rmGame = rmGame;
 		this.listener = listener;
 		
-		semA = new Semaphore(1, true);
+		semA = new Semaphore(1, false);
 		try {
 			semA.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		semB = new Semaphore(1, true);
+		semB = new Semaphore(1, false);
 		try {
 			semB.acquire();
 		} catch (InterruptedException e) {

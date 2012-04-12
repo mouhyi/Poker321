@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import Server.userModule.UserImpl;
+
 import Client.IPlayerClient;
 import Client.PlayerClient;
 
@@ -144,9 +146,9 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 			pcl.updateAfterRound("Ante Collected");
 		}*/
 		
+		System.out.println("************************************");
 		
-		
-		
+		curBet = bringIn;
 		players.get(curPlayer).bet(bringIn);
 		
 		for(IPlayerClient pcl: PClients){
@@ -156,11 +158,11 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		System.out.println("1st round UPdated");
 		
 		
-		/*
 		curPlayer = getNextPlayer();
 		count =1;
 		doBetting();
 		
+		/*
 		// round: 2,3,4
 		while (round < ROUNDS) {
 			if (players.size() < 2) {
@@ -244,6 +246,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 			return -1;
 		}
 		count ++;
+		this.getPlayer(userId).setDone(true);
 		return 0;
 	}
 
@@ -451,6 +454,9 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 */
 	// TODO: implement RMI
 	public void doBetting() {
+		
+		System.out.println("BeTTING ---------");
+		
 		// RMI
 		// betting goes in increasing indices and wraps around
 		// chips are added to pot at the end in confirmBet
@@ -465,6 +471,32 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		while (count<players.size()){
 			players.get(curPlayer).setTurn(true);
 			players.get(curPlayer).setDone(false);
+			
+			for(IPlayerClient pcl: PClients){
+				try {
+					pcl.updateDuringRound("It is "+(new UserImpl()).getUserObject(players.get(curPlayer).getUserId()).getName()+"'s turn.");
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+
+			System.out.println("Player has bet, sleep ---------");
+			
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			while(players.get(curPlayer).isDone() == false){
+			}
+			
 			// notify curPlayer and wait for him to play
 			// removes him if timeout
 			// notify the other players

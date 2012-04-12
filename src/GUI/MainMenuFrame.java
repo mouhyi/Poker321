@@ -1277,8 +1277,8 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
     private void friendsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendsListMouseClicked
         //try {
-        //    updateFriendsPanel(clientRequest.getUsername());
-       // } catch (RemoteException ex) {} catch (SQLException ex) {}
+        //   updateFriendsPanel(clientRequest.getUsername());
+        //} catch (RemoteException ex) {} catch (SQLException ex) {}
     }//GEN-LAST:event_friendsListMouseClicked
  
 
