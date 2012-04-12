@@ -25,7 +25,7 @@ public class GameFrame extends javax.swing.JFrame {
     /**
      * Creates new form GameScreen.
      */
-    public GameFrame(GUIClient guic, ServerListener sl, String tableName) {
+    public GameFrame(GUIClient guic, ServerListener sl, String tableName) throws RemoteException, SQLException {
         initComponents(); 
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((screenSize.width/2)-(this.getWidth()/2), (screenSize.height/2)-(this.getHeight()/2));
@@ -45,14 +45,23 @@ public class GameFrame extends javax.swing.JFrame {
         String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);       
         
         playerNameLabel.setText(clientRequest.getUsername());
-        if (listOfOpponents.length >= 1)
+        if (listOfOpponents.length >= 1) {
         	opponent1NameLabel.setText(listOfOpponents[0]);
-        if (listOfOpponents.length >= 2)
+                opponent1ChipsLabel.setText(clientRequest.getUsersWorth(listOfOpponents[0]));
+        }        
+        if (listOfOpponents.length >= 2) {
         	opponent2NameLabel.setText(listOfOpponents[1]);
-        if (listOfOpponents.length >= 3)
+                opponent2ChipsLabel.setText(clientRequest.getUsersWorth(listOfOpponents[1]));
+        }        
+        if (listOfOpponents.length >= 3) {
         	opponent3NameLabel.setText(listOfOpponents[2]);
-        if (listOfOpponents.length == 4)
-        	opponent4NameLabel.setText(listOfOpponents[3]);
+                opponent3ChipsLabel.setText(clientRequest.getUsersWorth(listOfOpponents[2]));
+        }        
+        if (listOfOpponents.length == 4) {
+                opponent4NameLabel.setText(listOfOpponents[3]);
+                opponent4ChipsLabel.setText(clientRequest.getUsersWorth(listOfOpponents[3]));
+        }
+        	
         
         playerAvatarLabel.setIcon(GUIClient.getAvatarIcon(playerNameLabel.getText()));
         opponent1AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent1NameLabel.getText()));
@@ -60,14 +69,21 @@ public class GameFrame extends javax.swing.JFrame {
         opponent3AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent3NameLabel.getText()));
         opponent4AvatarLabel.setIcon(GUIClient.getAvatarIcon(opponent4NameLabel.getText()));
         
-        //updateBettingSystem();
+       
         clearAllCardIcons();
         
         gameConsoleTextArea.append("  Welcome to Five Card Stud\n\n  Please wait until the game starts.\n");
         
         enableInputMethods(false);
-        
+
+        clientRequest.clientGameFrameDoneInitializing();
     }
+    
+    
+    
+    
+    
+    
     
     // Logic Methods
     
@@ -179,13 +195,14 @@ public class GameFrame extends javax.swing.JFrame {
         return setCardIconsForUser(username, cardIcons);
     } 
     
+    
     public boolean updateAllCards() {
     	String[] usersInGame = clientRequest.getPlayersAtGameTable(TABLE);
     	for (int i = 0; i < usersInGame.length; i++) {
     		if (!usersInGame.equals("Empty"))
     			updateCardsForUser(usersInGame[i]);
     	}	
-    	return true;
+    	return clientRequest.clientNeedsGameFrameUpdate();
     }
     
     
@@ -201,7 +218,7 @@ public class GameFrame extends javax.swing.JFrame {
         updatePot();
         updateCurrentBet();
         
-        return true;
+        return clientRequest.clientNeedsGameFrameUpdate();
     }
     
     /**
@@ -235,7 +252,7 @@ public class GameFrame extends javax.swing.JFrame {
      */
     public boolean updatePot() {
         gamePotLabel.setText("$" + clientRequest.getPot(TABLE));
-        return true;
+        return clientRequest.clientNeedsGameFrameUpdate();
     }
     
     /**
@@ -244,7 +261,7 @@ public class GameFrame extends javax.swing.JFrame {
      */
     public boolean updateCurrentBet() {
         currentBetLabel.setText("Current minimum bet: " + clientRequest.getMinimumBet(TABLE));
-        return true;
+        return clientRequest.clientNeedsGameFrameUpdate();
     }
             
     /**
@@ -257,21 +274,21 @@ public class GameFrame extends javax.swing.JFrame {
         if (username.equals("Empty"))
         	return true;
     	if (username.equals(playerNameLabel.getText())) 
-            playerChipsLabel.setText(clientRequest.getChips(username) + " chips");
+            playerChipsLabel.setText("$" + clientRequest.getChips(username));
         
         else if (username.equals(opponent1NameLabel.getText())) 
-            opponent1ChipsLabel.setText(clientRequest.getChips(username) + " chips");   
+            opponent1ChipsLabel.setText("$" + clientRequest.getChips(username));   
        
         else if (username.equals(opponent2NameLabel.getText())) 
-            opponent2ChipsLabel.setText(clientRequest.getChips(username) + " chips");
+            opponent2ChipsLabel.setText("$" + clientRequest.getChips(username));
 
         else if (username.equals(opponent3NameLabel.getText())) 
-            opponent3ChipsLabel.setText(clientRequest.getChips(username) + " chips");
+            opponent3ChipsLabel.setText("$" + clientRequest.getChips(username));
 
         else if (username.equals(opponent4NameLabel.getText())) 
-            opponent4ChipsLabel.setText(clientRequest.getChips(username) + " chips");
+            opponent4ChipsLabel.setText("$" + clientRequest.getChips(username));
  
-        return true;
+        return clientRequest.clientNeedsGameFrameUpdate();
     } 
     
     /**
@@ -311,14 +328,14 @@ public class GameFrame extends javax.swing.JFrame {
         
         addMessageToInGameConsole(username + " has left the game");
         
-        return true;        
+        return clientRequest.clientNeedsGameFrameUpdate();        
     }
     
     public boolean startTurn() {
         yourTurn = true;
         enableBettingInputFields(yourTurn);
         playerBetTextField.setText(clientRequest.getMinimumBet(TABLE));
-        return true;
+        return clientRequest.clientNeedsGameFrameUpdate();
     }
     
     public boolean endTurn() {
@@ -330,7 +347,8 @@ public class GameFrame extends javax.swing.JFrame {
     public boolean resetGame() {
         clearAllCardIcons();
         updateBettingSystem();
-        return true; 
+        
+        return clientRequest.clientNeedsGameFrameUpdate(); 
     }
     
     /**
@@ -353,14 +371,18 @@ public class GameFrame extends javax.swing.JFrame {
         //for (int i = 0; i < newMessages.length; i++)
             //gameConsoleTextArea.append("  " + newMessages[i] + "\n");
         gameConsoleTextArea.append("  " + message + "\n");
-        return true;
+        return clientRequest.clientNeedsGameFrameUpdate();
     }
    
     
     private void enableBettingInputFields(boolean enabled) {
-        playerBetTextField.enableInputMethods(enabled);
-        betCheckButton.enableInputMethods(enabled);
-        foldButton.enableInputMethods(enabled);
+        //playerBetTextField.enableInputMethods(enabled);
+        //betCheckButton.enableInputMethods(enabled);
+        //foldButton.enableInputMethods(enabled);
+        playerBetTextField.setEnabled(enabled);
+        betCheckButton.setEnabled(enabled);
+        foldButton.setEnabled(enabled);
+        
     }
 
     /**

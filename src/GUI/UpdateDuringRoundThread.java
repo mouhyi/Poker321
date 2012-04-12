@@ -29,7 +29,7 @@ public class UpdateDuringRoundThread extends Thread{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		//semA.release();	// remove
+		playerCl.semA.release();	// remove
 		
 		System.out.println( " Pcl.update*********** END *********");
 		

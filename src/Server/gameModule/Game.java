@@ -132,26 +132,31 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		
 		
 		/*try {
-			Thread.sleep(20000);
+			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	
-		
+		/*
 		for(IPlayerClient pcl: PClients){
 			//pcl.updateDuringRound("First Round");
 			pcl.updateAfterRound("Ante Collected");
 		}*/
 		
-		System.out.println("1st round UPdated");
 		
-		/*players.get(curPlayer).bet(bringIn);
+		
+		
+		players.get(curPlayer).bet(bringIn);
 		
 		for(IPlayerClient pcl: PClients){
 			pcl.updateDuringRound("Player has bet bringin ");
 		}
 		
+		System.out.println("1st round UPdated");
+		
+		
+		/*
 		curPlayer = getNextPlayer();
 		count =1;
 		doBetting();

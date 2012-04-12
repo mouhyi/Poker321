@@ -25,6 +25,8 @@ public class UpdateAfterRoundThread extends Thread {
 			e.printStackTrace();
 		}
 		
+		playerCl.semB.release();
+		
 		System.out.println("Now in playerclient, update after round*********");
 		
 		listener.updateAllCards();

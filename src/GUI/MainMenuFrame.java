@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Dimension;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -72,7 +74,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * Method to be called by server instructing main menu to enter game frame.
      * @return 
      */
-    public boolean enterGameFrame() {
+    public boolean enterGameFrame() throws RemoteException, SQLException {
         // Should check for errors here
     	System.out.println("mmf: current table" + clientRequest.getCurrentTable());
         openGameFrame(clientRequest.getCurrentTable());
@@ -144,7 +146,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
         friendsList.setListData(usernames);
     }
    
-    private void openGameFrame(String table) {
+    private void openGameFrame(String table) throws RemoteException, SQLException {
     	
     	System.out.println("mmf: open game frame 1");
     	
@@ -255,7 +257,17 @@ public class MainMenuFrame extends javax.swing.JFrame {
         });
 
         gameLobbySplitPane.setDividerLocation(150);
+        gameLobbySplitPane.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                gameLobbySplitPaneMouseClicked(evt);
+            }
+        });
 
+        gameTree.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                gameTreeMouseClicked(evt);
+            }
+        });
         gameTree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 gameTreeValueChanged(evt);
@@ -392,6 +404,11 @@ public class MainMenuFrame extends javax.swing.JFrame {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
+        });
+        friendsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                friendsListMouseClicked(evt);
+            }
         });
         friendsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -1101,11 +1118,16 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * @param evt 
      */
     private void addFriendMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFriendMenuItemActionPerformed
-        String friend = JOptionPane.showInputDialog(this, "Friend: ", "Add Friend", JOptionPane.PLAIN_MESSAGE);
+        String friend = "";
+        try {
+            friend = JOptionPane.showInputDialog(this, "Friend: ", "Add Friend", JOptionPane.PLAIN_MESSAGE);
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(this, "No input.", "Error", JOptionPane.ERROR_MESSAGE);
+        }    
         boolean completed = false;
         try {
             completed = clientRequest.addFriend(friend);
-        } catch (RemoteException ex) {} catch (SQLException ex) {}
+        } catch (RemoteException ex) {} catch (SQLException ex) {} catch (NullPointerException e) {}
         if (completed) 
             JOptionPane.showMessageDialog(this, friend + " has been added to your friends", "Done!", JOptionPane.INFORMATION_MESSAGE);
         else 
@@ -1117,11 +1139,16 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * @param evt 
      */
     private void deleteFriendMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFriendMenuItemActionPerformed
-        String friend = JOptionPane.showInputDialog(this, "Friend: ", "Delete Friend", JOptionPane.PLAIN_MESSAGE);
+        String friend = "";
+        try {
+            friend = JOptionPane.showInputDialog(this, "Friend: ", "Delete Friend", JOptionPane.PLAIN_MESSAGE);
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(this, "No input.", "Error", JOptionPane.ERROR_MESSAGE);
+        }      
         boolean completed = false;
         try {
             completed = clientRequest.deleteFriend(friend);
-        } catch (RemoteException ex) {} catch (SQLException ex) {}
+        } catch (RemoteException ex) {} catch (SQLException ex) {} catch (NullPointerException e) {}
         if (completed) 
             JOptionPane.showMessageDialog(this, friend + " has been removed from your friends", "Done!", JOptionPane.INFORMATION_MESSAGE);
         else 
@@ -1159,21 +1186,24 @@ public class MainMenuFrame extends javax.swing.JFrame {
         if (chipsString.equals(""))
             JOptionPane.showMessageDialog(this, "Please enter an amount.", "Error", JOptionPane.ERROR_MESSAGE);
  
-        try{
-        	double d = Double.parseDouble(chipsString); 
-        } catch(NumberFormatException e) {
-        	JOptionPane.showMessageDialog(this, "Not a number.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        
-        double chips = Double.parseDouble(chipsString);
-        
-        boolean purchased = clientRequest.purchaseChips(chips);
-        if (purchased) {
-            JOptionPane.showMessageDialog(this, "Email Changed.", "Success!", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "The server hates you.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        boolean isNumber = false;
+        try {
+            double d = Double.parseDouble(chipsString);
+            isNumber = true; 
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Not a number.", "Error", JOptionPane.ERROR_MESSAGE);
+            
+        }  
+        if (isNumber) {
+            double chips = Double.parseDouble(chipsString);
 
+            boolean purchased = clientRequest.purchaseChips(chips);
+            if (purchased) {
+                JOptionPane.showMessageDialog(this, "Chips puchased.", "Success!", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "The server hates you.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_purchaseChipsMenuItemActionPerformed
 
     /**
@@ -1233,6 +1263,23 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         serverListener.releaseMainMenuFrame();
     }//GEN-LAST:event_formWindowClosing
+
+    private void gameLobbySplitPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gameLobbySplitPaneMouseClicked
+        updateGameTree();
+        if (clientRequest.getCurrentTable() != null) 
+            updateGamePanel(clientRequest.getCurrentTable());  
+        updateGamePanel(tableNameLabel.getText());
+    }//GEN-LAST:event_gameLobbySplitPaneMouseClicked
+
+    private void gameTreeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gameTreeMouseClicked
+        updateGameTree();
+    }//GEN-LAST:event_gameTreeMouseClicked
+
+    private void friendsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendsListMouseClicked
+        //try {
+        //    updateFriendsPanel(clientRequest.getUsername());
+       // } catch (RemoteException ex) {} catch (SQLException ex) {}
+    }//GEN-LAST:event_friendsListMouseClicked
  
 
     

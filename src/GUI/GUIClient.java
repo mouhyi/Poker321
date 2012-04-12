@@ -63,9 +63,28 @@ public class GUIClient {
 	}
 
 	public ServerListener getServerListener() {
-		return this.sl;
+            return this.sl;
 	}
 
+        /*
+         * Update Methods
+         */
+        
+        public boolean clientGameFrameDoneInitializing() {
+            
+            // Refernce to PlayerClient here
+            
+            return true; 
+        } 
+        
+        public boolean clientNeedsGameFrameUpdate() {
+            
+            // Refernce to PlayerClient here
+            
+            return true; 
+        }
+        
+        
 	// #BeginLoginandUserMethods
 	/**
 	 * This allows the user to change his username if he is logged on
@@ -134,11 +153,11 @@ public class GUIClient {
 	 * @param username
 	 * @return
 	 */
-	public String getUsersWorth(String email) throws RemoteException,
+	public String getUsersWorth(String username) throws RemoteException,
 			SQLException {
 		String worth = "Broke";
 		UserObject desiredUser = currentUserClient.getUserProxy()
-				.getUserObject(email);
+				.getUserObject(username);
 		try {
 			worth = "" + desiredUser.getChips();
 		} catch (NullPointerException e) {
@@ -449,10 +468,10 @@ public class GUIClient {
 				password);
 		if (currentUser != null)
 			this.userId = currentUser.getId();
-		System.out.println("You are now logged in," + this.currentUser + ".");
 
-		if (this.currentUser != null) {
-			return true;
+                if (this.currentUser != null) {
+			System.out.println("You are now logged in," + this.currentUser + ".");
+                        return true;
 		}
 
 		return false;
@@ -606,6 +625,15 @@ public class GUIClient {
 		return listOfPlayers;
 	}
 
+        
+        public boolean getPlayersInGame() {
+            
+            return true; 
+        }
+        
+        
+        
+        
 	/**
 	 * Gets only the opponents other than the current user at a table
 	 * 
@@ -811,8 +839,8 @@ public class GUIClient {
 				/*
 				 * sl.enterGameFrame(); sl.initializeGame();
 				 */
-				/*currentPlayerClient.InitiateGameDisplay();
-				currentPlayerClient.updateAfterRound("IVE");*/
+				// currentPlayerClient.InitiateGameDisplay();
+				// (new TestStGame(sl)).start();
 				System.out.println("GUI LS PROXY");
 				return true;
 			}
@@ -1004,12 +1032,13 @@ public class GUIClient {
 				String i = ""
 						+ currentGameTableClient.getUserProxy().getTable(
 								usersGameTable.getName()).getGame().getCurBet();
+                                return i;
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		return "Couldn't get min bet";
+		return "0";
 	}
 
 	public String[] getPlayerCards() {
@@ -1047,7 +1076,7 @@ public class GUIClient {
 						if(r.equals("Queen")) rank="q";
 						if(r.equals("King")) rank="k";
 						if(r.equals("Ace")) rank="a";
-						
+
 						cardStrings[i] = "cards150px/" + element.getSuit().toString().toLowerCase()
 								+ "-" + rank + "-150.png";
 					i++;
@@ -1079,7 +1108,7 @@ public class GUIClient {
 				// } else return null;
 				if (cards != null) {
 					int i = 1;
-					
+
 					String[] cardStrings = new String[cards.size() + 1];
 					cardStrings[0] = "cards75px/back-blue-75-1.png";
 					for (ICard element : cards) {
@@ -1115,7 +1144,7 @@ public class GUIClient {
 		}
 		return null;
 	}
-
+        
 	public boolean leaveGame() {
 		try {
 			currentGameTableClient.getUserProxy().getTable(

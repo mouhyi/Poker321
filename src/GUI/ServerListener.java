@@ -108,9 +108,16 @@ public class ServerListener {
     	System.out.println("Sl: enter game frame");
         if (mainMenuFrame != null) {
         	System.out.println("Sl: mmf not null");
-            return mainMenuFrame.enterGameFrame();                      
+            try {
+				return mainMenuFrame.enterGameFrame();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}                      
         }
-            
         return false;
     }
     
@@ -126,7 +133,6 @@ public class ServerListener {
      */
     public boolean initializeGame() {
     	System.out.println("Sl: init game");
-    	if (gameFrame ==null) System.out.println("GameFrame Null in initializeGame...");
         if (gameFrame != null) 
             return gameFrame.resetGame();   
         return false;
@@ -204,7 +210,7 @@ public class ServerListener {
      */
     public boolean notifyPlayerTurn() {
         if (gameFrame != null) {
-            gameFrame.addMessageToInGameConsole("It is your turn.");
+            //gameFrame.addMessageToInGameConsole("It is your turn.");
             return gameFrame.startTurn();
         }    
         return false;
