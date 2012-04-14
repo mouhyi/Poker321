@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import Server.userModule.UserObject;
 
-public class leaderBoard {
+public class LeaderBoard {
 
 	public static String[][] leaderBoardDisplay() throws SQLException{
 		return Data.statistics.createLeaderBoard();
