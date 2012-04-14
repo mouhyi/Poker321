@@ -145,6 +145,7 @@ public class ServerListener {
      */
     public boolean updateAllCards() {
     	System.out.println("now in updateAllcards: server listener");
+  
         if (gameFrame != null) 
             return gameFrame.updateAllCards();
         return false;
@@ -210,7 +211,7 @@ public class ServerListener {
      */
     public boolean notifyPlayerTurn() {
         if (gameFrame != null) {
-            //gameFrame.addMessageToInGameConsole("It is your turn.");
+            gameFrame.addMessageToInGameConsole("It is your turn.");
             return gameFrame.startTurn();
         }    
         return false;
@@ -221,9 +222,9 @@ public class ServerListener {
      * @param username
      * @return 
      */
-    public boolean removeUserFromGame(String username) {
+    public boolean removeUserFromGame(int uID) {
         if (gameFrame != null)             
-            return gameFrame.removeUserFromGame(username);
+            return gameFrame.removeUserFromGame(uID);
         return false;
     }
 

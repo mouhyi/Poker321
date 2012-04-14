@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import Server.gameModule.ICard;
 import Server.gameModule.IGameTable;
 import Server.gameModule.IPlayer;
+import Server.gameModule.RemoteGame;
 import Server.userModule.UserObject;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -58,33 +59,35 @@ public class GUIClient {
 		 */
 	}
 
+	public UserClient getCurrentUserClient(){
+		return this.currentUserClient;
+	}
 	public GUIClient(String ip) {
 
 	}
 
 	public ServerListener getServerListener() {
-            return this.sl;
+		return this.sl;
 	}
 
-        /*
-         * Update Methods
-         */
-        
-        public boolean clientGameFrameDoneInitializing() {
-            
-            // Refernce to PlayerClient here
-            
-            return true; 
-        } 
-        
-        public boolean clientNeedsGameFrameUpdate() {
-            
-            // Refernce to PlayerClient here
-            
-            return true; 
-        }
-        
-        
+	/*
+	 * Update Methods
+	 */
+
+	public boolean clientGameFrameDoneInitializing() {
+
+		// Refernce to PlayerClient here
+
+		return true;
+	}
+
+	public boolean clientNeedsGameFrameUpdate() {
+
+		// Refernce to PlayerClient here
+
+		return true;
+	}
+
 	// #BeginLoginandUserMethods
 	/**
 	 * This allows the user to change his username if he is logged on
@@ -144,7 +147,7 @@ public class GUIClient {
 		if (i == 0)
 			return true;
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -469,9 +472,10 @@ public class GUIClient {
 		if (currentUser != null)
 			this.userId = currentUser.getId();
 
-                if (this.currentUser != null) {
-			System.out.println("You are now logged in," + this.currentUser + ".");
-                        return true;
+		if (this.currentUser != null) {
+			System.out.println("You are now logged in," + this.currentUser
+					+ ".");
+			return true;
 		}
 
 		return false;
@@ -624,22 +628,95 @@ public class GUIClient {
 
 		return listOfPlayers;
 	}
+	
+	/**
+	 * This gets the players currently in the game, if you're folded you are no longer in the game
+	 * @param tableId
+	 * @return
+	 * @author Peter
+	 */
+	public String[] getPlayersInGame(String tableId) {
+		RemoteGame desiredGame = null;
+		String[] listOfPlayers = { "Empty", "Empty", "Empty", "Empty", "Empty" };
+		try {
+			System.out.println("GUIC: get all tables .size = "
+					+ currentGameTableClient.getUserProxy().getAllTables()
+							.size());
 
-        
-        public boolean getPlayersInGame() {
-            
-            return true; 
-        }
-        
-        
-        
-        
+			if (currentGameTableClient.getUserProxy().getAllTables().size() != 0
+					&& !tableId.equals("Default Table")) {
+				try {
+
+					desiredGame = currentGameTableClient.getUserProxy()
+							.getTable(tableId).getGame();
+
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				ArrayList<IPlayer> players = null;
+				players = desiredGame.getPlayers();
+
+				int i = 0;
+
+				for (IPlayer element : players) {
+					try {
+						listOfPlayers[i] = currentUserClient.getUserProxy()
+								.getUserObject(element.getUserId()).getName();
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					i++;
+				}
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// Returns a list of players names at a particular table
+		System.out
+				.println("Get players at game, " + tableId + ", from server");
+
+		return listOfPlayers;
+	}
+	
+/**
+ * This gets the players that aren't the user in the game. 
+ * @param username
+ * @param table
+ * @return
+ * @author Peter
+ */
+	public String[] getOpponentsInGame(String username, String table) {
+		String[] listOfOpponents = { "Empty", "Empty", "Empty", "Empty" };
+		String[] listOfPlayers = getPlayersInGame(table);
+		int i = 0;
+		int j = 0;
+		while (i < 5) {
+			if (!listOfPlayers[i].equals(username)) {
+				listOfOpponents[j] = listOfPlayers[i];
+				j++;
+			}
+			i++;
+		}
+		System.out.println("Get opponents at game table");
+
+		return listOfOpponents;
+	}
+	
+
 	/**
 	 * Gets only the opponents other than the current user at a table
 	 * 
 	 * @param username
 	 * @param table
 	 * @return
+	 * @author Peter
 	 */
 	public String[] getOpponentsAtGameTable(String username, String table) {
 		String[] listOfOpponents = { "Empty", "Empty", "Empty", "Empty" };
@@ -658,12 +735,46 @@ public class GUIClient {
 		return listOfOpponents;
 	}
 
+	public int[] getFoldedPlayers(String table){
+		ArrayList<IPlayer> foldedPlayers = new ArrayList<IPlayer>();
+		int[] foldedPlayerNames= null;
+		
+		try {
+			ArrayList<IPlayer> playersInTable = currentGameTableClient.getUserProxy().getTable(table).getPlayers();
+			
+			for(IPlayer element : playersInTable){
+				if(!currentGameTableClient.getUserProxy().getTable(table).getGame().isPlayerIn(element.getUserId())){
+					foldedPlayers.add(element);
+				}
+			}
+			if(foldedPlayers!=null){
+			foldedPlayerNames= new int[foldedPlayers.size()];}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int i =0;
+		if(foldedPlayerNames!=null){
+		for (IPlayer element : foldedPlayers){
+			try {
+				foldedPlayerNames[i]=element.getUserId();
+				i++;
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		}
+		return foldedPlayerNames;
+	}
 	/**
 	 * Create a new game table on the server.
 	 * 
 	 * @param newTableInfo
 	 *            = {tableNameString, anteString, bringInString}
 	 * @return: boolean successful or not
+	 * @author Peter
 	 */
 	public boolean createNewTable(String[] newTableInfo) {
 		// String[] createNewTableFields = {tableNameString, anteString,
@@ -986,14 +1097,22 @@ public class GUIClient {
 				e1.printStackTrace();
 			}
 			try {
+				if(currentGameTableClient.getUserProxy().getTable(
+								usersGameTable.getName()).getGame().isPlayerIn(desiredPlayer.getId())){
 				i = ""
 						+ currentGameTableClient.getUserProxy().getTable(
 								usersGameTable.getName()).getGame().getPlayer(
 								desiredPlayer.getId()).getChips();
-			} catch (RemoteException e) {
+			} else {
+					i=""+currentUserClient.getUserProxy().getUserObject(username).getChips();
+				}
+				} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			return i;
 		}
 		return "0";
@@ -1001,7 +1120,9 @@ public class GUIClient {
 
 	/**
 	 * Gets the running pot of a table.
-	 * 
+	 * @param table
+	 * @return
+	 * @author Peter
 	 */
 	public String getPot(String table) {
 		if (usersGameTable != null) {
@@ -1032,7 +1153,7 @@ public class GUIClient {
 				String i = ""
 						+ currentGameTableClient.getUserProxy().getTable(
 								usersGameTable.getName()).getGame().getCurBet();
-                                return i;
+				return i;
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1041,6 +1162,11 @@ public class GUIClient {
 		return "0";
 	}
 
+	/**
+	 * This gets the image addresses to the players cards
+	 * @return
+	 * @author
+	 */
 	public String[] getPlayerCards() {
 		System.out.println("now we're in the guiclient getting player cards");
 		if (usersGameTable != null) {
@@ -1051,35 +1177,48 @@ public class GUIClient {
 						.getHand().getCards();
 				if (currentGameTableClient.getUserProxy().getTable(
 						usersGameTable.getName()).getGame().getPlayer(userId)
-						.getFaceDownCard() != null) {
+						.getFaceDownCard() != null && cards.size()<5) {
 					cards.add(currentGameTableClient.getUserProxy().getTable(
 							usersGameTable.getName()).getGame().getPlayer(
 							userId).getFaceDownCard());
-				} else
-					return null;
+				}
 				if (cards != null) {
 					int i = 0;
 					String[] cardStrings = new String[cards.size()];
 					for (ICard element : cards) {
 						String rank = "Nothing";
 						String r = element.getRank().toString();
-						if(r.equals("Deuce")) rank="2";
-						if(r.equals("Three")) rank="3";
-						if(r.equals("Four")) rank="4";
-						if(r.equals("Five")) rank="5";
-						if(r.equals("Six")) rank ="6";
-						if(r.equals("Seven")) rank="7";
-						if(r.equals("Eight")) rank="8";
-						if(r.equals("Nine")) rank="9";
-						if(r.equals("Ten")) rank="10";
-						if(r.equals("Jack")) rank= "j";
-						if(r.equals("Queen")) rank="q";
-						if(r.equals("King")) rank="k";
-						if(r.equals("Ace")) rank="a";
+						if (r.equals("Deuce"))
+							rank = "2";
+						if (r.equals("Three"))
+							rank = "3";
+						if (r.equals("Four"))
+							rank = "4";
+						if (r.equals("Five"))
+							rank = "5";
+						if (r.equals("Six"))
+							rank = "6";
+						if (r.equals("Seven"))
+							rank = "7";
+						if (r.equals("Eight"))
+							rank = "8";
+						if (r.equals("Nine"))
+							rank = "9";
+						if (r.equals("Ten"))
+							rank = "10";
+						if (r.equals("Jack"))
+							rank = "j";
+						if (r.equals("Queen"))
+							rank = "q";
+						if (r.equals("King"))
+							rank = "k";
+						if (r.equals("Ace"))
+							rank = "a";
 
-						cardStrings[i] = "cards150px/" + element.getSuit().toString().toLowerCase()
+						cardStrings[i] = "cards150px/"
+								+ element.getSuit().toString().toLowerCase()
 								+ "-" + rank + "-150.png";
-					i++;
+						i++;
 					}
 					return cardStrings;
 				}
@@ -1091,6 +1230,11 @@ public class GUIClient {
 		return null;
 	}
 
+	/**
+	 * This gets the card image references 
+	 * @param username
+	 * @return
+	 */
 	public String[] getOpponentCards(String username) {
 		System.out.println("getting opponent cards gui client");
 		ArrayList<ICard> cards = null;
@@ -1099,36 +1243,54 @@ public class GUIClient {
 			try {
 				playerId = currentUserClient.getUserProxy().getUserObject(
 						username).getId();
-				// if (currentGameTableClient.getUserProxy().getTable(
-				// usersGameTable.getName()).getGame().getPlayer(playerId)
-				// .getHand().getCards() != null) {
+				
 				cards = currentGameTableClient.getUserProxy().getTable(
 						usersGameTable.getName()).getGame().getPlayer(playerId)
 						.getHand().getCards();
-				// } else return null;
-				if (cards != null) {
-					int i = 1;
 
-					String[] cardStrings = new String[cards.size() + 1];
-					cardStrings[0] = "cards75px/back-blue-75-1.png";
+				if (cards != null) {
+					int i;
+					String[] cardStrings;
+					if (cards.size() < 5) {
+						cardStrings = new String[cards.size() + 1];
+						cardStrings[0] = "cards75px/back-blue-75-1.png";
+						i = 1;
+					} else {
+						cardStrings = new String[cards.size()];
+						i = 0;
+					}
 					for (ICard element : cards) {
 						String rank = "Nothing";
 						String r = element.getRank().toString();
-						if(r.equals("Deuce")) rank="2";
-						if(r.equals("Three")) rank="3";
-						if(r.equals("Four")) rank="4";
-						if(r.equals("Five")) rank="5";
-						if(r.equals("Six")) rank ="6";
-						if(r.equals("Seven")) rank="7";
-						if(r.equals("Eight")) rank="8";
-						if(r.equals("Nine")) rank="9";
-						if(r.equals("Ten")) rank="10";
-						if(r.equals("Jack")) rank= "j";
-						if(r.equals("Queen")) rank="q";
-						if(r.equals("King")) rank="k";
-						if(r.equals("Ace")) rank="a";
-						cardStrings[i] = "cards75px/" + element.getSuit().toString().toLowerCase() + "-"
-								+ rank + "-75.png";
+						if (r.equals("Deuce"))
+							rank = "2";
+						if (r.equals("Three"))
+							rank = "3";
+						if (r.equals("Four"))
+							rank = "4";
+						if (r.equals("Five"))
+							rank = "5";
+						if (r.equals("Six"))
+							rank = "6";
+						if (r.equals("Seven"))
+							rank = "7";
+						if (r.equals("Eight"))
+							rank = "8";
+						if (r.equals("Nine"))
+							rank = "9";
+						if (r.equals("Ten"))
+							rank = "10";
+						if (r.equals("Jack"))
+							rank = "j";
+						if (r.equals("Queen"))
+							rank = "q";
+						if (r.equals("King"))
+							rank = "k";
+						if (r.equals("Ace"))
+							rank = "a";
+						cardStrings[i] = "cards75px/"
+								+ element.getSuit().toString().toLowerCase()
+								+ "-" + rank + "-75.png";
 						i++;
 					}
 					return cardStrings;
@@ -1144,7 +1306,7 @@ public class GUIClient {
 		}
 		return null;
 	}
-        
+
 	public boolean leaveGame() {
 		try {
 			currentGameTableClient.getUserProxy().getTable(
