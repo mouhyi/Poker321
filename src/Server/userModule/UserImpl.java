@@ -208,4 +208,16 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 		userClients.add(ucl);
 		
 	}
+	/**
+	 * This creates a 2D array where the first layer is the usernames in ranked order, the second is the number of games won
+	 * and the third is the amount earned while playing
+	 *
+	 * @return
+	 * @throws SQLException
+	 * @throws RemoteException
+	 */
+	@Override
+	public String[][] leaderBoardDisplay() throws SQLException, RemoteException{
+		return Data.statistics.createLeaderBoard();
+	}
 }

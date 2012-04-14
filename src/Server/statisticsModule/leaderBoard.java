@@ -4,10 +4,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Server.userModule.UserObject;
+import java.rmi.*;
+import java.rmi.server.UnicastRemoteObject;
 
-public class leaderBoard {
+/**
+ * Remote statistics implementation
+ * @author mouhyi
+ *
+ */
 
-	public static String[][] leaderBoardDisplay() throws SQLException{
+public class LeaderBoard extends UnicastRemoteObject implements IStatistics {
+
+	protected LeaderBoard() throws RemoteException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public String[][] leaderBoardDisplay() throws SQLException, RemoteException{
 		return Data.statistics.createLeaderBoard();
 	}
 	/** 

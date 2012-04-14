@@ -140,4 +140,13 @@ public interface RemoteUser extends Remote {
 			
 	public UserObject getUserObject(int userId)
 			throws RemoteException, SQLException;
+
+
+	/**
+	 * Get statistics data
+	 * @return
+	 * @throws SQLException
+	 * @throws RemoteException
+	 */
+	String[][] leaderBoardDisplay() throws SQLException, RemoteException;
 }
