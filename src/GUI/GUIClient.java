@@ -875,7 +875,7 @@ public class GUIClient {
 	 * @author Peter
 	 */
 	public static String[][] retrieveStatistics() throws SQLException {
-		return Server.statisticsModule.LeaderBoard.LeaderBoardDisplay();
+		return Server.statisticsModule.LeaderBoard.leaderBoardDisplay();
 	}
 
 	/**
