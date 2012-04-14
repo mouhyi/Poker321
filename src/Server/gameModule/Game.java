@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import Server.userModule.UserImpl;
 
@@ -40,6 +41,8 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	// counts the number of matched calls in a betting round
 	private int count;
 
+	private Semaphore sem;
+
 	private ArrayList<IPlayerClient> PClients;
 
 	/**
@@ -62,6 +65,13 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		this.id = id;
 		PClients = new ArrayList<IPlayerClient>();
 		count = 0;
+
+		sem = new Semaphore(1);
+		try {
+			sem.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void addPlayers(List<Player> list) {
@@ -70,13 +80,6 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 				players.add(p);
 			}
 		}
-	}
-
-	/**
-	 * notify players
-	 */
-	public void publishEvent() {
-
 	}
 
 	public IPlayerClient getPClient(int id) {
@@ -107,7 +110,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 
 		System.out.println("Returned from call back");
 
-		System.out.println("Ante Server");
+		System.out.println("Ante");
 
 		// ante
 		collectAnte();
@@ -115,7 +118,6 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		// update clients
 		for (IPlayerClient pcl : PClients) {
 			pcl.updateDuringRound("Ante collected");
-			// pcl.updateAfterRound("Ante Collected");
 		}
 
 		// first round
@@ -126,15 +128,9 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		System.out.println("1st round Done");
 
 		for (IPlayerClient pcl : PClients) {
-			// pcl.updateDuringRound("First Round");
-			pcl.updateAfterRound("First Round");
+			pcl.updateAfterRound("Round 1");
+			// /pcl.updateAfterRound("1 st call");
 		}
-
-		/*
-		 * for(IPlayerClient pcl: PClients){
-		 * //pcl.updateDuringRound("First Round");
-		 * pcl.updateAfterRound("Ante Collected"); }
-		 */
 
 		System.out.println("************************************");
 
@@ -147,7 +143,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 				pcl.updateDuringRound(""
 						+ (new UserImpl()).getUserObject(
 								players.get(curPlayer).getUserId()).getName()
-						+ "  has bet bringin");
+						+ "  has bet the bring in");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -155,51 +151,93 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 
 		System.out.println("1st round UPdated");
 
-		
+		// END First Round
 
-		 curPlayer = getNextPlayer();
-		 count =1;
-		
-		
-		/*for (IPlayerClient pcl : PClients) {
+		curPlayer = getNextPlayer();
+		count = 1;
+
+		// FUCK YEAH this test showed me the bug
+		// while(true);
+
+		doBetting();
+		round =2;
+
+		// round: 2,3,4
+		while (round <= ROUNDS) {
+			if (players.size() < 2) {
+				break;
+			}
+			if (allIn) {
+				allInShowdown();
+				break;
+			}
+			count = 0;
+			curBet = 0;
+			
+			
+			
+			this.deal();
+			
+			for (IPlayerClient pcl : PClients) {
+					pcl.updateAfterRound("ROUND "+ round);
+				
+			}
+			
+			// case of a tie
+			ArrayList<Player> tmp = this.getBestHand();
+			Player PBesthand = tmp.get(tmp.size()-1);
+			curPlayer = players.indexOf(PBesthand);
+			
+			
+			doBetting();
+			round++;
+		}
+
+		// notify players of the winners & amount won and divide pot
+		if (players.size() < 2) {
+			players.get(0).addChips(pot);
 			try {
-				pcl.updateDuringRound("It is "
-						+ (new UserImpl()).getUserObject(
-								players.get(curPlayer).getUserId()).getName()
-						+ "'s turn.");
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				players.get(0).updateChips();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
 
-		
-		 doBetting();
-		 
+			for (IPlayerClient pcl : PClients) {
+				try {
+					pcl.updateAfterRound("Winner is "
+							+ (new UserImpl()).getUserObject(
+									players.get(curPlayer).getUserId())
+									.getName());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 
-		/*
-		 * // round: 2,3,4 while (round < ROUNDS) { if (players.size() < 2) {
-		 * break; } if (allIn) { allInShowdown(); break; } count = 0; curBet =0;
-		 * curPlayer =0; doBetting(); round++; }
-		 * 
-		 * // notify players of the winners & amount won and divide pot if
-		 * (players.size() < 2) { players.get(0).addChips(pot); try {
-		 * players.get(0).updateChips(); } catch (Exception e) {
-		 * e.printStackTrace(); } } else { ArrayList<Player> winners =
-		 * this.getWinner(); for (Player p : winners) { p.addChips(pot /
-		 * winners.size()); try { p.updateChips(); } catch (Exception e) {
-		 * e.printStackTrace(); }
-		 * 
-		 * } }
-		 */
+		} else {
+			ArrayList<Player> winners = this.getWinner();
+			String win ="winner: ";
+			for (Player p : winners) {
+				p.addChips(pot / winners.size());
+				try {
+					p.updateChips();
+					win += (new UserImpl()).getUserObject(
+							players.get(curPlayer).getUserId()).getName()+"  ";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}	
+
+			}
+			
+			for (IPlayerClient pcl : PClients) {
+				// should be afterRound
+				pcl.updateDuringRound(win);
+			}
+			
+		}
+
 		// Game over
+		System.out.println("Game over");
 
-	}
-	
-	public void dobettest(){
-		
 	}
 
 	public int getNextPlayer() {
@@ -224,6 +262,10 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 				player.confirmBet();
 			}
 		}
+	
+	// notify doBetting 
+	sem.release();	
+		
 	}
 
 	/**
@@ -236,33 +278,36 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 */
 	@Override
 	public int call(int userId) throws RemoteException {
-		
+
 		if (!this.getPlayer(userId).isTurn()) {
 			return -2;
 		}
-		
-		System.out.println("Player "+userId+"  CALLS");
-		
-		for (IPlayerClient pcl : PClients) {
-			try {
-				pcl.updateDuringRound(""+ (new UserImpl()).getUserObject(userId).getName() + " CALLS");
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		
 
 		Player player = this.getPlayer(userId);
 		if (player == null || player.bet(curBet) == -1) {
 			return -1;
 		}
+
+		System.out.println("Player " + userId + "  CALLS");
+
+		for (IPlayerClient pcl : PClients) {
+			try {
+				pcl.updateDuringRound(""
+						+ (new UserImpl()).getUserObject(userId).getName()
+						+ " CALLS");
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
 		count++;
 		this.getPlayer(userId).setDone(true);
 		this.getPlayer(userId).setTurn(false);
+
+		sem.release();
+
 		return 0;
 	}
 
@@ -277,31 +322,10 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	 */
 	@Override
 	public int raise(int userId, double bet) throws RemoteException {
-		
+
 		if (!this.getPlayer(userId).isTurn()) {
 			return -2;
 		}
-
-		System.out.println("Player "+userId+"  RAISES");
-		
-		
-		for (IPlayerClient pcl : PClients) {
-			try {
-				pcl.updateDuringRound(""
-						+ (new UserImpl()).getUserObject(userId).getName()  + " RAISES WITH "+bet);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		
-		if (!this.getPlayer(userId).isTurn()) {
-			return -2;
-		}
-
 		Player player = this.getPlayer(userId);
 		if (player == null) {
 			return -1;
@@ -309,9 +333,28 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		if (player.bet(bet) == 0) {
 			curBet = bet;
 			count = 1;
-			return 0;
+		} else {
+			return -1;
 		}
-		return -1;
+
+		System.out.println("Player " + userId + "  RAISES");
+
+		for (IPlayerClient pcl : PClients) {
+			try {
+				pcl.updateDuringRound(""
+						+ (new UserImpl()).getUserObject(userId).getName()
+						+ "  RAISES WITH " + bet);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		sem.release();
+
+		return 0;
 	}
 
 	/**
@@ -328,6 +371,8 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		}
 		allIn = true;
 		curBet = getPlayer(userId).getChips();
+		
+		sem.release();
 		return 0;
 	}
 
@@ -407,8 +452,10 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		ArrayList<Player> best = new ArrayList<Player>();
 		Player bestPlayer = playersCpy.get(playersCpy.size() - 1);
 		int i = playersCpy.size() - 1;
+		// check == here
 		while (i >= 0 && playersCpy.get(i) == bestPlayer) {
 			best.add(playersCpy.get(i));
+			i--;
 		}
 		return best;
 	}
@@ -515,6 +562,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 							+ (new UserImpl()).getUserObject(
 									players.get(curPlayer).getUserId())
 									.getName() + "'s turn.");
+
 				} catch (RemoteException e) {
 					e.printStackTrace();
 				} catch (SQLException e) {
@@ -525,27 +573,34 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 
 			System.out.println("Player bet  ---------");
 
-			/*try {
-				Thread.sleep(10000);
+			try {
+				sem.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
-
-			while (players.get(curPlayer).isDone() == false) {
 			}
-			
-			System.out.println("NEW CurBet "+curBet);
+
+			System.out.println("NEW CurBet " + curBet);
 
 			// notify curPlayer and wait for him to play
 			// removes him if timeout
 			// notify the other players
-			
+
 			System.out.println("NEXT PLAYER ---------");
-			
+
 			curPlayer = this.getNextPlayer();
 		}
+
 		confirmBet();
+
+		for (IPlayerClient pcl : PClients) {
+			try {
+				pcl.updateDuringRound("Round " + round + " DONE");
+
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+
 		System.out.println("BeTTING for this round done ---------");
 
 	}

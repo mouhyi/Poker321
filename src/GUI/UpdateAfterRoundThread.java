@@ -35,7 +35,7 @@ public class UpdateAfterRoundThread extends Thread {
 		}
 	
 		
-		System.out.println("Now in playerclient, update after round*********");
+		System.out.println("START update after round      *********");
 		
 		listener.updateAllCards();
 	 	System.out.println("updated cards ");
@@ -45,6 +45,8 @@ public class UpdateAfterRoundThread extends Thread {
 		System.out.println("updated message");
 		
 		playerCl.mainSem.release();
+		
+		System.out.println("END update after round          *********");
 		
 	}
 }

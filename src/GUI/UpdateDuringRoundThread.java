@@ -34,7 +34,7 @@ public class UpdateDuringRoundThread extends Thread{
 		}
 		
 		
-		System.out.println( " Pcl.update********* START ***********");
+	
 		
 		
 		try {
@@ -45,6 +45,8 @@ public class UpdateDuringRoundThread extends Thread{
 		playerCl.semA.release();	// remove
 		
 		//System.out.println( " Pcl.update*********** END *********");
+		
+		System.out.println( " Pcl.update********* START ***********");
 		
 		
 		listener.updateCurrentBet();

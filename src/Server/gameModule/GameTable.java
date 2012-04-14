@@ -199,8 +199,15 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 	public void startGame() throws RemoteException {
 		try {
 			curGame.addPlayers(this.players);
-			curGame.play();
-		} catch (RemoteException e) {
+			
+			
+			
+			// new thread here: Solves the bug
+			//curGame.play();
+			(new GameThread(curGame)).start();
+			
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

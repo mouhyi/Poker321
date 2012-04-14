@@ -21,7 +21,7 @@ import java.util.concurrent.*;
 public class UserClient extends UnicastRemoteObject implements IUserClient  {
 	
 	private static final int PORT = 10012;
-	private static final String HOST_NAME  = "localhost";
+	private static final String HOST_NAME  = "localhost"; //"localhost"
 	
 	
 	// stub to the UserServer object
