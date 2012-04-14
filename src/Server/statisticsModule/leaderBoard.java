@@ -7,15 +7,6 @@ import Server.userModule.UserObject;
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
 
-<<<<<<< HEAD
-/**
- * Remote statistics implementation
- * @author mouhyi
- *
- */
-=======
-public class LeaderBoard {
->>>>>>> b1f9c5b7d05f126f7eb82eca7696a2a9c5912f4b
 
 public class LeaderBoard extends UnicastRemoteObject implements IStatistics {
 
