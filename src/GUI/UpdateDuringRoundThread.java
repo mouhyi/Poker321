@@ -21,6 +21,7 @@ public class UpdateDuringRoundThread extends Thread{
 		this.playerCl = playerCl;
 	}
 	
+
 	public void run(){
 		
 		
@@ -52,10 +53,18 @@ public class UpdateDuringRoundThread extends Thread{
 		listener.updateCurrentBet();
 		listener.updatePot();
 		listener.addInGameConsoleMessage(msg);
+		
+		
 		try {
-			if(rmGame.getPlayer(userId).isTurn())
-				listener.notifyPlayerTurn();
+			if(rmGame.isPlayerIn(userId)){
+			
+				if(rmGame.getPlayer(userId).isTurn())
+					listener.notifyPlayerTurn();
+			}
+			else
+				listener.removeUserFromGame(userId);
 		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

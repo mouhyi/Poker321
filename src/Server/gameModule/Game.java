@@ -220,8 +220,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 				p.addChips(pot / winners.size());
 				try {
 					p.updateChips();
-					win += (new UserImpl()).getUserObject(
-							players.get(curPlayer).getUserId()).getName()+"  ";
+					win += (new UserImpl()).getUserObject(p.getUserId()).getName()+"  ";
 				} catch (Exception e) {
 					e.printStackTrace();
 				}	
@@ -230,7 +229,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 			
 			for (IPlayerClient pcl : PClients) {
 				// should be afterRound
-				pcl.updateDuringRound(win);
+				pcl.updateAfterRound(win);
 			}
 			
 		}
@@ -256,12 +255,22 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	@Override
 	public void removePlayer(int userId) throws RemoteException {
 		Player player = this.getPlayer(userId);
+		String Pname="";
+		try {
+			Pname = (new UserImpl()).getUserObject(this.getPlayer(userId).getUserId()).getName();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		synchronized (players) {
 			if (player != null) {
 				players.remove(player);
 				player.confirmBet();
 			}
 		}
+		for (IPlayerClient pcl : PClients) {
+			pcl.updateAfterRound(  Pname+ " has FOLDED" );
+		}
+		
 	
 	// notify doBetting 
 	sem.release();	
@@ -657,5 +666,9 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public boolean isPlayerIn(int userId) throws RemoteException{
+		return (this.getPlayer(userId)== null) ? false : true;
 	}
 }

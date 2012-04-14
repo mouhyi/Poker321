@@ -1,10 +1,15 @@
 package GUI;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+
+import Server.gameModule.IPlayer;
 
 
 /**
@@ -42,7 +47,7 @@ public class GameFrame extends javax.swing.JFrame {
         TABLE = tableName;
         ANTE = clientRequest.getTableAnte(TABLE);
         
-        String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);       
+        String[] listOfOpponents = clientRequest.getOpponentsInGame(clientRequest.getUsername(), TABLE);       
         
         playerNameLabel.setText(clientRequest.getUsername());
         if (listOfOpponents.length >= 1) {
@@ -74,7 +79,7 @@ public class GameFrame extends javax.swing.JFrame {
         
         gameConsoleTextArea.append("  Welcome to Five Card Stud\n\n  Please wait until the game starts.\n");
         
-        //enableInputMethods(false);
+        enableBettingInputFields(false);
 
         clientRequest.clientGameFrameDoneInitializing();
     }
@@ -91,7 +96,7 @@ public class GameFrame extends javax.swing.JFrame {
      * Clear the game panel of card icons.
      */
     private void clearAllCardIcons() {
-        String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(clientRequest.getUsername(), TABLE);
+        String[] listOfOpponents = clientRequest.getOpponentsInGame(clientRequest.getUsername(), TABLE);
         clearCardIconsForUser(clientRequest.getUsername());
         for (int i = 0; i < listOfOpponents.length; i++) {
         	if (!listOfOpponents[i].equals("Empty"))
@@ -175,7 +180,7 @@ public class GameFrame extends javax.swing.JFrame {
         }    
         
         if (iconPaths == null) {
-            clearCardIconsForUser(username); 
+           // clearCardIconsForUser(username); 
             System.out.println("iconpaths is null in game fram");
             return true; 
         }
@@ -197,7 +202,13 @@ public class GameFrame extends javax.swing.JFrame {
     
     
     public boolean updateAllCards() {
-    	String[] usersInGame = clientRequest.getPlayersAtGameTable(TABLE);
+    	String[] usersInGame = clientRequest.getPlayersInGame(TABLE);
+    	int[] foldedPlayers = clientRequest.getFoldedPlayers(TABLE);
+    	if(foldedPlayers!=null){
+    	for(int i=0; i<foldedPlayers.length; i++){
+    		this.removeUserFromGame(foldedPlayers[i]);
+    	}
+    	}
     	for (int i = 0; i < usersInGame.length; i++) {
     		if (!usersInGame.equals("Empty"))
     			updateCardsForUser(usersInGame[i]);
@@ -321,10 +332,15 @@ public class GameFrame extends javax.swing.JFrame {
      * @param username
      * @return 
      */
-    public boolean removeUserFromGame(String username) {
-             
-        clearCardIconsForUser(username);
-        setAvatarIconForUser(username, new ImageIcon(""));
+    public boolean removeUserFromGame(int uID) {
+        String username = null;
+		try {
+			username = clientRequest.getCurrentUserClient().getUserProxy().getUserObject(uID).getName();
+			
+		} catch (RemoteException e) {} catch (SQLException e) {}
+		System.out.println("GAME FRAME: REMOVED USER FROM GAME:"+username);
+		clearCardIconsForUser(username);
+        //setAvatarIconForUser(username, new ImageIcon(""));
         
         addMessageToInGameConsole(username + " has left the game");
         
@@ -333,14 +349,14 @@ public class GameFrame extends javax.swing.JFrame {
     
     public boolean startTurn() {
         yourTurn = true;
-       //enableBettingInputFields(yourTurn);
+        enableBettingInputFields(yourTurn);
         playerBetTextField.setText(clientRequest.getMinimumBet(TABLE));
         return clientRequest.clientNeedsGameFrameUpdate();
     }
     
     public boolean endTurn() {
         yourTurn = false;
-        //enableBettingInputFields(yourTurn);
+        enableBettingInputFields(yourTurn);
         return true;
     }
     
@@ -370,7 +386,14 @@ public class GameFrame extends javax.swing.JFrame {
     public boolean addMessageToInGameConsole(String message) {
         //for (int i = 0; i < newMessages.length; i++)
             //gameConsoleTextArea.append("  " + newMessages[i] + "\n");
-        gameConsoleTextArea.append("  " + message + "\n");
+        
+    	gameConsoleTextArea.append("  " + message + "\n");
+       
+    	// TO BE FIXED
+    	Rectangle visableRect = gameConsoleTextArea.getVisibleRect();
+        visableRect.y =  gameConsoleTextArea.getHeight() - visableRect.height;
+        gameConsoleTextArea.scrollRectToVisible(visableRect);
+        
         return clientRequest.clientNeedsGameFrameUpdate();
     }
    
