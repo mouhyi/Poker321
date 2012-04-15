@@ -984,9 +984,16 @@ public class GUIClient {
 	 * 
 	 * @return arrayOfStrings [20][5]
 	 * @author Peter
+	 * @throws SQLException
 	 */
-	public static String[][] retrieveStatistics() throws SQLException {
-		return Server.statisticsModule.leaderBoard.leaderBoardDisplay();
+	public String[][] retrieveStatistics() throws SQLException {
+		try {
+			return currentUserClient.getUserProxy().leaderBoardDisplay();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
