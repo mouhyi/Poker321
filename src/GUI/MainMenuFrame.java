@@ -1079,18 +1079,20 @@ public class MainMenuFrame extends javax.swing.JFrame {
         if (inTable = true) {
             String friend = JOptionPane.showInputDialog(this, "Friend: ", "Invite Friend", JOptionPane.PLAIN_MESSAGE);
             boolean valid = false;
-            try {
-                valid = clientRequest.hasFriend(friend);
-            } catch (RemoteException ex) {} catch (SQLException ex) {}
-            if (valid) {
-                boolean completed = clientRequest.inviteFriendToTable(clientRequest.getCurrentTable(), friend);
-                if (completed)
-                    JOptionPane.showMessageDialog(this, "You have invited " + friend + " to join your table.", "Invite Sent!", JOptionPane.INFORMATION_MESSAGE);
-                else
-                    JOptionPane.showMessageDialog(this, "Friend is offline", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            else 
-                JOptionPane.showMessageDialog(this, "Friend does not exist...", "Error", JOptionPane.ERROR_MESSAGE);
+            if (friend != null) {
+            	try {
+            		valid = clientRequest.hasFriend(friend);
+            	} catch (RemoteException ex) {} catch (SQLException ex) {}
+            	if (valid) {
+            		boolean completed = clientRequest.inviteFriendToTable(clientRequest.getCurrentTable(), friend);
+            		if (completed)
+            			JOptionPane.showMessageDialog(this, "You have invited " + friend + " to join your table.", "Invite Sent!", JOptionPane.INFORMATION_MESSAGE);
+            		else
+            			JOptionPane.showMessageDialog(this, "Friend is offline", "Error", JOptionPane.ERROR_MESSAGE);
+            		}
+            	else 
+            		JOptionPane.showMessageDialog(this, "Friend does not exist...", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }    
     }//GEN-LAST:event_inviteFriendMenuItemActionPerformed
 

@@ -149,4 +149,14 @@ public interface RemoteUser extends Remote {
 	 * @throws RemoteException
 	 */
 	public String[][] leaderBoardDisplay() throws SQLException, RemoteException;
+
+	
+	/**
+	 * Sends invitation to a friend
+	 * @param userId
+	 * @param friendId
+	 * @param msg
+	 * @throws RemoteException
+	 */
+	public void invite(int userId, int friendId, String msg) throws RemoteException;
 }

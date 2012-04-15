@@ -270,7 +270,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 			for(Player p: players){
 				try {
 					int id = p.getUserId();
-					double initChips = (new UserImpl()).getUserObject(id).getChips();
+					double initChips = p.getIniChips();
 					Data.Statistics.updateUserStatistics(id, p.getChips() - initChips, false);
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -288,6 +288,16 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 
 	public int getNextPlayer() {
 		return (curPlayer + 1) % players.size();
+	}
+	
+	/**
+	 * Remotes client
+	 * 
+	 * @param userId
+	 * @throws RemoteException
+	 */
+	public void removePlayerProxy(int userId) throws RemoteException{
+		PClients.remove(this.getPClient(userId));
 	}
 
 	/**

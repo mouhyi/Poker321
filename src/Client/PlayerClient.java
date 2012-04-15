@@ -138,7 +138,6 @@ public class PlayerClient extends UnicastRemoteObject  implements IPlayerClient 
 		
 	}
 	
-	
 	public synchronized boolean isDone() throws RemoteException{
 		/*try {
 			mainSem.acquire();

@@ -22,6 +22,8 @@ public class Player extends UnicastRemoteObject implements Comparable<Player>, I
 	private Card faceDownCard;
 	// player's stake 
 	private double chips;
+	private double iniChips;
+	
 	private double curBet;
 	private boolean turn;
 	private int seat;
@@ -37,6 +39,7 @@ public class Player extends UnicastRemoteObject implements Comparable<Player>, I
 	public Player(int id) throws RemoteException, SQLException{
 		userId = id;
 		chips = new UserImpl().getUserObject(id).getChips();
+		iniChips = chips;
 		hand = new Hand();
 		turn = false;
 		seat =-1;
@@ -44,6 +47,10 @@ public class Player extends UnicastRemoteObject implements Comparable<Player>, I
 		
 	}
 	
+	public double getIniChips() {
+		return iniChips;
+	}
+
 	/**
 	 * Adds a card to this player's hand
 	 *  

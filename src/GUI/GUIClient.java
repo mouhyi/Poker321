@@ -40,14 +40,17 @@ public class GUIClient {
 	 * server and displays it in the GUI
 	 */
 	public GUIClient(ServerListener sl) {
+		
+		this.sl = sl;
+		
 		try {
-			currentUserClient = new UserClient();
+			currentUserClient = new UserClient(sl);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		currentGameTableClient = new GameClient();
-		this.sl = sl;
+		
 
 		/*
 		 * // Code to create an actual default table IGameTable desiredTable =
@@ -334,8 +337,7 @@ public class GUIClient {
 	 * @param friend
 	 * @return true if friends
 	 */
-	public boolean hasFriend(String friend) throws RemoteException,
-			SQLException {
+	public boolean hasFriend(String friend) throws RemoteException, SQLException {
 		String[] userFriends = getFriends(getUsername());
 		for (int i = 0; i < userFriends.length; i++) {
 			if (userFriends[i].equals(friend)) {
@@ -469,9 +471,10 @@ public class GUIClient {
 
 		this.currentUser = currentUserClient.getUserProxy().login(email,
 				password);
-		if (currentUser != null)
+		if (currentUser != null){
 			this.userId = currentUser.getId();
-
+			currentUserClient.registerWithServer(userId);
+		}
 		if (this.currentUser != null) {
 			System.out.println("You are now logged in," + this.currentUser
 					+ ".");
@@ -919,6 +922,7 @@ public class GUIClient {
 			try {
 				currentGameTableClient.getUserProxy().getTable(table)
 						.removePlayer(userId);
+				currentGameTableClient.getUserProxy().getTable(table).getGame().removePlayerProxy( userId);
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -971,8 +975,24 @@ public class GUIClient {
 	 * @return successful or not
 	 * @author Peter
 	 */
-	public static boolean inviteFriendToTable(String table, String friend) {
-
+	public boolean inviteFriendToTable(String table, String friend) {
+		int friendId = 0;
+		try {
+			friendId = currentUserClient.getUserProxy().getUserObject(friend).getId();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String msg = friend+" has invited you to the Game Table: " + table +". You should go join him!";
+		try {
+			currentUserClient.getUserProxy().invite(userId, friendId, msg );
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return true;
 	}
 

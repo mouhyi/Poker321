@@ -222,4 +222,24 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	public String[][] leaderBoardDisplay() throws SQLException, RemoteException{
 		return Statistics.createLeaderBoard();
 	}
+	
+	public IUserClient getClient(int id) throws RemoteException{
+		for(IUserClient cl: userClients){
+			if (cl.getuserId() == id){
+				return cl;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Sends Game invitation
+	 * @author mouhyi
+	 * @throws RemoteException 
+	 * 
+	 */
+	@Override
+	public void invite(int userId, int friendId, String msg ) throws RemoteException{
+		this.getClient(friendId).showNotificationMessage(msg);
+	}
 }

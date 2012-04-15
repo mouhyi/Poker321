@@ -64,6 +64,14 @@ public interface RemoteGame extends Remote {
 	 */
 	// TODO create All-in Button
 	public int allIn(int userId) throws RemoteException;
+	
+	/**
+	 * Remotes client
+	 * 
+	 * @param userId
+	 * @throws RemoteException
+	 */
+	public void removePlayerProxy(int userId) throws RemoteException;
 
 	// getters
 
