@@ -32,7 +32,7 @@ public class Statistics {
 
 		try {
 			Connection con = Methods.connectToDB("5CARD");
-			String query = "UPDATE 'Players' SET gameWinnings=?, wins=?, losses=?"
+			String query = "UPDATE 5CARD.Players SET gameWinnings=?, wins=?, losses=?"
 					+ " WHERE u_id=?";
 			pstmt = con.prepareStatement(query);
 			
