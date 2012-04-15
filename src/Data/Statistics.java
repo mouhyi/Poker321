@@ -113,7 +113,7 @@ public class Statistics {
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				stats[0] = rs.getDouble("GameWinnings");
-				stats[1] = rs.getInt("wons");
+				stats[1] = rs.getInt("wins");
 				stats[2] = rs.getInt("losses");
 			}
 		}catch (SQLException e) {
