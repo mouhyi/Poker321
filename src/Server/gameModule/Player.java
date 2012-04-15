@@ -111,7 +111,7 @@ public class Player extends UnicastRemoteObject implements Comparable<Player>, I
 	 */
 	public int updateChips() throws RemoteException, SQLException{
 		UserObject user =(new UserImpl()).getUserObject(userId);
-		user.setChips(user.getChips() + chips);
+		user.setChips( chips);
 		return (new UserImpl()).editProfile(user) ;
 	}
 	

@@ -132,7 +132,8 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	@Override
 	public int logout(UserObject user) throws RemoteException, SQLException {
 		user.setOnline(false);
-		return UserData.updateUser(user);
+		//return UserData.updateUser(user);
+		return 0;
 
 	}
 

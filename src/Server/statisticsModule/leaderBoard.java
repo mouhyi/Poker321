@@ -8,7 +8,7 @@ import Server.userModule.UserObject;
 public class leaderBoard {
 
 	public static String[][] leaderBoardDisplay() throws SQLException{
-		return Data.statistics.createLeaderBoard();
+		return Data.Statistics.createLeaderBoard();
 	}
 	/** 
 	 * This creates a 2D array where the first layer is the usernames in ranked order, the second is the number of games won

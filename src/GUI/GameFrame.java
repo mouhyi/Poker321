@@ -342,7 +342,7 @@ public class GameFrame extends javax.swing.JFrame {
 		clearCardIconsForUser(username);
         //setAvatarIconForUser(username, new ImageIcon(""));
         
-        addMessageToInGameConsole(username + " has left the game");
+       // addMessageToInGameConsole(username + " has left the game");
         
         return clientRequest.clientNeedsGameFrameUpdate();        
     }
@@ -905,6 +905,7 @@ public class GameFrame extends javax.swing.JFrame {
 						JOptionPane.ERROR_MESSAGE);
 
 			else if (yourBet >= minimumBet) {
+				endTurn();
 				if (yourBet < yourChips) {
 					clientRequest.sendBet(yourBet);
 					//addMessageToInGameConsole("You bet " + yourBet);
@@ -915,7 +916,6 @@ public class GameFrame extends javax.swing.JFrame {
 					//addMessageToInGameConsole("You have gone all in " + yourBet);
 				}
 
-				endTurn();
 			}
         }
     }//GEN-LAST:event_betCheckButtonActionPerformed

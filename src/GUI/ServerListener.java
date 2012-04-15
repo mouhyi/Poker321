@@ -211,7 +211,7 @@ public class ServerListener {
      */
     public boolean notifyPlayerTurn() {
         if (gameFrame != null) {
-            gameFrame.addMessageToInGameConsole("It is your turn.");
+            //gameFrame.addMessageToInGameConsole("It is your turn.");
             return gameFrame.startTurn();
         }    
         return false;
