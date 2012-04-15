@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import Client.IUserClient;
+import Data.Statistics;
 import Data.UserData;
 
 /**
@@ -219,6 +220,6 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	 */
 	@Override
 	public String[][] leaderBoardDisplay() throws SQLException, RemoteException{
-		return Data.statistics.createLeaderBoard();
+		return Statistics.createLeaderBoard();
 	}
 }

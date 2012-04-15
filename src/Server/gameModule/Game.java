@@ -26,6 +26,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 
 	// player's seat = player's index in the ArrayList
 	private ArrayList<Player> players;
+	private ArrayList<Player> initPlayers;
 	private int round;
 	// no side pots
 	private double pot;
@@ -55,6 +56,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	public Game(double ante, double bringIn, List<Player> list, int id)
 			throws RemoteException {
 		players = new ArrayList<Player>(list);
+		initPlayers = new ArrayList<Player>(list);
 		this.ante = ante;
 		this.bringIn = bringIn;
 		curBet = 0;
@@ -66,6 +68,25 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		PClients = new ArrayList<IPlayerClient>();
 		count = 0;
 
+		sem = new Semaphore(1);
+		try {
+			sem.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void reset(){
+		players = new ArrayList<Player>(initPlayers);
+		curBet = 0;
+		curPlayer = 0;
+		round = 1;
+		deck = new Deck();
+		pot = 0.0;
+		this.id ++;
+		
+		count = 0;
+		
 		sem = new Semaphore(1);
 		try {
 			sem.acquire();
@@ -156,7 +177,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		curPlayer = getNextPlayer();
 		count = 1;
 
-		// FUCK YEAH this test showed me the bug
+		// this test showed me the bug
 		// while(true);
 
 		doBetting();
@@ -169,6 +190,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 			}
 			if (allIn) {
 				allInShowdown();
+				round++;
 				break;
 			}
 			count = 0;
@@ -195,6 +217,9 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 
 		// notify players of the winners & amount won and divide pot
 		if (players.size() < 2) {
+			
+			//this.getWinner();
+			
 			players.get(0).addChips(pot);
 			try {
 				players.get(0).updateChips();
@@ -215,7 +240,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 
 		} else {
 			ArrayList<Player> winners = this.getWinner();
-			String win ="winner: ";
+			String win ="Winner: ";
 			for (Player p : winners) {
 				p.addChips(pot / winners.size());
 				try {
@@ -255,6 +280,9 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 
 		// Game over
 		System.out.println("Game over");
+		
+		// clear old game data
+		//this.reset();
 
 	}
 
@@ -435,7 +463,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	}
 
 	public void allInShowdown() {
-		for (int i = round + 1; i <= ROUNDS; i++) {
+		for (int i = round ; i <= ROUNDS; i++) {
 			this.deal();
 		}
 	}
@@ -670,6 +698,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		}
 	}
 
+	// Getters
 	public int getRound() throws RemoteException {
 		return round;
 	}

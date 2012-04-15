@@ -1006,6 +1006,12 @@ public class GUIClient {
 	public boolean sendBet(double bet) {
 		if (usersGameTable != null) {
 			try {
+				if(bet == currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPlayer(userId).getChips()){
+					int i = currentGameTableClient.getUserProxy().getTable(
+							usersGameTable.getName()).getGame().allIn(userId);
+					if(i==0) return true;
+					else return false;
+				}
 				if (bet > currentGameTableClient.getUserProxy().getTable(
 						usersGameTable.getName()).getGame().getCurBet()) {
 					int i = currentGameTableClient.getUserProxy().getTable(

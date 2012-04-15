@@ -148,5 +148,5 @@ public interface RemoteUser extends Remote {
 	 * @throws SQLException
 	 * @throws RemoteException
 	 */
-	String[][] leaderBoardDisplay() throws SQLException, RemoteException;
+	public String[][] leaderBoardDisplay() throws SQLException, RemoteException;
 }

@@ -32,7 +32,7 @@ public class Statistics {
 
 		try {
 			Connection con = Methods.connectToDB("5CARD");
-			String query = "UPDATE 'Players' SET gameWinnings=? wins=?, losses=?"
+			String query = "UPDATE 'Players' SET gameWinnings=?, wins=?, losses=?"
 					+ " WHERE u_id=?";
 			pstmt = con.prepareStatement(query);
 			
@@ -42,8 +42,9 @@ public class Statistics {
 			pstmt.setDouble(1, stats[0]+newGameWinnings);
 			if(gameWon){
 				pstmt.setInt(2, (int)stats[1]+1);
-			}
-			if(!gameWon){
+				pstmt.setInt(3, (int) stats[2]);
+			}else{
+				pstmt.setInt(2, (int)stats[1]);
 				pstmt.setInt(3, (int) stats[2]+1);
 			}
 			pstmt.setInt(4, userId);
@@ -107,7 +108,7 @@ public class Statistics {
 		double [] stats = new double[3];
 		try {
 			Connection con = Methods.connectToDB("5CARD");
-			String query = "SELECT * FROM 5Card.Players WHERE u_id='"+userId+"'";
+			String query = "SELECT * FROM Players WHERE u_id='"+userId+"'";
 			stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			if (rs.next()) {
