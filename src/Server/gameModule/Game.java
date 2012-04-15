@@ -267,14 +267,16 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 			
 			// update stats
 			
-			for(Player p: players){
-				try {
-					int id = p.getUserId();
-					double initChips = p.getIniChips();
-					Data.Statistics.updateUserStatistics(id, p.getChips() - initChips, false);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+			
+		}
+		for(Player p: players){
+			try {
+				int id = p.getUserId();
+				double initChips = p.getIniChips();
+				boolean won = (p.getChips() - initChips > 0);
+				Data.Statistics.updateUserStatistics(id, p.getChips() - initChips, won);
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 
