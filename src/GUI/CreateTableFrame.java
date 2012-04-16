@@ -5,7 +5,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
- * Create an input frame to create a new table.
+ * Creates an input frame for the creation of a new table.
  *  
  * @author mattvertescher
  */
@@ -15,6 +15,8 @@ public class CreateTableFrame extends javax.swing.JFrame {
     
     /**
      * Creates new form CreateTableFrame.
+     * 
+     * @param guiclient
      */
     public CreateTableFrame(GUIClient guic) {
         initComponents();        
@@ -139,6 +141,7 @@ public class CreateTableFrame extends javax.swing.JFrame {
 
     /**
      * When the cancel button is pressed, this frame is destroyed.
+     * 
      * @param evt 
      */
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -149,6 +152,7 @@ public class CreateTableFrame extends javax.swing.JFrame {
     /**
      * When the create table button is pressed, a new table is attempted to be
      * created on the server. 
+     * 
      * @param evt 
      */
     private void createTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createTableButtonActionPerformed
