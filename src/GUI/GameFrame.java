@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -48,7 +47,7 @@ public class GameFrame extends javax.swing.JFrame {
 		clientRequest = guic;
 		serverListener = sl;
 		serverListener.setGameFrame(this);
-		System.out.println("Game frame init");
+		//System.out.println("Game frame init");
 
 		TABLE = tableName;
 		ANTE = clientRequest.getTableAnte(TABLE);
@@ -102,7 +101,7 @@ public class GameFrame extends javax.swing.JFrame {
 	// Logic Methods
 
 	/**
-	 * Clear the game panel of card icons.
+	 * Clears the game panel of card icons.
 	 */
 	private void clearAllCardIcons() {
 		String[] listOfOpponents = clientRequest.getOpponentsInGame(
@@ -115,7 +114,7 @@ public class GameFrame extends javax.swing.JFrame {
 	}
 
 	/**
-	 * Clear a users card icons.
+	 * Clears a users card icons.
 	 * 
 	 * @param username
 	 */
@@ -186,7 +185,7 @@ public class GameFrame extends javax.swing.JFrame {
 	public boolean updateCardsForUser(String username) {
 		String[] iconPaths = null;
 		if (username.equals(clientRequest.getUsername())) {
-			System.out.println("gets player cards for username game frame");
+			//System.out.println("gets player cards for username game frame");
 			iconPaths = clientRequest.getPlayerCards();
 		} else if (!username.equals(clientRequest.getUsername())
 				&& !username.equals("Empty") && username != null) {
@@ -195,7 +194,7 @@ public class GameFrame extends javax.swing.JFrame {
 
 		if (iconPaths == null) {
 			// clearCardIconsForUser(username);
-			System.out.println("iconpaths is null in game fram");
+			//System.out.println("iconpaths is null in game fram");
 			return true;
 		}
 
@@ -211,13 +210,18 @@ public class GameFrame extends javax.swing.JFrame {
 				cardIcons[i] = new ImageIcon(GUIClient.class
 						.getResource(iconPaths[i]));
 			} catch (NullPointerException e) {
-				System.out.println("NULL FORMAT");
+				//System.out.println("NULL FORMAT");
 			}
 		}
 		System.out.println("finishing game frame");
 		return setCardIconsForUser(username, cardIcons);
 	}
 
+	/**
+	 * Updates all cards on the screen.
+	 * 
+	 * @return completed
+	 */
 	public boolean updateAllCards() {
 		String[] usersInGame = clientRequest.getPlayersInGame(TABLE);
 		int[] foldedPlayers = clientRequest.getFoldedPlayers(TABLE);
@@ -235,6 +239,8 @@ public class GameFrame extends javax.swing.JFrame {
 
 	/**
 	 * Updates the betting fields across the game panel.
+	 * 
+	 * @return completed
 	 */
 	public boolean updateBettingSystem() {
 		String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(
@@ -253,10 +259,9 @@ public class GameFrame extends javax.swing.JFrame {
 	 * 
 	 * @param oldUsername
 	 * @param newUsername
-	 * @return
+	 * @return completed
 	 */
-	public boolean setUsernameLabelForUser(String oldUsername,
-			String newUsername) {
+	public boolean setUsernameLabelForUser(String oldUsername, String newUsername) {
 		if (oldUsername.equals(playerNameLabel.getText()))
 			playerNameLabel.setText(newUsername);
 
@@ -278,7 +283,7 @@ public class GameFrame extends javax.swing.JFrame {
 	/**
 	 * Updates the pot label.
 	 * 
-	 * @return
+	 * @return completed
 	 */
 	public boolean updatePot() {
 		gamePotLabel.setText("$" + clientRequest.getPot(TABLE));
@@ -288,7 +293,7 @@ public class GameFrame extends javax.swing.JFrame {
 	/**
 	 * Updates the current bet label.
 	 * 
-	 * @return
+	 * @return completed
 	 */
 	public boolean updateCurrentBet() {
 		currentBetLabel.setText("Current minimum bet: "
@@ -300,8 +305,7 @@ public class GameFrame extends javax.swing.JFrame {
 	 * Changes the chips label for a particular user.
 	 * 
 	 * @param username
-	 * @param chips
-	 * @return
+	 * @return completed
 	 */
 	public boolean updateChipsForUser(String username) {
 		if (username.equals("Empty"))
@@ -329,7 +333,7 @@ public class GameFrame extends javax.swing.JFrame {
 	 * 
 	 * @param username
 	 * @param avatar
-	 * @return
+	 * @return completed
 	 */
 	public boolean setAvatarIconForUser(String username, ImageIcon avatar) {
 		if (username.equals(playerNameLabel.getText()))
@@ -353,8 +357,8 @@ public class GameFrame extends javax.swing.JFrame {
 	/**
 	 * Removes a users icons from the game.
 	 * 
-	 * @param username
-	 * @return
+	 * @param uID
+	 * @return completed
 	 */
 	public boolean removeUserFromGame(int uID) {
 		String username = null;
@@ -362,31 +366,45 @@ public class GameFrame extends javax.swing.JFrame {
 			username = clientRequest.getCurrentUserClient().getUserProxy()
 					.getUserObject(uID).getName();
 
-		} catch (RemoteException e) {
-		} catch (SQLException e) {
-		}
-		System.out.println("GAME FRAME: REMOVED USER FROM GAME:" + username);
+		} catch (RemoteException e) {} catch (SQLException e) {}
+		
+		//System.out.println("GAME FRAME: REMOVED USER FROM GAME:" + username);
 		clearCardIconsForUser(username);
+		
 		// setAvatarIconForUser(username, new ImageIcon(""));
-
 		// addMessageToInGameConsole(username + " has left the game");
 
 		return clientRequest.clientNeedsGameFrameUpdate();
 	}
 
+	/**
+	 * Starts a users turn.
+	 * 
+	 * @return completed
+	 */
 	public boolean startTurn() {
 		yourTurn = true;
 		enableBettingInputFields(yourTurn);
 		playerBetTextField.setText(clientRequest.getMinimumBet(TABLE));
 		return clientRequest.clientNeedsGameFrameUpdate();
 	}
-
+	
+	/**
+	 * Ends a users turn.
+	 * 
+	 * @return completed
+	 */
 	public boolean endTurn() {
 		yourTurn = false;
 		enableBettingInputFields(yourTurn);
 		return true;
 	}
 
+	/**
+	 * Resets the game.
+	 * 
+	 * @return completed
+	 */
 	public boolean resetGame() {
 		clearAllCardIcons();
 		updateBettingSystem();
@@ -396,6 +414,10 @@ public class GameFrame extends javax.swing.JFrame {
 
 	/**
 	 * Returns to the main menu screen.
+	 * 
+	 * @throws RemoteExeption 
+	 * @throws SQLException
+	 * @return completed
 	 */
 	public boolean exitGame() throws RemoteException, SQLException {
 		clientRequest.leaveGame();
@@ -408,9 +430,10 @@ public class GameFrame extends javax.swing.JFrame {
 	}
 
 	/**
-	 * Updates the game console with a list of new messages.
+	 * Updates the game console with a new message.
 	 * 
-	 * @param newMessages
+	 * @param message
+	 * @return completed
 	 */
 	public boolean addMessageToInGameConsole(String message) {
 		// for (int i = 0; i < newMessages.length; i++)
@@ -418,7 +441,6 @@ public class GameFrame extends javax.swing.JFrame {
 
 		gameConsoleTextArea.append("  " + message + "\n");
 
-		// TO BE FIXED
 		Rectangle visableRect = gameConsoleTextArea.getVisibleRect();
 		visableRect.y = gameConsoleTextArea.getHeight() - visableRect.height;
 		gameConsoleTextArea.scrollRectToVisible(visableRect);
@@ -426,6 +448,11 @@ public class GameFrame extends javax.swing.JFrame {
 		return clientRequest.clientNeedsGameFrameUpdate();
 	}
 
+	/**
+	 * Enables or disables the players betting fields.
+	 * 
+	 * @return completed
+	 */
 	private void enableBettingInputFields(boolean enabled) {
 		// playerBetTextField.enableInputMethods(enabled);
 		// betCheckButton.enableInputMethods(enabled);
