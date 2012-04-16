@@ -1,19 +1,15 @@
 package GUI;
 
 import Client.GameClient;
-
 import Client.PlayerClient;
 import Client.UserClient;
-
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
-
 import Remote.IPlayer;
 import Remote.RemoteGame;
 import Remote.UserObject;
 import Remote.ICard;
 import Remote.IGameTable;
-
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 
@@ -36,7 +32,6 @@ public class GUIClient {
 	private IGameTable usersGameTable;
 	private PlayerClient currentPlayerClient;
 	private ServerListener sl;
-
 
         // Added by Matt - temp
         private ImageIcon localAvatar = new ImageIcon(GUIClient.class.getResource("avatars/haibo.JPG"));
