@@ -929,9 +929,10 @@ public class GUIClient {
 	public boolean leaveGameTable(String table) {
 		if (usersGameTable != null) {
 			try {
+				currentGameTableClient.getUserProxy().getTable(table).getGame().removePlayerProxy( userId);	
 				currentGameTableClient.getUserProxy().getTable(table)
 						.removePlayer(userId);
-				currentGameTableClient.getUserProxy().getTable(table).getGame().removePlayerProxy( userId);
+			
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
