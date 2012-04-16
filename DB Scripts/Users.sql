@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 30, 2012 at 10:55 PM
+-- Generation Time: Apr 16, 2012 at 09:09 AM
 -- Server version: 5.5.16
 -- PHP Version: 5.3.8
 
@@ -34,16 +34,20 @@ CREATE TABLE IF NOT EXISTS `Users` (
   `chips` double NOT NULL,
   `online` tinyint(1) NOT NULL,
   PRIMARY KEY (`u_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `Users`
 --
 
 INSERT INTO `Users` (`u_id`, `email`, `password`, `name`, `chips`, `online`) VALUES
-(1, 'test@test.ca', '1234', 'test', 0, 1),
+(1, 'test@test.ca', '1234', 'null', 440, 1),
 (2, 'mouhyi@test.ca', 'qwerty12', 'mouhyi', 100, 0),
-(3, 'test2@test.ca', 'dvsk', 'name', 3, 0);
+(3, 'test2@test.ca', 'dvsk', 'name', 65, 1),
+(4, 'm@m.m', '0000', 'alves', 490, 1),
+(5, 'q', '2', 'q', 1545, 1),
+(6, '1', '1', '1', 1055, 1),
+(8, 'a', 'a', 'a', 480, 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

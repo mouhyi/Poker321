@@ -23,28 +23,25 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Friends`
+-- Table structure for table `Players`
 --
 
-CREATE TABLE IF NOT EXISTS `Friends` (
+CREATE TABLE IF NOT EXISTS `Players` (
   `u_id` int(11) NOT NULL,
-  `f_id` int(11) NOT NULL,
-  PRIMARY KEY (`u_id`,`f_id`)
+  `wins` int(11) NOT NULL,
+  `losses` int(11) NOT NULL,
+  `gameWinnings` double NOT NULL,
+  PRIMARY KEY (`u_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `Friends`
+-- Dumping data for table `Players`
 --
 
-INSERT INTO `Friends` (`u_id`, `f_id`) VALUES
-(1, 2),
-(1, 4),
-(2, 1),
-(4, 1),
-(4, 6),
-(5, 6),
-(6, 4),
-(6, 5);
+INSERT INTO `Players` (`u_id`, `wins`, `losses`, `gameWinnings`) VALUES
+(5, 16, 18, 135),
+(6, 7, 21, -65),
+(8, 0, 1, -20);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
