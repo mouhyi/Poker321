@@ -29,9 +29,7 @@ public class LoginFrame extends javax.swing.JFrame {
         this.setIconImage(new ImageIcon(GUIClient.class.getResource("images/login_icon.png")).getImage());
        
         serverListener = new ServerListener();
-        clientRequest = new GUIClient(serverListener);
-        
-        
+        clientRequest = new GUIClient(serverListener);      
         
         presetIP = GUIClient.getIp();
         ipTextField.setText(presetIP);
@@ -39,6 +37,9 @@ public class LoginFrame extends javax.swing.JFrame {
     
     /**
      * This method checks the fields given and tries to contact the server.
+     * 
+     * @throws RemoteException
+     * @throws SQLException
      * @return boolean confirming or denying server login success. 
      */
     private boolean loginAction() throws RemoteException, SQLException {
@@ -72,6 +73,9 @@ public class LoginFrame extends javax.swing.JFrame {
     
     /**
      * Opens the main menu screen and destroys the LoginFrame.
+     * 
+     * @throws RemoteException
+     * @throws SQLException
      */
     private void openMainMenu() throws RemoteException, SQLException {
         MainMenuFrame mm = new MainMenuFrame(clientRequest, serverListener);
@@ -236,6 +240,7 @@ public class LoginFrame extends javax.swing.JFrame {
     /**
      * When enter is pressed in the email text field, the password field is 
      * focused.
+     * 
      * @param evt 
      */
     private void emailTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_emailTextFieldKeyPressed
@@ -246,6 +251,7 @@ public class LoginFrame extends javax.swing.JFrame {
 
     /**
      * When enter is pressed in the password field, loginAction is called.
+     * 
      * @param evt 
      */
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
@@ -270,6 +276,7 @@ public class LoginFrame extends javax.swing.JFrame {
 
     /**
      * When the password recovery button is pressed, the user is prompted. 
+     * 
      * @param evt 
      */
     private void passwordRecoveryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordRecoveryButtonActionPerformed
@@ -293,6 +300,7 @@ public class LoginFrame extends javax.swing.JFrame {
     /**
      * When the new account button is pressed, a new registration frame is 
      * created.
+     * 
      * @param evt 
      */
     private void newAccountButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAccountButtonActionPerformed
