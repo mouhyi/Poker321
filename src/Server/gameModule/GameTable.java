@@ -145,6 +145,9 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 		synchronized (players) {
 			if (player != null) {
 				players.remove(player);
+				if(userId == hostId && !players.isEmpty()){
+					hostId=players.get(0).getUserId();
+				}
 			}
 		}
 	}
