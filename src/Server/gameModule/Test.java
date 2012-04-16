@@ -16,7 +16,7 @@ import Remote.Suit;
  */
 public class Test {
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws RemoteException{
 		//testCardComp();
 		//testDeck();
 		//testHandgetV();
@@ -43,7 +43,7 @@ public class Test {
 		System.out.println(d.getSize());
 	}
 	
-	public static void testHandgetV(){
+	public static void testHandgetV() throws RemoteException{
 		Hand h = new Hand();
 		ArrayList<Card> list = new ArrayList<Card> (5);
 		list.add(new Card(Rank.Ace, Suit.Clubs));
@@ -82,7 +82,7 @@ public class Test {
 		System.out.println(h.compareTo(h2));
 	}
 	
-	public static void testSortCards(){
+	public static void testSortCards() throws RemoteException{
 		Hand h = new Hand();
 		ArrayList<Card> list = new ArrayList<Card> (5);
 		list.add(new Card(Rank.King, Suit.Hearts));

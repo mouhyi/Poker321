@@ -1,5 +1,6 @@
 
 package Server.gameModule;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import Remote.Rank;
@@ -9,8 +10,9 @@ public class Test2{
 
 	/**
 	 * @param args
+	 * @throws RemoteException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws RemoteException {
 		testHands1();
 	//	testHands2();
 		//testHands3();
@@ -31,7 +33,7 @@ public class Test2{
 		}
 		System.out.println(test.getSize()==0);//should still be zero
 	}
-	public static void testHands5(){
+	public static void testHands5() throws RemoteException{
 		//mainly tests on three things
 		//1. self vs self (same hand type)
 		//2. self vs higher
@@ -265,7 +267,7 @@ public class Test2{
 
 		}
 	}
-	public static void testHands4(){
+	public static void testHands4() throws RemoteException{
 		//max hand size ==4
 		Hand all[] = new Hand[20]; 
 		//largest is a four of a kind Ace
@@ -380,7 +382,7 @@ public class Test2{
 
 		}
 	}
-	public static void testHands3(){
+	public static void testHands3() throws RemoteException{
 		Hand all[] = new Hand[20];
 		Hand h0 = new Hand();
 		ArrayList<Card> list0 = new ArrayList<Card> (3);
@@ -466,7 +468,7 @@ public class Test2{
 
 		}
 	}
-	public static void testHands2(){
+	public static void testHands2() throws RemoteException{
 		Hand all[] = new Hand[20];
 		//highest pair
 		Hand h0 = new Hand();
@@ -522,7 +524,7 @@ public class Test2{
 
 		}
 	}
-	public static void testHands1(){
+	public static void testHands1() throws RemoteException{
 		//here the goal is to test the cards as a hand
 		//this time it will be slightly different 
 		ArrayList<Hand> all = new ArrayList<Hand>(52);
