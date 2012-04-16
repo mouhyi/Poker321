@@ -546,6 +546,15 @@ public class GUIClient {
 
 		return gameTables;
 	}
+	
+	/**
+	 * Returns whether there is already a table with that name
+	 * @param name
+	 * @return
+	 */	 
+	public boolean checkTableName(String name){
+		return currentGameTableClient.getUserProxy().tableWithName(name);
+	}
 
 	/**
 	 * Returns the host of a particular table.
