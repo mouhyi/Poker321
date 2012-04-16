@@ -19,7 +19,7 @@ public class GameServerImpl extends UnicastRemoteObject  implements GameServer  
 	@Override
 	public ArrayList<IGameTable> getAllTables() throws RemoteException{
 		ArrayList<IGameTable> tables = new ArrayList<IGameTable>();
-		/*for(IGameTable t: pokerTables){
+		for(IGameTable t: pokerTables){
 			if(t.getPlayers().size() < 1){
 				continue;
 			}
@@ -27,7 +27,7 @@ public class GameServerImpl extends UnicastRemoteObject  implements GameServer  
 			tables.add(t);
 			
 		}
-		return tables;*/
+		return tables;
 		return pokerTables;
 	}
 	
