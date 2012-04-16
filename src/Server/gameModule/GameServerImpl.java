@@ -27,7 +27,7 @@ public class GameServerImpl extends UnicastRemoteObject  implements GameServer  
 			tables.add(t);
 			
 		}
-		return tables;
+		//return tables;
 		this.pokerTables=tables;
 		return pokerTables;
 	}
