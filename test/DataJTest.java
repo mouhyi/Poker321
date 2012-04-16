@@ -12,8 +12,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import Server.userModule.UserObject;
 
+import Remote.UserObject;
 public class DataJTest {
 	@Before
 	public void setUp() throws Exception {

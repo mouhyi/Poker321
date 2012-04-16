@@ -11,8 +11,8 @@ import org.junit.Test;
 import Server.gameModule.Card;
 import Server.gameModule.Deck;
 import Server.gameModule.Hand;
-import Server.gameModule.Rank;
-import Server.gameModule.Suit;
+import Remote.Rank;
+import Remote.Suit;
 
 public class CardsJTest {
 
