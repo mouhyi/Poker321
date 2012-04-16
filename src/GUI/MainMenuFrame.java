@@ -145,14 +145,30 @@ public class MainMenuFrame extends javax.swing.JFrame {
         }    
         friendsList.setListData(usernames);
     }
-   
+
+    private void updateProfilePanel() {
+        System.out.println("Profile Panel Shown");
+        firstNameProfileLabel.setText("First Name: Haibo");
+        lastNameProfileLabel.setText("Last Name: Zeng");
+        emailProfileLabel.setText("Email: " + clientRequest.getEmail());
+        usernameProfileLabel.setText("Username: " + clientRequest.getUsername());
+        accountNumberProfileLabel.setText(clientRequest.getAccountNumber());
+        fundsProfileLabel.setText("$324345");
+        try {
+            numberOfChipsProfileLabel.setText(clientRequest.getUsersWorth(clientRequest.getUsername()));
+        } catch (RemoteException ex) {} catch (SQLException ex) {}
+        ipProfileLabel.setText(GUIClient.getIp());
+
+        avatarProfileLabel.setIcon(clientRequest.getAvatar(clientRequest.getUsername()));
+    }
+
+
     private void openGameFrame(String table) throws RemoteException, SQLException {
     	
     	System.out.println("mmf: open game frame 1");
     	
         GameFrame newGameFrame = new GameFrame(clientRequest, serverListener, table);
         System.out.println("mmf: open game frame 2");
-        System.out.println("mmf: open game frame 3");
         
         newGameFrame.setVisible(true);
         serverListener.releaseMainMenuFrame();       
@@ -189,7 +205,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
         tableHostLabel = new javax.swing.JLabel();
         gameLobbyConsoleScrollPane = new javax.swing.JScrollPane();
         gameLobbyConsoleTextArea = new javax.swing.JTextArea();
-        jLabel3 = new javax.swing.JLabel();
+        gameFramePictureLabel = new javax.swing.JLabel();
         friendsPanel = new javax.swing.JPanel();
         friendsSplitPane = new javax.swing.JSplitPane();
         friendsScrollPane = new javax.swing.JScrollPane();
@@ -216,8 +232,8 @@ public class MainMenuFrame extends javax.swing.JFrame {
         chipsProfileLabel = new javax.swing.JLabel();
         numberOfChipsProfileLabel = new javax.swing.JLabel();
         creditsPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        changeAvatarButton = new javax.swing.JButton();
+        donateButton = new javax.swing.JButton();
         avatarProfilePanel = new javax.swing.JPanel();
         avatarProfileLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
@@ -279,7 +295,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
         tableNameLabel.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
         tableNameLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        tableNameLabel.setText("Table 1");
+        tableNameLabel.setText("Welcome to 321 Poker!");
         tableNameLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         tablePlayersList.setModel(new javax.swing.AbstractListModel() {
@@ -311,39 +327,40 @@ public class MainMenuFrame extends javax.swing.JFrame {
         tableHostLabel.setText("Host: You");
 
         gameLobbyConsoleTextArea.setColumns(20);
+        gameLobbyConsoleTextArea.setEditable(false);
         gameLobbyConsoleTextArea.setRows(5);
         gameLobbyConsoleScrollPane.setViewportView(gameLobbyConsoleTextArea);
 
-        jLabel3.setFont(new java.awt.Font("Rockwell Extra Bold", 0, 36)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/images/filler_Image.jpg"))); // NOI18N
+        gameFramePictureLabel.setFont(new java.awt.Font("Rockwell Extra Bold", 0, 36)); // NOI18N
+        gameFramePictureLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        gameFramePictureLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/images/filler_Image.jpg"))); // NOI18N
 
         org.jdesktop.layout.GroupLayout gameDetailsPanelLayout = new org.jdesktop.layout.GroupLayout(gameDetailsPanel);
         gameDetailsPanel.setLayout(gameDetailsPanelLayout);
         gameDetailsPanelLayout.setHorizontalGroup(
             gameDetailsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, tableNameLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, tableNameLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
             .add(gameDetailsPanelLayout.createSequentialGroup()
                 .add(gameDetailsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(gameDetailsPanelLayout.createSequentialGroup()
                         .addContainerGap()
                         .add(gameDetailsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, gameLobbyConsoleScrollPane)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, gameLobbyConsoleScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
                             .add(gameDetailsPanelLayout.createSequentialGroup()
                                 .add(tablePlayersScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 191, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .add(18, 18, 18)
                                 .add(gameDetailsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(tableHostLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .add(tableAnteLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .add(tableBringInLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .add(gameLobbySeparator)
+                                    .add(tableHostLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                                    .add(tableAnteLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                                    .add(tableBringInLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)))
+                            .add(gameLobbySeparator, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
                             .add(gameDetailsPanelLayout.createSequentialGroup()
-                                .add(joinGameToggleButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(joinGameToggleButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
                                 .add(18, 18, 18)
                                 .add(openChatToggleButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 222, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
                     .add(gameDetailsPanelLayout.createSequentialGroup()
                         .add(12, 12, 12)
-                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .add(gameFramePictureLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         gameDetailsPanelLayout.setVerticalGroup(
@@ -364,7 +381,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
                     .add(joinGameToggleButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(openChatToggleButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 138, Short.MAX_VALUE)
+                .add(gameFramePictureLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(gameLobbySeparator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -380,13 +397,13 @@ public class MainMenuFrame extends javax.swing.JFrame {
             gameLobbyPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, gameLobbyPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(gameLobbySplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                .add(gameLobbySplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
                 .addContainerGap())
         );
         gameLobbyPanelLayout.setVerticalGroup(
             gameLobbyPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, gameLobbyPanelLayout.createSequentialGroup()
-                .add(gameLobbySplitPane)
+                .add(gameLobbySplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -421,7 +438,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
         friendDetailsPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        usernameFriendsPanelLabel.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
+        usernameFriendsPanelLabel.setFont(new java.awt.Font("Lucida Grande", 0, 24));
         usernameFriendsPanelLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         usernameFriendsPanelLabel.setText("Username");
 
@@ -436,11 +453,13 @@ public class MainMenuFrame extends javax.swing.JFrame {
         friendDetailsPanel.setLayout(friendDetailsPanelLayout);
         friendDetailsPanelLayout.setHorizontalGroup(
             friendDetailsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(friendDetailsPanelLayout.createSequentialGroup()
-                .add(friendDetailsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, usernameFriendsPanelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, worthFriendsPanelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, avatarFriendsPanelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, friendDetailsPanelLayout.createSequentialGroup()
+                .add(friendDetailsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(friendDetailsPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(avatarFriendsPanelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE))
+                    .add(worthFriendsPanelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+                    .add(usernameFriendsPanelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE))
                 .addContainerGap())
         );
         friendDetailsPanelLayout.setVerticalGroup(
@@ -448,10 +467,10 @@ public class MainMenuFrame extends javax.swing.JFrame {
             .add(friendDetailsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(usernameFriendsPanelLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(18, 18, 18)
                 .add(avatarFriendsPanelLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 300, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(18, 18, 18)
-                .add(worthFriendsPanelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                .add(worthFriendsPanelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -463,13 +482,13 @@ public class MainMenuFrame extends javax.swing.JFrame {
             friendsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(friendsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(friendsSplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                .add(friendsSplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
                 .addContainerGap())
         );
         friendsPanelLayout.setVerticalGroup(
             friendsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(friendsPanelLayout.createSequentialGroup()
-                .add(friendsSplitPane)
+                .add(friendsSplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -543,13 +562,13 @@ public class MainMenuFrame extends javax.swing.JFrame {
             statisticsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(statisticsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(statisticsScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                .add(statisticsScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
                 .addContainerGap())
         );
         statisticsPanelLayout.setVerticalGroup(
             statisticsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(statisticsPanelLayout.createSequentialGroup()
-                .add(statisticsScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+                .add(statisticsScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -595,26 +614,26 @@ public class MainMenuFrame extends javax.swing.JFrame {
             staticProfilePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(staticProfilePanelLayout.createSequentialGroup()
                 .add(12, 12, 12)
-                .add(accountNumberProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(accountNumberProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
             .add(staticProfilePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(staticProfilePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(bankAccountProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
-                    .add(emailProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, usernameProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(firstNameProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, lastNameProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, avalableFundsProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(emailProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, usernameProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                    .add(firstNameProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, lastNameProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, avalableFundsProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, staticProfilePanelLayout.createSequentialGroup()
                         .add(staticProfilePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, serverIPProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, numberOfChipsProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, chipsProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(fundsProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, serverIPProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, numberOfChipsProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, chipsProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+                            .add(fundsProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))
                         .addContainerGap())))
             .add(staticProfilePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(ipProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(ipProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
                 .addContainerGap())
         );
         staticProfilePanelLayout.setVerticalGroup(
@@ -649,30 +668,38 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
         creditsPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel1.setText("Graphical User Interface made by");
+        changeAvatarButton.setText("Change Avatar");
+        changeAvatarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeAvatarButtonActionPerformed(evt);
+            }
+        });
 
-        jLabel2.setFont(new java.awt.Font("Zapfino", 0, 13)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Matthew Vertescher");
+        donateButton.setText("Donate!");
+        donateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                donateButtonActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout creditsPanelLayout = new org.jdesktop.layout.GroupLayout(creditsPanel);
         creditsPanel.setLayout(creditsPanelLayout);
         creditsPanelLayout.setHorizontalGroup(
             creditsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(creditsPanelLayout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, creditsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(creditsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(creditsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, donateButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, changeAvatarButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE))
                 .addContainerGap())
         );
         creditsPanelLayout.setVerticalGroup(
             creditsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(creditsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 44, Short.MAX_VALUE)
+                .add(changeAvatarButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 35, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(donateButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -688,7 +715,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
             avatarProfilePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, avatarProfilePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(avatarProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                .add(avatarProfileLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
                 .addContainerGap())
         );
         avatarProfilePanelLayout.setVerticalGroup(
@@ -718,7 +745,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(profilePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(profilePanelLayout.createSequentialGroup()
-                        .add(avatarProfilePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                        .add(avatarProfilePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(creditsPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(staticProfilePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -735,7 +762,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(mainTabbedPane)
+            .add(mainTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
         );
 
         pokerMenu.setText("321 Poker");
@@ -894,20 +921,27 @@ public class MainMenuFrame extends javax.swing.JFrame {
      */
     private void joinGameToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinGameToggleButtonActionPerformed
         String selectedTable = tableNameLabel.getText();
-        //ystem.out.println(selectedTable);
+        //System.out.println(selectedTable);
         if (joinGameToggleButton.isSelected() && clientRequest.getCurrentTable()==null) { // && !inTable
-        	System.out.println("JOIN TABLE");
+            System.out.println("JOIN TABLE");
             clientRequest.joinGameTable(selectedTable);
-            //openGameFrame(selectedTable); // to be removed
+           
             inTable = true;
-            
-            //openGameFrame(tableNameLabel.getText()); 
+            updateGamePanel(selectedTable);
+            joinGameToggleButton.setText("Leave Game");
         }
         
         else if (!joinGameToggleButton.isSelected() && clientRequest.getCurrentTable().equals(tableNameLabel.getText())) { //inTable
-            clientRequest.leaveGameTable(selectedTable);
             System.out.println("LEAVE TABLE");
-            inTable = false;
+            clientRequest.leaveGameTable(selectedTable);
+          
+            inTable = false;  
+            updateGamePanel(selectedTable);
+            joinGameToggleButton.setText("Join Game");
+        }
+
+        else {
+             JOptionPane.showMessageDialog(this, "The server hates you.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_joinGameToggleButtonActionPerformed
 
@@ -958,7 +992,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
         String[][] statistics = null;
         try {
             statistics = clientRequest.retrieveStatistics();
-        } catch (SQLException ex) {}
+        } catch (SQLException ex) { JOptionPane.showMessageDialog(this, "The server hates you.", "Statistics Request Failed", JOptionPane.ERROR_MESSAGE);}
         int r = 0; 
         while (statistics.length > r) {
             for (int c = 0; c < 5; c++)
@@ -973,18 +1007,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * @param evt
      */
     private void profilePanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_profilePanelComponentShown
-        System.out.println("Options Panel Shown");
-        firstNameProfileLabel.setText("First Name Here");
-        lastNameProfileLabel.setText("Last Name Here");
-        emailProfileLabel.setText(clientRequest.getEmail());
-        usernameProfileLabel.setText(clientRequest.getUsername());
-        accountNumberProfileLabel.setText(clientRequest.getAccountNumber());
-        fundsProfileLabel.setText("$324345");
-        try {
-            numberOfChipsProfileLabel.setText(clientRequest.getUsersWorth(clientRequest.getUsername()));
-        } catch (RemoteException ex) {} catch (SQLException ex) {}
-        ipProfileLabel.setText(GUIClient.getIp()); 
-        
+        updateProfilePanel();
     }//GEN-LAST:event_profilePanelComponentShown
 
     /**
@@ -993,10 +1016,19 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * @param evt 
      */
     private void friendsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_friendsListValueChanged
-        if (friendsList.getSelectedValue() != null)
-            try {
-            updateFriendsPanel(friendsList.getSelectedValue().toString());
-        } catch (RemoteException ex) {} catch (SQLException ex) {}
+
+        if (friendsList.getSelectedValue() != null) {
+             String str = friendsList.getSelectedValue().toString();
+             String  friendSelected = str.substring(0,  str.lastIndexOf("   "));
+              try {
+                  updateFriendsPanel(friendSelected);
+                  System.out.println("MainMenuFrame: friendsListValueChanged() friendSelected: " + friendSelected +";");
+                  if (friendSelected.equals(clientRequest.getUsername()))
+                       updateFriendsPanel(clientRequest.getUsername());
+
+               } catch (RemoteException ex) {} catch (SQLException ex) {}
+
+        }
     }//GEN-LAST:event_friendsListValueChanged
 
     
@@ -1162,12 +1194,16 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * @param evt 
      */
     private void changeUsernameMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeUsernameMenuItemActionPerformed
-        String newUsername = "" + JOptionPane.showInputDialog(this, "New Username: ", "Change Username", JOptionPane.PLAIN_MESSAGE);
-        if (newUsername.equals(""))
+        String newUsername = JOptionPane.showInputDialog(this, "New Username: ", "Change Username", JOptionPane.PLAIN_MESSAGE);
+
+        if (newUsername == null) {
+             //Do Nothing
+        }
+        else if (newUsername.equals(""))
             JOptionPane.showMessageDialog(this, "Username field blank", "Error", JOptionPane.ERROR_MESSAGE);
         else if (newUsername.equals(clientRequest.getUsername()))    
             JOptionPane.showMessageDialog(this, "This is already your username", "Error", JOptionPane.ERROR_MESSAGE);
-        else if (!newUsername.equals("")) {
+        else {
             boolean changed = false;
             try {
                 changed = clientRequest.setUsername(newUsername);
@@ -1185,39 +1221,50 @@ public class MainMenuFrame extends javax.swing.JFrame {
      */
     private void purchaseChipsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchaseChipsMenuItemActionPerformed
         String chipsString = JOptionPane.showInputDialog(this, "Number of Chips: ", "Purchase Chips", JOptionPane.PLAIN_MESSAGE);
-        if (chipsString.equals(""))
-            JOptionPane.showMessageDialog(this, "Please enter an amount.", "Error", JOptionPane.ERROR_MESSAGE);
- 
-        boolean isNumber = false;
-        try {
-            double d = Double.parseDouble(chipsString);
-            isNumber = true; 
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Not a number.", "Error", JOptionPane.ERROR_MESSAGE);
-            
-        }  
-        if (isNumber) {
-            double chips = Double.parseDouble(chipsString);
 
-            boolean purchased = clientRequest.purchaseChips(chips);
-            if (purchased) {
-                JOptionPane.showMessageDialog(this, "Chips puchased.", "Success!", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "The server hates you.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (chipsString == null) {
+             //Do Nothing
+        }
+        else if (chipsString.equals(""))
+            JOptionPane.showMessageDialog(this, "Please enter an amount.", "Error", JOptionPane.ERROR_MESSAGE);
+        else {
+            boolean isNumber = false;
+            try {
+                double d = Double.parseDouble(chipsString);
+                isNumber = true;
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Not a number.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+            if (isNumber) {
+                double chips = Double.parseDouble(chipsString);
+
+                boolean purchased = clientRequest.purchaseChips(chips);
+                if (purchased) {
+                    JOptionPane.showMessageDialog(this, "Chips puchased.", "Success!", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "The server hates you.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }//GEN-LAST:event_purchaseChipsMenuItemActionPerformed
 
     /**
-     * Attempts to change a uses password.
+     * Attempts to change a users password.
      * @param evt 
      */
     private void changePasswordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePasswordMenuItemActionPerformed
         String oldPassword = JOptionPane.showInputDialog(this, "Old Password: ", "Enter Old Password", JOptionPane.PLAIN_MESSAGE);
-        if (oldPassword.equals(clientRequest.getPassword())) {
+         if (oldPassword == null) {
+             //Do Nothing
+        }
+         else if (oldPassword.equals(clientRequest.getPassword())) {
             String newPassword1 = JOptionPane.showInputDialog(this, "New Password: ", "Enter New Password", JOptionPane.PLAIN_MESSAGE);
             String newPassword2 = JOptionPane.showInputDialog(this, "New Password: ", "Enter New Password Again", JOptionPane.PLAIN_MESSAGE);
-            if (newPassword1.equals(newPassword2) && !newPassword1.equals("")) {
+             if (newPassword1 == null || newPassword2 == null) {
+                 //Do Nothing
+            }
+            else if (newPassword1.equals(newPassword2) && !newPassword1.equals("")) {
                 boolean changed = false;
                 try {
                     changed = clientRequest.setPassword(newPassword1);
@@ -1282,6 +1329,29 @@ public class MainMenuFrame extends javax.swing.JFrame {
         //   updateFriendsPanel(clientRequest.getUsername());
         //} catch (RemoteException ex) {} catch (SQLException ex) {}
     }//GEN-LAST:event_friendsListMouseClicked
+
+    private void changeAvatarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeAvatarButtonActionPerformed
+        String[] listOfAvatars = {"4chan.gif","Bubbles.jpg","DSotM.png","Gosling.png","blossoms.jpeg","buttercup.jpg","butterfly.jpg","chiyo.jpg","controller.jpg","creeper.jpg","default.jpg","dog.png","domo.jpg","female.jpg","guyfawkes.png","haibo.JPG","hawk.jpg","illusion1.jpg","illusion2.jpg","notBluffing.jpg","reimu.png","shark.jpg","stairs.gif"};
+        String  avatarName = (String) JOptionPane.showInputDialog(this, "Please select an avatar","Change Avatar", JOptionPane.PLAIN_MESSAGE, null, listOfAvatars,"Tennis");
+
+        if (avatarName != null) {
+            ImageIcon newAvatar = new ImageIcon(GUIClient.class.getResource("avatars/"+avatarName));
+
+           boolean avatarChanged =  clientRequest.setAvatar(newAvatar);
+           if (avatarChanged) 
+                JOptionPane.showMessageDialog(this, "Your avatar has been changed to " + avatarName, "Avatar Changed", JOptionPane.INFORMATION_MESSAGE);
+           else
+                JOptionPane.showMessageDialog(this, "Peter is lazy.", "Error", JOptionPane.ERROR_MESSAGE);
+           updateProfilePanel();
+        }
+
+    }//GEN-LAST:event_changeAvatarButtonActionPerformed
+
+    private void donateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_donateButtonActionPerformed
+
+         JOptionPane.showMessageDialog(this, "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=LFF5K54VJ32B2&lc=CA&item_name=321Cards&currency_code=CAD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted", "Donate", JOptionPane.PLAIN_MESSAGE);
+
+    }//GEN-LAST:event_donateButtonActionPerformed
  
 
     
@@ -1294,6 +1364,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JLabel avatarProfileLabel;
     private javax.swing.JPanel avatarProfilePanel;
     private javax.swing.JLabel bankAccountProfileLabel;
+    private javax.swing.JButton changeAvatarButton;
     private javax.swing.JMenuItem changePasswordMenuItem;
     private javax.swing.JMenuItem changeUsernameMenuItem;
     private javax.swing.JLabel chipsProfileLabel;
@@ -1301,6 +1372,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JPanel creditsPanel;
     private javax.swing.JMenuItem deleteFriendMenuItem;
     private javax.swing.JMenuItem documentationMenuItem;
+    private javax.swing.JButton donateButton;
     private javax.swing.JLabel emailProfileLabel;
     private javax.swing.JLabel firstNameProfileLabel;
     private javax.swing.JPanel friendDetailsPanel;
@@ -1311,6 +1383,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JSplitPane friendsSplitPane;
     private javax.swing.JLabel fundsProfileLabel;
     private javax.swing.JPanel gameDetailsPanel;
+    private javax.swing.JLabel gameFramePictureLabel;
     private javax.swing.JScrollPane gameLobbyConsoleScrollPane;
     private javax.swing.JTextArea gameLobbyConsoleTextArea;
     private javax.swing.JPanel gameLobbyPanel;
@@ -1323,9 +1396,6 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem inviteFriendMenuItem;
     private javax.swing.JLabel ipProfileLabel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JToggleButton joinGameToggleButton;
     private javax.swing.JLabel lastNameProfileLabel;
     private javax.swing.JPanel mainPanel;

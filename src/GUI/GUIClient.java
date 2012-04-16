@@ -35,6 +35,10 @@ public class GUIClient {
 	private PlayerClient currentPlayerClient;
 	private ServerListener sl;
 
+
+        // Added by Matt - temp
+        private ImageIcon localAvatar = new ImageIcon(GUIClient.class.getResource("avatars/haibo.JPG"));
+
 	/**
 	 * This a constructor for the GUIClient class which retrieves data from the
 	 * server and displays it in the GUI
@@ -377,8 +381,8 @@ public class GUIClient {
 	 * @return
 	 * @author Peter
 	 */
-	public static boolean setAvatar(ImageIcon avatar) {
-
+	public boolean setAvatar(ImageIcon avatar) {
+                localAvatar = avatar;
 		// Sets a users avatar
 
 		return true;
@@ -391,10 +395,13 @@ public class GUIClient {
 	 * @param username
 	 * @author Peter
 	 */
-	public static ImageIcon getAvatar(String username) {
-		java.net.URL path = GUIClient.class
-				.getResource("images/question_mark.jpg");
-		ImageIcon avatar = new ImageIcon(path);
+	public ImageIcon getAvatar(String username) {
+		java.net.URL path = GUIClient.class.getResource("avatars/default.jpg");
+		
+                if (username.equals(getUsername()))
+                    return localAvatar;
+
+                ImageIcon avatar = new ImageIcon(path);
 
 		// Returns the avatar for a particular user
 
@@ -727,7 +734,7 @@ public class GUIClient {
 		int i = 0;
 		int j = 0;
 		while (i < 5) {
-			if (!listOfPlayers[i].equals(username)) {
+			if (!listOfPlayers[i].equals(username) && !listOfPlayers[i].equals("Empty")) {
 				listOfOpponents[j] = listOfPlayers[i];
 				j++;
 			}

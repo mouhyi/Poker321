@@ -275,16 +275,19 @@ public class LoginFrame extends javax.swing.JFrame {
     private void passwordRecoveryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordRecoveryButtonActionPerformed
         String username = JOptionPane.showInputDialog(this, "Please enter your username: ", "Password Recovery", JOptionPane.PLAIN_MESSAGE);
         //boolean emailSent = GUIClient.sendPasswordRecoveryEmail(username);
-        boolean emailSent = false;
-        try {
-            emailSent = clientRequest.sendPasswordRecoveryEmail(username);
-        } catch (RemoteException ex) {} catch (SQLException ex) {}
-        
-        if (emailSent == false)
-            JOptionPane.showMessageDialog(this, "Username does not exist", "Error", JOptionPane.ERROR_MESSAGE);
-        else if (emailSent == true)
-            JOptionPane.showMessageDialog(this, "Passoword sent to " + username + "'s email", "Password Recovery", JOptionPane.INFORMATION_MESSAGE);
-            
+
+        if (username != null) {
+            boolean emailSent = false;
+            try {
+                emailSent = clientRequest.sendPasswordRecoveryEmail(username);
+            } catch (RemoteException ex) {} catch (SQLException ex) {}
+
+            if (emailSent == false) {
+                JOptionPane.showMessageDialog(this, "Username does not exist", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (emailSent == true) {
+                JOptionPane.showMessageDialog(this, "Passoword sent to " + username + "'s email", "Password Recovery", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_passwordRecoveryButtonActionPerformed
 
     /**

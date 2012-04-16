@@ -47,6 +47,7 @@ public class CreateTableFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create New Table");
+        setResizable(false);
 
         tableNameLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         tableNameLabel.setText("Table Name:");
