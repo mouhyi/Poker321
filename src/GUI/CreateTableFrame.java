@@ -166,7 +166,11 @@ public class CreateTableFrame extends javax.swing.JFrame {
         if (tableNameString.equals("") || anteString.equals("") || bringInString.equals(""))
             JOptionPane.showMessageDialog(this, "Please fill in all fields", "Table Creation Failed", JOptionPane.ERROR_MESSAGE);
         else {
-            String[] createNewTableFields = {tableNameString, anteString, bringInString}; 
+            String[] createNewTableFields = {tableNameString, anteString, bringInString};
+            if(clientRequest.getCurrentTable() !=null){
+                JOptionPane.showMessageDialog(this, "You're already part of a table. Unjoin that one, then try again.", JOptionPane.ERROR_MESSAGE);
+            }
+            else{
             boolean accepted = clientRequest.createNewTable(createNewTableFields);
         
             if (accepted = false)
@@ -177,6 +181,8 @@ public class CreateTableFrame extends javax.swing.JFrame {
                 this.setVisible(false);
                 this.dispose();
             }    
+            
+            }
         }     
     }//GEN-LAST:event_createTableButtonActionPerformed
     
