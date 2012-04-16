@@ -170,6 +170,11 @@ public class CreateTableFrame extends javax.swing.JFrame {
             if(clientRequest.getCurrentTable() !=null){
                 JOptionPane.showMessageDialog(this, "You're already part of a table", "Unjoin that one, then try again.", JOptionPane.ERROR_MESSAGE);
             }
+            else if(clientRequest.checkTableName(tableNameString)){
+                
+                JOptionPane.showMessageDialog(this, "Already a table with that name", "Try again.", JOptionPane.ERROR_MESSAGE);
+                
+            }
             else{
             boolean accepted = clientRequest.createNewTable(createNewTableFields);
         
