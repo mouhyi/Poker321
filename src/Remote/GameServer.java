@@ -30,4 +30,5 @@ public interface GameServer extends Remote {
 	
 	public IGameTable getTable(String name) throws RemoteException;
 	
+	public boolean tableWithName(String name) throws RemoteException;
 }
