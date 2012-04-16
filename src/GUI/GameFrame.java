@@ -1019,7 +1019,12 @@ public class GameFrame extends javax.swing.JFrame {
 		JOptionPane.showMessageDialog(this, "Game Rules Missing", "Error",
 				JOptionPane.ERROR_MESSAGE);
 	}// GEN-LAST:event_gameRulesMenuItemActionPerformed
-
+	
+	/**
+	 * When the bet button is pressed, the user's bet is sent.
+	 * 
+	 * @param evt
+	 */
 	private void betCheckButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_betCheckButtonActionPerformed
 		String betString = playerBetTextField.getText();
 		boolean isNumber = false;
@@ -1058,7 +1063,12 @@ public class GameFrame extends javax.swing.JFrame {
 
 		}
 	}// GEN-LAST:event_betCheckButtonActionPerformed
-
+	
+	/**
+	 * When the fold button is pressed, a fold message is sent to the server.
+	 * 
+	 * @param evt
+	 */
 	private void foldButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_foldButtonActionPerformed
 		clientRequest.fold();
 		clearCardIconsForUser(clientRequest.getUsername());
