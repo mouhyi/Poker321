@@ -77,13 +77,26 @@ public class Statistics {
 			stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
-				leaderboard[i][0]=rs.getString("u_id");
-				leaderboard[i][1]=rs.getString("gameWinnings");
-				leaderboard[i][2]=rs.getString("wins");
-				leaderboard[i][3]=rs.getString("losses");
-				leaderboard[i][4]="Great!";
+				leaderboard[i][0]=UserData.getUserObject(Integer.parseInt(rs.getString("u_id"))).getName();
+				leaderboard[i][1]=rs.getString("wins");
+				leaderboard[i][2]=rs.getString("losses");
+				leaderboard[i][3]=rs.getString("gameWinnings");
+				if(i==0){
+					leaderboard[i][4]="Best!";
+				}
+				else if(Integer.parseInt(leaderboard[i][3])>100 ){
+					leaderboard[i][4]="Great!";}
+				else if(Integer.parseInt(leaderboard[i][3])>10){
+					leaderboard[i][4]="Good!";}
+				else if(Integer.parseInt(leaderboard[i][3])>0){
+					leaderboard[i][4]="Alright.";}
+				else if(Integer.parseInt(leaderboard[i][3])>-10){
+					leaderboard[i][4]="Bad.";}
+				else {
+					leaderboard[i][4]="Terrible.";}
 				++i;
 			}
+
 
 		} catch (SQLException e) {
 			Methods.printSQLException(e);
