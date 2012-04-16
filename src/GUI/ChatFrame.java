@@ -10,7 +10,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JOptionPane;
 
 /**
- * This class implements a message chat in a JFrame
+ * This class implements a message chat in a JFrame.
  * 
  * @author mattvertescher
  */
@@ -18,12 +18,17 @@ public class ChatFrame extends javax.swing.JFrame {
 
     public static GUIClient clientRequest;
     public static ServerListener serverListener;
-    
-    
+
     private String[] usersInChat; 
     
     /**
      * Creates new form ChatScreen.
+     * 
+     * @param guiclient
+     * @param serverlistener
+     * @param recipients 
+     * @throws RemoteException
+     * @throws SQLException
      */
     public ChatFrame(GUIClient guic, ServerListener sl, String[] recipients) throws RemoteException, SQLException {
         initComponents();
@@ -42,7 +47,10 @@ public class ChatFrame extends javax.swing.JFrame {
     }
 
     /**
-     * Updates the friends menu with a list of friend.
+     * Updates the friends menu with a list of friends.
+     * 
+     * @throws RemoteException
+     * @throws SQLException
      */
     public void updateFriendsMenu() throws RemoteException, SQLException {
         String[] listOfFriends = clientRequest.getFriends(clientRequest.getUsername());
@@ -63,8 +71,10 @@ public class ChatFrame extends javax.swing.JFrame {
     
     /**
      * Adds a chat message to the chat text area.
+     * 
      * @param username
      * @param message 
+     * @return completed
      */
     public boolean addMessageToChat(String username, String message) {
         if (!username.equals(clientRequest.getUsername()))
@@ -173,6 +183,7 @@ public class ChatFrame extends javax.swing.JFrame {
     /**
      * When the enter key is pressed, the chat message is displayed and sent to
      * the server.
+     * 
      * @param evt 
      */
     private void chatTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_chatTextFieldKeyPressed
@@ -190,6 +201,7 @@ public class ChatFrame extends javax.swing.JFrame {
 
     /**
      * Exit chat closes the chat window. 
+     * 
      * @param evt 
      */
     private void exitChatMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitChatMenuItemActionPerformed
@@ -199,6 +211,7 @@ public class ChatFrame extends javax.swing.JFrame {
     /**
      * When the form window closes, the server listener releases its chat frame 
      * reference.
+     * 
      * @param evt 
      */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
