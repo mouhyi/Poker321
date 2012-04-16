@@ -28,6 +28,9 @@ public class GameFrame extends javax.swing.JFrame {
 
 	/**
 	 * Creates new form GameScreen.
+	 * @param guiclient
+	 * @param serverlistener
+	 * @param tableName
 	 */
 	public GameFrame(GUIClient guic, ServerListener sl, String tableName)
 			throws RemoteException, SQLException {
@@ -214,6 +217,11 @@ public class GameFrame extends javax.swing.JFrame {
 		return setCardIconsForUser(username, cardIcons);
 	}
 
+	/**
+	 * Updates all cards on the screen.
+	 * 
+	 * @return completed
+	 */
 	public boolean updateAllCards() {
 		String[] usersInGame = clientRequest.getPlayersInGame(TABLE);
 		int[] foldedPlayers = clientRequest.getFoldedPlayers(TABLE);
@@ -230,7 +238,9 @@ public class GameFrame extends javax.swing.JFrame {
 	}
 
 	/**
-	 * Updates the betting fields across the game panel.
+	 * Updates all the betting fields on the screen.
+	 * 
+	 * @return completed
 	 */
 	public boolean updateBettingSystem() {
 		String[] listOfOpponents = clientRequest.getOpponentsAtGameTable(
@@ -249,7 +259,7 @@ public class GameFrame extends javax.swing.JFrame {
 	 * 
 	 * @param oldUsername
 	 * @param newUsername
-	 * @return
+	 * @return completed 
 	 */
 	public boolean setUsernameLabelForUser(String oldUsername,
 			String newUsername) {
@@ -274,7 +284,7 @@ public class GameFrame extends javax.swing.JFrame {
 	/**
 	 * Updates the pot label.
 	 * 
-	 * @return
+	 * @return completed
 	 */
 	public boolean updatePot() {
 		gamePotLabel.setText("$" + clientRequest.getPot(TABLE));
@@ -284,7 +294,7 @@ public class GameFrame extends javax.swing.JFrame {
 	/**
 	 * Updates the current bet label.
 	 * 
-	 * @return
+	 * @return completed
 	 */
 	public boolean updateCurrentBet() {
 		currentBetLabel.setText("Current minimum bet: "
@@ -297,7 +307,7 @@ public class GameFrame extends javax.swing.JFrame {
 	 * 
 	 * @param username
 	 * @param chips
-	 * @return
+	 * @return completed
 	 */
 	public boolean updateChipsForUser(String username) {
 		if (username.equals("Empty"))
@@ -325,7 +335,7 @@ public class GameFrame extends javax.swing.JFrame {
 	 * 
 	 * @param username
 	 * @param avatar
-	 * @return
+	 * @return completed
 	 */
 	public boolean setAvatarIconForUser(String username, ImageIcon avatar) {
 		if (username.equals(playerNameLabel.getText()))
@@ -350,7 +360,7 @@ public class GameFrame extends javax.swing.JFrame {
 	 * Removes a users icons from the game.
 	 * 
 	 * @param username
-	 * @return
+	 * @return completed
 	 */
 	public boolean removeUserFromGame(int uID) {
 		String username = null;
@@ -370,6 +380,11 @@ public class GameFrame extends javax.swing.JFrame {
 		return clientRequest.clientNeedsGameFrameUpdate();
 	}
 
+	/**
+	 * Starts a player's turn.
+	 * 
+	 * @return completed
+	 */
 	public boolean startTurn() {
 		yourTurn = true;
 		enableBettingInputFields(yourTurn);
@@ -377,12 +392,22 @@ public class GameFrame extends javax.swing.JFrame {
 		return clientRequest.clientNeedsGameFrameUpdate();
 	}
 
+	/**
+	 * Ends a player's turn.
+	 * 
+	 * @return completed
+	 */
 	public boolean endTurn() {
 		yourTurn = false;
 		enableBettingInputFields(yourTurn);
 		return true;
 	}
 
+	/**
+	 * Resets the game.
+	 * 
+	 * @return completed
+	 */
 	public boolean resetGame() {
 		clearAllCardIcons();
 		updateBettingSystem();
@@ -392,6 +417,7 @@ public class GameFrame extends javax.swing.JFrame {
 
 	/**
 	 * Returns to the main menu screen.
+	 * @return completed
 	 */
 	public boolean exitGame() throws RemoteException, SQLException {
 		clientRequest.leaveGame();
@@ -406,7 +432,8 @@ public class GameFrame extends javax.swing.JFrame {
 	/**
 	 * Updates the game console with a list of new messages.
 	 * 
-	 * @param newMessages
+	 * @param newMessage
+	 * @return completed
 	 */
 	public boolean addMessageToInGameConsole(String message) {
 		// for (int i = 0; i < newMessages.length; i++)
@@ -422,6 +449,11 @@ public class GameFrame extends javax.swing.JFrame {
 		return clientRequest.clientNeedsGameFrameUpdate();
 	}
 
+	/**
+	 * Sets the betting fields on or off.
+	 * 
+	 * @param enabled
+	 */
 	private void enableBettingInputFields(boolean enabled) {
 		// playerBetTextField.enableInputMethods(enabled);
 		// betCheckButton.enableInputMethods(enabled);
@@ -949,7 +981,11 @@ public class GameFrame extends javax.swing.JFrame {
 
 	}// GEN-LAST:event_openChatMenuItemActionPerformed
 
-	// NOT TO BE INCLUDED
+	/**
+	 * When open statistics is chosen, the statictics should open. Offline. 
+	 * 
+	 * @param evt
+	 */
 	private void openStatisticsMenuItemActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_openStatisticsMenuItemActionPerformed
 
@@ -1020,6 +1056,11 @@ public class GameFrame extends javax.swing.JFrame {
 				JOptionPane.ERROR_MESSAGE);
 	}// GEN-LAST:event_gameRulesMenuItemActionPerformed
 
+	/**
+	 * When the bet button is pressed, the bet is sent to the server. 
+	 * 
+	 * @param evt
+	 */
 	private void betCheckButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_betCheckButtonActionPerformed
 		String betString = playerBetTextField.getText();
 		boolean isNumber = false;
@@ -1059,6 +1100,11 @@ public class GameFrame extends javax.swing.JFrame {
 		}
 	}// GEN-LAST:event_betCheckButtonActionPerformed
 
+	/**
+	 * When the fold button is pressed, a fold message is sent. 
+	 * 
+	 * @param evt
+	 */
 	private void foldButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_foldButtonActionPerformed
 		clientRequest.fold();
 		clearCardIconsForUser(clientRequest.getUsername());
