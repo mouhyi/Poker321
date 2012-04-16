@@ -41,6 +41,16 @@ public class GameServerImpl extends UnicastRemoteObject  implements GameServer  
 		pokerTables.add(table);
 		return table;
 	}
+	
+	@Override 
+	public boolean tableWithName(String name) throws RemoteException{
+		for(IGameTable element : pokerTables){
+			if(element.getName().equals(name)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public IGameTable getTable(String name) throws RemoteException {
