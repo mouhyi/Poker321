@@ -18,6 +18,8 @@ public class RegistrationFrame extends javax.swing.JFrame {
     
     /**
      * Creates new form RegistrationScreen.
+     * 
+     * @param guiclient
      */
     public RegistrationFrame(GUIClient guic) {
         initComponents();
@@ -206,6 +208,7 @@ public class RegistrationFrame extends javax.swing.JFrame {
     /**
      * When the create account button is pressed, the text fields are checked 
      * and account is attempted to be created.
+     * 
      * @param evt 
      */
     private void createAccountButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createAccountButtonActionPerformed
@@ -244,6 +247,7 @@ public class RegistrationFrame extends javax.swing.JFrame {
 
     /**
      * Returns to login when the return to login button is pressed.
+     * 
      * @param evt 
      */
     private void returnToLoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnToLoginButtonActionPerformed
@@ -252,6 +256,7 @@ public class RegistrationFrame extends javax.swing.JFrame {
 
     /**
      * Returns to login when the window closes.
+     * 
      * @param evt 
      */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
