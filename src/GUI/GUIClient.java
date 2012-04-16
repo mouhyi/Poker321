@@ -1012,7 +1012,7 @@ public class GUIClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String msg = friend+" has invited you to the Game Table: " + table +". You should go join him!";
+		String msg = currentUser.getName()+" has invited you to the Game Table: " + table +". You should go join him!";
 		try {
 			currentUserClient.getUserProxy().invite(userId, friendId, msg );
 		} catch (RemoteException e) {
