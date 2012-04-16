@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 /**
- * Class containing useful methods 
+ * Class containing useful DB management methods 
  * @author mouhyi
  *
  */

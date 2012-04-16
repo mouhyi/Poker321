@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import Server.userModule.UserObject;
+import Remote.UserObject;
 
 public class UserTest {
 	public static void main(String[] args) throws SQLException {

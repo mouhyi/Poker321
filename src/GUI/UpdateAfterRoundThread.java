@@ -2,9 +2,17 @@ package GUI;
 
 import java.rmi.RemoteException;
 
-import Client.PlayerClient;
-import Server.gameModule.RemoteGame;
 
+import Client.PlayerClient;
+import Remote.RemoteGame;
+
+
+/**
+ * Thread to update a game state after a betting round
+ * 
+ * @author mouhyi
+ * 
+ */
 public class UpdateAfterRoundThread extends Thread {
 
 	private ServerListener listener;
@@ -18,24 +26,13 @@ public class UpdateAfterRoundThread extends Thread {
 	}
 	
 	public void run(){
-		
-		/*try {
-			playerCl.semB.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		playerCl.semB.release();*/
-		
-		
+			
 		try {
 			playerCl.mainSem.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	
-		
-		System.out.println("START update after round      *********");
+
 		
 		listener.updateAllCards();
 	 	System.out.println("updated cards ");
@@ -46,7 +43,6 @@ public class UpdateAfterRoundThread extends Thread {
 		
 		playerCl.mainSem.release();
 		
-		System.out.println("END update after round          *********");
 		
 	}
 }

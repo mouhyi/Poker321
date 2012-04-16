@@ -1,17 +1,19 @@
 package GUI;
 
 import Client.GameClient;
+
 import Client.PlayerClient;
 import Client.UserClient;
 
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
-import Server.gameModule.ICard;
-import Server.gameModule.IGameTable;
-import Server.gameModule.IPlayer;
-import Server.gameModule.RemoteGame;
-import Server.userModule.UserObject;
+import Remote.IPlayer;
+import Remote.RemoteGame;
+import Remote.UserObject;
+import Remote.ICard;
+import Remote.IGameTable;
+
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 

@@ -3,10 +3,10 @@ package Data;
 import java.sql.*;
 import java.util.ArrayList;
 
-import Server.userModule.UserObject;
+import Remote.UserObject;
 
 /**
- * This class represents the facade for the user's data management 
+ * This class represents the facade for the user's data management
  * 
  * @author Mouhyi
  */
@@ -46,21 +46,22 @@ public class UserData {
 		return 0;
 
 	}
+
 	/**
 	 * Adds a player to the 'Players' table
+	 * 
 	 * @param userId
 	 * @return
 	 * @throws SQLException
 	 */
-	public static int createPlayer(int userId) throws SQLException{
+	public static int createPlayer(int userId) throws SQLException {
 		Connection con = Methods.connectToDB("5CARD");
 		String query = "INSERT INTO 5CARD.Players (u_id, wins, losses, gameWinnings)"
-				+ "VALUES ("+ Methods.addQuotes(userId)+ ", 0,0,0)";
+				+ "VALUES (" + Methods.addQuotes(userId) + ", 0,0,0)";
 		Statement st = con.createStatement();
 		st.executeUpdate(query);
 		return 0;
 	}
-	
 
 	/**
 	 * This method checks that the email and password submitted by the user are
@@ -229,8 +230,6 @@ public class UserData {
 			pstmt.setString(4, user.getPassword());
 			pstmt.setInt(5, user.getId());
 
-			System.out.println(pstmt.toString());
-
 			updated = pstmt.executeUpdate();
 
 		} catch (SQLException e) {
@@ -292,8 +291,8 @@ public class UserData {
 
 		if (!exists(userId) || !exists(friendId))
 			return -1;
-		
-		if(isFriend(userId, friendId))
+
+		if (isFriend(userId, friendId))
 			return -1;
 
 		try {
@@ -385,6 +384,7 @@ public class UserData {
 			return success;
 		}
 	}
+
 	/**
 	 * Checks whether two users are friends or not
 	 * 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import Server.gameModule.IPlayer;
+import Remote.IPlayer;
 
 /**
  * The Game Frame class extends JFrame to illustrate a game of five card stud.

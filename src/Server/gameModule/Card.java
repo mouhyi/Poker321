@@ -3,8 +3,12 @@ package Server.gameModule;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import Remote.ICard;
+import Remote.Rank;
+import Remote.Suit;
+
 /**
- * Wrapper class for cards
+ * Wrapper class for poker cards
  * 
  * @author mouhyi
  *

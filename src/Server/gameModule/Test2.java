@@ -2,6 +2,9 @@
 package Server.gameModule;
 import java.util.ArrayList;
 
+import Remote.Rank;
+import Remote.Suit;
+
 public class Test2{
 
 	/**

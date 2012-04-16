@@ -2,6 +2,8 @@ package Client;
 
 import java.rmi.Naming;
 
+
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
@@ -11,7 +13,9 @@ import java.rmi.server.UnicastRemoteObject;
 
 
 import GUI.ServerListener;
-import Server.userModule.RemoteUser;
+import Remote.IUserClient;
+import Remote.RemoteUser;
+
 import java.util.concurrent.*;
 
 

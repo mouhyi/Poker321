@@ -12,6 +12,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import Remote.ICard;
+import Remote.IHand;
+import Remote.Rank;
+import Remote.Suit;
+
 /**
  * A wrapper class of a Poker Hand. All of the algorithms used to determine the
  * value of a hand are original and no outside sources were consulted. Moreover,

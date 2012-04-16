@@ -4,8 +4,11 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import Remote.IGameTable;
+import Remote.IPlayer;
+import Remote.UserObject;
 import Server.gameModule.*;
-import Server.userModule.UserObject;
 
 /**
  * Wrapper Class for a poker table
@@ -125,7 +128,6 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 		synchronized (players) {
 			if (this.players.size() < 5 && p != null) {
 				this.players.add(p);
-				System.out.println("Player added:"+p.getUserId());
 				return 0;
 			}
 		}

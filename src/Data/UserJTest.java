@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
-import Server.userModule.UserObject;
+import Remote.UserObject;
 
 public class UserJTest {
 	@Before

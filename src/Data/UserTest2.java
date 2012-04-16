@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import Server.userModule.UserObject;
+import Remote.UserObject;
 
 //this is is designed to show that it can fail properly
 public class UserTest2 {

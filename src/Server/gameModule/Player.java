@@ -5,8 +5,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 
+import Remote.IPlayer;
+import Remote.UserObject;
 import Server.userModule.UserImpl;
-import Server.userModule.UserObject;
 
 /**
  * Wrapper class for a poker player

@@ -5,6 +5,8 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
+import Remote.GameServer;
+
 public class RMIServer {
 	
 	private static final int PORT = 10066;
@@ -35,8 +37,4 @@ public class RMIServer {
 		
 	}
 	
-	
-	public static void main(String [] args){
-		registerGameServer();
-	}
 }

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import Remote.Rank;
+import Remote.Suit;
+
 /**
  * Wrapper class for a standard deck of cards
  * 

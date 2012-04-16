@@ -8,6 +8,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+import Remote.RemoteUser;
+
 /**
  * This class is a server process to host the Remote RMI User services.
  * 
@@ -35,8 +37,7 @@ public class UserHost {
 			// Register server object to registry with unique name
 			String urlString = "//" + HOST_NAME + ":" + Integer.toString(PORT)
 					+ "/" + "UserServer";
-			Naming.rebind(urlString, user);
-			System.out.println( "Bindings Finished, waiting for client requests." );
+			Naming.rebind(urlString, user);;
 
 		} catch (java.rmi.UnknownHostException uhe) {
 			System.out.println("The host computer name you have specified, "
@@ -49,7 +50,4 @@ public class UserHost {
 		}
 	}
 	
-	public static void main(String [] args){
-		UserHost user = new UserHost();
-	}
 }

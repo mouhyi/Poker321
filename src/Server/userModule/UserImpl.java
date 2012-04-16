@@ -3,11 +3,14 @@ package Server.userModule;
 import java.rmi.RemoteException;
 
 
+
 import java.sql.SQLException;
 import java.util.ArrayList;
-import Client.IUserClient;
+import Remote.IUserClient;
 import Data.Statistics;
 import Data.UserData;
+import Remote.RemoteUser;
+import Remote.UserObject;
 
 /**
  * Implementation class of the remote interface
@@ -245,4 +248,5 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	public void invite(int userId, int friendId, String msg ) throws RemoteException{
 		(new InviteThread(userId, friendId, msg, this)).start();
 	}
+
 }

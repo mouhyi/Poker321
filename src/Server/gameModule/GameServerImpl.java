@@ -4,6 +4,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
+import Remote.GameServer;
+import Remote.IGameTable;
+
 public class GameServerImpl extends UnicastRemoteObject  implements GameServer  {
 	
 	private ArrayList<IGameTable> pokerTables;

@@ -2,8 +2,8 @@ package Client;
 
 import java.rmi.Naming;
 
-import Server.gameModule.GameServer;
-import Server.userModule.RemoteUser;
+import Remote.GameServer;
+import Remote.RemoteUser;
 
 public class GameClient {
 	

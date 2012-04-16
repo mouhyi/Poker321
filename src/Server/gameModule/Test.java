@@ -1,9 +1,13 @@
 package Server.gameModule;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import Remote.Rank;
+import Remote.Suit;
 
 /**
  * Class for simple testings
@@ -21,7 +25,7 @@ public class Test {
 		testcompHands();
 	}
 	
-	public static void testCardComp(){
+	public static void testCardComp() throws RemoteException{
 		Card c1 = new Card(Rank.Four, Suit.Diamonds);
 		Card c2 = new Card(Rank.Jack, Suit.Spades); 
 		Card c3 = new Card(Rank.Jack, Suit.Spades);
@@ -53,7 +57,7 @@ public class Test {
 		
 	}
 	
-	public static void testHandComp(){
+	public static void testHandComp() throws RemoteException{
 		Hand h = new Hand();
 		ArrayList<Card> list = new ArrayList<Card> (5);
 		list.add(new Card(Rank.Jack, Suit.Clubs));
@@ -93,7 +97,7 @@ public class Test {
 		System.out.println(h.getHighestTuple());
 	}
 	
-	public static void testcompHands(){
+	public static void testcompHands() throws RemoteException{
 		Hand h = new Hand();
 		ArrayList<Card> list = new ArrayList<Card> (5);
 		list.add(new Card(Rank.King, Suit.Spades));

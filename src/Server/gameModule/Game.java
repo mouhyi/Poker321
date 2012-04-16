@@ -9,10 +9,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import Remote.IPlayer;
+import Remote.IPlayerClient;
+import Remote.RemoteGame;
 import Server.userModule.UserImpl;
-
-import Client.IPlayerClient;
-import Client.PlayerClient;
 
 /**
  * Implements the rules of the game This is the Remote Game Object (RMI Server)
@@ -123,16 +123,9 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	@Override
 	public void play() throws RemoteException {
 
-		System.out.println("Start Game");
 		for (IPlayerClient pcl : PClients) {
 			pcl.InitiateGameDisplay();
-			System.out.println("USer Done" + pcl.isDone());
-			// pcl.updateDuringRound("FOo");
 		}
-
-		System.out.println("Returned from call back");
-
-		System.out.println("Ante");
 
 		// ante
 		collectAnte();
@@ -147,14 +140,10 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		round = 1;
 		curPlayer = doFirstRound();
 
-		System.out.println("1st round Done");
-
 		for (IPlayerClient pcl : PClients) {
 			pcl.updateAfterRound("Round 1");
 			// /pcl.updateAfterRound("1 st call");
 		}
-
-		System.out.println("************************************");
 
 		curBet = bringIn;
 		players.get(curPlayer).bet(bringIn);
@@ -170,8 +159,6 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 				e.printStackTrace();
 			}
 		}
-
-		System.out.println("1st round UPdated");
 
 		// END First Round
 
@@ -281,11 +268,9 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		}
 
 		// Game over
-		System.out.println("Game over");
 
 		// clear old game data
 		this.reset();
-		System.out.println("Game over2");
 
 	}
 
@@ -376,7 +361,6 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 			return -1;
 		}
 
-		System.out.println("Player " + userId + "  CALLS");
 
 		for (IPlayerClient pcl : PClients) {
 			try {
@@ -426,7 +410,6 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 			return -1;
 		}
 
-		System.out.println("Player " + userId + "  RAISES");
 
 		for (IPlayerClient pcl : PClients) {
 			try {
@@ -640,24 +623,20 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 	// TODO: implement RMI
 	public void doBetting() {
 
-		System.out.println("BeTTING ---------");
-
 		// RMI
 		// betting goes in increasing indices and wraps around
 		// chips are added to pot at the end in confirmBet
 		// or immedialtely if a player folds
-		/*
-		 * notify curplayer(callBack) wait for a flag if player folds(or
-		 * timedout) remove him from players and confirm his bet and update pot
-		 * else curBet = player's bet (error if bet<curBet) count++ for call,
-		 * count=1 for a raise repeat until count = players.size or all-in=true,
-		 * or one player left confirmBet
-		 */
+		
+		 // notify curplayer(callBack) wait for a flag
+		 // if player folds(or timedout: // TODO) remove him from players and confirm his bet and update pot
+		 //else curBet = player's bet (error if bet<curBet) count++ for call,  count=1 for a raise 
+		 //repeat until count = players.size or all-in=true, or one player left 
+		//confirmBet
+
 		while (count < players.size()) {
 			players.get(curPlayer).setTurn(true);
 			players.get(curPlayer).setDone(false);
-
-			System.out.println("Betting updateDuringRound");
 
 			for (IPlayerClient pcl : PClients) {
 				try {
@@ -674,21 +653,16 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 				}
 			}
 
-			System.out.println("Player bet  ---------");
-
 			try {
 				sem.acquire();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 
-			System.out.println("NEW CurBet " + curBet);
-
 			// notify curPlayer and wait for him to play
 			// removes him if timeout
 			// notify the other players
 
-			System.out.println("NEXT PLAYER ---------");
 
 			curPlayer = this.getNextPlayer();
 		}
@@ -703,8 +677,6 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 				e.printStackTrace();
 			}
 		}
-
-		System.out.println("BeTTING for this round done ---------");
 
 	}
 
@@ -757,7 +729,6 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 			try {
 				element.getChatMessage(from, message);
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -767,6 +738,4 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		return (this.getPlayer(userId) == null) ? false : true;
 	}
 
-	// TODO implement invite friends
-	// sendNotificationMessage(String message)
 }

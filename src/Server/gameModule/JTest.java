@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+import Remote.Rank;
+import Remote.Suit;
+
 public class JTest {
 
 	@Before

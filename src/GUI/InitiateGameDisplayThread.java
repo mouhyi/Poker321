@@ -2,6 +2,12 @@ package GUI;
 
 import Client.PlayerClient;
 
+/**
+ * Thread to initialize a game gui
+ * 
+ * @author mouhyi
+ * 
+ */
 public class InitiateGameDisplayThread extends Thread {
 	
 	ServerListener sl;
@@ -14,23 +20,10 @@ public class InitiateGameDisplayThread extends Thread {
 	
 	public void run(){
 		
-		/*try {
-			playerCl.semA.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
-		//synchronized(playerCl)
-		System.out.println("INIT ENTER FM     ****************");
 		sl.enterGameFrame();
 		
-		System.out.println( " INIT GAME     *****************");
 		sl.initializeGame();
-		
-		System.out.println( " INIT RELEASE SEM     *****************");
-		
-		
+
 		playerCl.semA.release();
 		
 		//playerCl.mainSem.release();
