@@ -178,7 +178,9 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	 */
 	@Override
 	public int signup(UserObject user) throws RemoteException, SQLException {
-		Data.UserData.createUser(user);
+		if( Data.UserData.createUser(user) !=0){
+			return -1;
+		}
 		Data.UserData.createPlayer(this.getUserObject( user.getEmail()).getId());
 		return 0;
 
