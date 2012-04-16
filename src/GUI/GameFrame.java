@@ -28,6 +28,10 @@ public class GameFrame extends javax.swing.JFrame {
 
 	/**
 	 * Creates new form GameScreen.
+	 * 
+	 * @param guiclient
+	 * @param serverlistener
+	 * @param tableName
 	 */
 	public GameFrame(GUIClient guic, ServerListener sl, String tableName)
 			throws RemoteException, SQLException {
