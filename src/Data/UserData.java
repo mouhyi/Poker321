@@ -25,9 +25,7 @@ public class UserData {
 		if (exists(user.getName())) {
 			return -1;
 		}
-		if (exists(user.getEmail())) {
-			return -1;
-		}
+
 		String email = Methods.addQuotes(user.getEmail());
 		String password = Methods.addQuotes(user.getPassword());
 		String name = Methods.addQuotes(user.getName());
