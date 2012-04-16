@@ -554,7 +554,13 @@ public class GUIClient {
 	 * @throws RemoteException 
 	 */	 
 	public boolean checkTableName(String name){
-		return currentGameTableClient.getUserProxy().tableWithName(name);
+		try {
+			return currentGameTableClient.getUserProxy().tableWithName(name);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**
