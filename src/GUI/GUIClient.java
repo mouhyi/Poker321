@@ -551,8 +551,9 @@ public class GUIClient {
 	 * Returns whether there is already a table with that name
 	 * @param name
 	 * @return
+	 * @throws RemoteException 
 	 */	 
-	public boolean checkTableName(String name){
+	public boolean checkTableName(String name) throws RemoteException{
 		return currentGameTableClient.getUserProxy().tableWithName(name);
 	}
 
