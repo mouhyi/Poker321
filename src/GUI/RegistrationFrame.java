@@ -218,7 +218,10 @@ public class RegistrationFrame extends javax.swing.JFrame {
         
         if (firstNameString.equals("") || lastNameString.equals("") || emailString.equals("") || usernameString.equals("") || passwordString1.equals("") || passwordString2.equals(""))
             JOptionPane.showMessageDialog(this, "Please fill in all fields", "Registration Failed", JOptionPane.ERROR_MESSAGE);
-        
+      else if (!emailString.contains("@")||emailString.length()<3){
+          JOptionPane.showMessageDialog(this, "Invalid Email", "Try Again.", JOptionPane.ERROR_MESSAGE);
+      }
+      
         else if (!passwordString1.equals(passwordString2))
             JOptionPane.showMessageDialog(this, "Passwords not the same", "Registration Failed", JOptionPane.ERROR_MESSAGE);
       
