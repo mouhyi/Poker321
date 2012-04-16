@@ -270,7 +270,7 @@ public class Game extends UnicastRemoteObject implements RemoteGame {
 		// Game over
 
 		// clear old game data
-		this.reset();
+		//this.reset();
 
 	}
 
