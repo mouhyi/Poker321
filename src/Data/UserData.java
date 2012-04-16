@@ -46,6 +46,21 @@ public class UserData {
 		return 0;
 
 	}
+	/**
+	 * Adds a player to the 'Players' table
+	 * @param userId
+	 * @return
+	 * @throws SQLException
+	 */
+	public static int createPlayer(int userId) throws SQLException{
+		Connection con = Methods.connectToDB("5CARD");
+		String query = "INSERT INTO 5CARD.Players (u_id, wins, losses, gameWinnings)"
+				+ "VALUES ("+ Methods.addQuotes(userId)+ ", 0,0,0)";
+		Statement st = con.createStatement();
+		st.executeUpdate(query);
+		return 0;
+	}
+	
 
 	/**
 	 * This method checks that the email and password submitted by the user are
@@ -205,13 +220,14 @@ public class UserData {
 
 		try {
 			Connection con = Methods.connectToDB("5CARD");
-			String query = "UPDATE 5CARD.Users SET name=? , chips =?, online=?"
+			String query = "UPDATE 5CARD.Users SET name=? , chips =?, online=?, password=?"
 					+ " WHERE u_id=?";
 			pstmt = con.prepareStatement(query);
 			pstmt.setString(1, user.getName());
 			pstmt.setDouble(2, user.getChips());
 			pstmt.setBoolean(3, user.isOnline());
-			pstmt.setInt(4, user.getId());
+			pstmt.setString(4, user.getPassword());
+			pstmt.setInt(5, user.getId());
 
 			System.out.println(pstmt.toString());
 

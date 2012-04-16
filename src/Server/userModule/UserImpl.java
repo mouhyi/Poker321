@@ -2,6 +2,7 @@ package Server.userModule;
 
 import java.rmi.RemoteException;
 
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import Client.IUserClient;
@@ -174,7 +175,9 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	 */
 	@Override
 	public int signup(UserObject user) throws RemoteException, SQLException {
-		return Data.UserData.createUser(user);
+		Data.UserData.createUser(user);
+		Data.UserData.createPlayer(this.getUserObject( user.getEmail()).getId());
+		return 0;
 
 	}
 
@@ -240,6 +243,6 @@ public class UserImpl extends java.rmi.server.UnicastRemoteObject implements
 	 */
 	@Override
 	public void invite(int userId, int friendId, String msg ) throws RemoteException{
-		this.getClient(friendId).showNotificationMessage(msg);
+		(new InviteThread(userId, friendId, msg, this)).start();
 	}
 }

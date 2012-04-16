@@ -394,6 +394,7 @@ public class GameFrame extends javax.swing.JFrame {
 	 * Returns to the main menu screen.
 	 */
 	public boolean exitGame() throws RemoteException, SQLException {
+		clientRequest.leaveGame();
 		MainMenuFrame mm = new MainMenuFrame(clientRequest, serverListener);
 		mm.setVisible(true);
 		serverListener.releaseGameFrame();

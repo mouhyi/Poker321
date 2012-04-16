@@ -211,7 +211,14 @@ public class GameTable extends UnicastRemoteObject  implements IGameTable {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Gets player with userId
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws RemoteException
+	 */
 	public Player getPlayer(int userId) throws RemoteException {
 		for (Player p : players) {
 			try {

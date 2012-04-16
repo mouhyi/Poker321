@@ -1061,7 +1061,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * @param evt 
      */
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        JOptionPane.showMessageDialog(this, "321 Poker developed by:\n\nPeter Henderson\nMatthew Lee\nArthur Kam\nMatthew Vertescher\nMouhyi ", "About", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(this, "321 Poker developed by:\n\nPeter Henderson\nMatthew Lee\nArthur Kam\nMatthew Vertescher\nMouhyi Eddine El Bouhali", "About", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
     
     /**

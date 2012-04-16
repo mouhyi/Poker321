@@ -97,4 +97,9 @@ public interface IGameTable extends Remote {
 	 * Starts a new Game
 	 */
 	public void startGame()throws RemoteException ;
+	
+	/**
+	 * Gets player by id
+	 */
+	public Player getPlayer(int userId) throws RemoteException ;
 }

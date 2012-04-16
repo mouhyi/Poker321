@@ -1031,42 +1031,47 @@ public class GUIClient {
 	 * @author Peter
 	 */
 	public boolean sendBet(double bet) {
-		if (usersGameTable != null) {
-			try {
-				if(bet == currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPlayer(userId).getChips()){
-					int i = currentGameTableClient.getUserProxy().getTable(
-							usersGameTable.getName()).getGame().allIn(userId);
-					if(i==0) return true;
-					else return false;
+		try {
+			if (usersGameTable.getGame() != null){ //&& currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPlayer(userId).isTurn() ) {
+				try {
+					if(bet == currentGameTableClient.getUserProxy().getTable(usersGameTable.getName()).getGame().getPlayer(userId).getChips()){
+						int i = currentGameTableClient.getUserProxy().getTable(
+								usersGameTable.getName()).getGame().allIn(userId);
+						if(i==0) return true;
+						else return false;
+					}
+					if (bet > currentGameTableClient.getUserProxy().getTable(
+							usersGameTable.getName()).getGame().getCurBet()) {
+						int i = currentGameTableClient.getUserProxy().getTable(
+								usersGameTable.getName()).getGame().raise(userId,
+								bet);
+						if (i == 0)
+							return true;
+						else
+							return false;
+					}
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				if (bet > currentGameTableClient.getUserProxy().getTable(
-						usersGameTable.getName()).getGame().getCurBet()) {
-					int i = currentGameTableClient.getUserProxy().getTable(
-							usersGameTable.getName()).getGame().raise(userId,
-							bet);
-					if (i == 0)
-						return true;
-					else
-						return false;
+				try {
+					if (bet == currentGameTableClient.getUserProxy().getTable(
+							usersGameTable.getName()).getGame().getCurBet()) {
+						int i = currentGameTableClient.getUserProxy().getTable(
+								usersGameTable.getName()).getGame().call(userId);
+						if (i == 0)
+							return true;
+						else
+							return false;
+					}
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			try {
-				if (bet == currentGameTableClient.getUserProxy().getTable(
-						usersGameTable.getName()).getGame().getCurBet()) {
-					int i = currentGameTableClient.getUserProxy().getTable(
-							usersGameTable.getName()).getGame().call(userId);
-					if (i == 0)
-						return true;
-					else
-						return false;
-				}
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return false;
 	}
