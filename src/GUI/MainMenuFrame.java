@@ -28,6 +28,8 @@ public class MainMenuFrame extends javax.swing.JFrame {
    
     /**
      * Creates new form MainMenuScreen.
+     * @param guiclient 
+     * @param serverlistener
      */
     public MainMenuFrame(GUIClient guic, ServerListener sl) throws RemoteException, SQLException {
         initComponents();
@@ -72,7 +74,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     
     /**
      * Method to be called by server instructing main menu to enter game frame.
-     * @return 
+     * @return completed
      */
     public boolean enterGameFrame() throws RemoteException, SQLException {
         // Should check for errors here
@@ -83,6 +85,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     
     /**
      * Update the game panel with information from a particular table.
+     * @param gameTable
      */
     private void updateGamePanel(String gameTable) {
         tableNameLabel.setText(gameTable);
@@ -126,6 +129,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     
     /**
      * Update the friends panel with information from a particular user.
+     * @param username
      */
     private void updateFriendsPanel(String username) throws RemoteException, SQLException {
         usernameFriendsPanelLabel.setText(username);
@@ -146,6 +150,9 @@ public class MainMenuFrame extends javax.swing.JFrame {
         friendsList.setListData(usernames);
     }
 
+    /**
+     * Updates the profile panel with the users information.
+     */
     private void updateProfilePanel() {
         System.out.println("Profile Panel Shown");
         firstNameProfileLabel.setText("First Name: Haibo");
@@ -162,7 +169,10 @@ public class MainMenuFrame extends javax.swing.JFrame {
         avatarProfileLabel.setIcon(clientRequest.getAvatar(clientRequest.getUsername()));
     }
 
-
+    /**
+     * Opens the game frame for a particular table.
+     * @param table
+     */
     private void openGameFrame(String table) throws RemoteException, SQLException {
     	
     	System.out.println("mmf: open game frame 1");
@@ -1313,6 +1323,10 @@ public class MainMenuFrame extends javax.swing.JFrame {
         serverListener.releaseMainMenuFrame();
     }//GEN-LAST:event_formWindowClosing
 
+    /**
+     * When the game lobby split pane is clicked, it updates.
+     * @param evt 
+     */
     private void gameLobbySplitPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gameLobbySplitPaneMouseClicked
         updateGameTree();
         if (clientRequest.getCurrentTable() != null) 
@@ -1320,16 +1334,28 @@ public class MainMenuFrame extends javax.swing.JFrame {
         updateGamePanel(tableNameLabel.getText());
     }//GEN-LAST:event_gameLobbySplitPaneMouseClicked
 
+    /**
+     * When the game tree is clicked, it updates.
+     * @param evt 
+     */
     private void gameTreeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gameTreeMouseClicked
         updateGameTree();
     }//GEN-LAST:event_gameTreeMouseClicked
 
+    /**
+     * When the friends list is clicked, it updates.
+     * @param evt 
+     */
     private void friendsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendsListMouseClicked
         //try {
         //   updateFriendsPanel(clientRequest.getUsername());
         //} catch (RemoteException ex) {} catch (SQLException ex) {}
     }//GEN-LAST:event_friendsListMouseClicked
 
+    /**
+     * When the change avatar button is pressed, a pop-up appears.
+     * @param evt 
+     */
     private void changeAvatarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeAvatarButtonActionPerformed
         String[] listOfAvatars = {"4chan.gif","Bubbles.jpg","DSotM.png","Gosling.png","blossoms.jpeg","buttercup.jpg","butterfly.jpg","chiyo.jpg","controller.jpg","creeper.jpg","default.jpg","dog.png","domo.jpg","female.jpg","guyfawkes.png","haibo.JPG","hawk.jpg","illusion1.jpg","illusion2.jpg","notBluffing.jpg","reimu.png","shark.jpg","stairs.gif"};
         String  avatarName = (String) JOptionPane.showInputDialog(this, "Please select an avatar","Change Avatar", JOptionPane.PLAIN_MESSAGE, null, listOfAvatars,"Tennis");
@@ -1347,6 +1373,10 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_changeAvatarButtonActionPerformed
 
+    /**
+     * When the donate button is pressed, a pop-up appears.
+     * @param evt 
+     */
     private void donateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_donateButtonActionPerformed
 
          JOptionPane.showMessageDialog(this, "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=LFF5K54VJ32B2&lc=CA&item_name=321Cards&currency_code=CAD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted", "Donate", JOptionPane.PLAIN_MESSAGE);
