@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 /**
  * This class should only be called by the server to update fields with the GUI.
+ * 
  * @author mattvertescher
  */
 public class ServerListener {
@@ -24,24 +25,27 @@ public class ServerListener {
     
     /**
      * Setter for mainMenuFrame.
+     * 
      * @param mmf 
      */
     public void setMainMenuFrame(MainMenuFrame mmf) {
-    	System.out.println("sl: set main menu frame");
+    	//System.out.println("sl: set main menu frame");
         mainMenuFrame = mmf;
     }
     
     /**
      * Setter for gameFrame.
+     * 
      * @param gf 
      */
     public void setGameFrame(GameFrame gf) {
-    	System.out.println("sl: set game frame");
+    	//System.out.println("sl: set game frame");
         gameFrame = gf;
     }
     
     /**
      * Setter for chatFrame. 
+     * 
      * @param cf 
      */
     public void setChatFrame(ChatFrame cf) {
@@ -52,7 +56,7 @@ public class ServerListener {
      * Sets main menu reference to null.
      */
     public void releaseMainMenuFrame() {
-    	System.out.println("sl: release main menu frame");
+    	//System.out.println("sl: release main menu frame");
         mainMenuFrame = null;
     }
     
@@ -60,8 +64,8 @@ public class ServerListener {
      * Sets game frame reference to null.
      */
     public void releaseGameFrame() {
-    	System.out.println("sl: release game frame");
-    	if (gameFrame==null) System.out.println("gameFrameNull in server listener");
+    	//System.out.println("sl: release game frame");
+    	if (gameFrame==null) //System.out.println("gameFrameNull in server listener");
         gameFrame = null;
     }
     
@@ -80,6 +84,7 @@ public class ServerListener {
     
     /**
      * Displays a pop-up message to the main menu
+     * 
      * @param message
      * @return completed 
      */
@@ -91,6 +96,7 @@ public class ServerListener {
     
     /**
      * Adds a new message to the main menu. 
+     * 
      * @param message
      * @return completed 
      */
@@ -102,10 +108,11 @@ public class ServerListener {
     
     /**
      * Tells the main menu to enter into the game frame.
-     * @return 
+     * 
+     * @return completed
      */
     public boolean enterGameFrame() {
-    	System.out.println("Sl: enter game frame");
+    	//System.out.println("Sl: enter game frame");
         if (mainMenuFrame != null) {
         	System.out.println("Sl: mmf not null");
             try {
@@ -129,10 +136,11 @@ public class ServerListener {
     
     /**
      * Method called by server to initialize all game fields.
-     * @return 
+     * 
+     * @return completed
      */
     public boolean initializeGame() {
-    	System.out.println("Sl: init game");
+    	//System.out.println("Sl: init game");
         if (gameFrame != null) 
             return gameFrame.resetGame();   
         return false;
@@ -140,11 +148,11 @@ public class ServerListener {
     
     /**
      * Tells the game frame to update all player cards.
-     * @param username
-     * @return 
+     * 
+     * @return completed
      */
     public boolean updateAllCards() {
-    	System.out.println("now in updateAllcards: server listener");
+    	//System.out.println("now in updateAllcards: server listener");
   
         if (gameFrame != null) 
             return gameFrame.updateAllCards();
@@ -153,12 +161,13 @@ public class ServerListener {
     
     /**
      * Tells the game frame to update a players hand.
+     * 
      * @param username
-     * @return 
+     * @return completed
      */
     public boolean updatePlayerHand(String username) {
         if (gameFrame != null) {
-        	System.out.println("in server listener update player hand");
+        	//System.out.println("in server listener update player hand");
             return gameFrame.updateCardsForUser(username);}
         return false;
     }
@@ -166,6 +175,7 @@ public class ServerListener {
     /**
      * Updates the game betting system that includes the pot, current bet, and 
      * the chips for each user.
+     * 
      * @return completed 
      */
     public boolean updateBettingSystem() {
@@ -176,6 +186,7 @@ public class ServerListener {
     
     /**
      * Update pot for game frame.
+     * 
      * @return completed
      */
     public boolean updatePot() {
@@ -186,7 +197,8 @@ public class ServerListener {
     
     /**
      * Update current bet for game frame.
-     * @return 
+     * 
+     * @return completed
      */
     public boolean updateCurrentBet() {
          if (gameFrame != null) 
@@ -196,8 +208,9 @@ public class ServerListener {
     
     /**
      * Update a user's chips label in game frame.
+     * 
      * @param username
-     * @return 
+     * @return completed
      */
     public boolean updateUserChips(String username) {
          if (gameFrame != null) 
@@ -207,7 +220,8 @@ public class ServerListener {
     
     /**
      * Notifies the player that it is their turn.
-     * @return 
+     * 
+     * @return completed
      */
     public boolean notifyPlayerTurn() {
         if (gameFrame != null) {
@@ -219,8 +233,9 @@ public class ServerListener {
     
     /**
      * Tells gameFrame to remove a user from the game
-     * @param username
-     * @return 
+     * 
+     * @param uID
+     * @return completed
      */
     public boolean removeUserFromGame(int uID) {
         if (gameFrame != null)             
@@ -230,9 +245,10 @@ public class ServerListener {
 
     /**
      * Tell the game frame to close and open the main menu frame.
-     * @return completed
+     * 
      * @throws RemoteException
      * @throws SQLException 
+     * @return completed
      */
     public boolean exitGame() throws RemoteException, SQLException {
         if (gameFrame != null) 
@@ -242,14 +258,15 @@ public class ServerListener {
    
     /**
      * Adds a new message to the in game console.
+     * 
      * @param message
      * @return completed
      */
     public boolean addInGameConsoleMessage(String message) {
-    	System.out.println("sl: send in game console message - before null check ");
+    	//System.out.println("sl: send in game console message - before null check ");
     	if (gameFrame==null) System.out.println("gameFrameNull in server listener");
     	if (gameFrame != null) { 
-            System.out.println("sl: send in game console message - " + message);
+            //System.out.println("sl: send in game console message - " + message);
         	return gameFrame.addMessageToInGameConsole(message);
         }
         return false;
@@ -263,6 +280,7 @@ public class ServerListener {
     
     /**
      * Tells the chat frame to add a new message from a user to its text field.
+     * 
      * @param from
      * @param message
      * @return completed
