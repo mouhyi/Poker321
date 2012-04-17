@@ -38,7 +38,9 @@ public class GUIClient {
 
 	/**
 	 * This a constructor for the GUIClient class which retrieves data from the
-	 * server and displays it in the GUI
+	 * server and displays it in the GUI.
+	 * 
+	 * @param serverlistener
 	 */
 	public GUIClient(ServerListener sl) {
 		
@@ -47,11 +49,9 @@ public class GUIClient {
 		try {
 			currentUserClient = new UserClient(sl);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		currentGameTableClient = new GameClient();
-		
 
 		/*
 		 * // Code to create an actual default table IGameTable desiredTable =
@@ -63,9 +63,22 @@ public class GUIClient {
 		 */
 	}
 
+	/**
+	 * This a constructor for the GUIClient class which retrieves data from the
+	 * server and displays it in the GUI.
+	 * 
+	 * @return serverlistener
+	 */
 	public UserClient getCurrentUserClient(){
 		return this.currentUserClient;
 	}
+	
+	/**
+	 * This a constructor for the GUIClient class which retrieves data from the
+	 * server and displays it in the GUI.
+	 * 
+	 * @return serverlistener
+	 */	
 	public GUIClient(String ip) {
 
 	}
@@ -1413,6 +1426,7 @@ public class GUIClient {
 
 	/**
 	 * Method pings server to check connection.
+	 * @return completed 
 	 */
 	public static boolean ping() {
 
