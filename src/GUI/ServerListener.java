@@ -114,7 +114,7 @@ public class ServerListener {
     public boolean enterGameFrame() {
     	//System.out.println("Sl: enter game frame");
         if (mainMenuFrame != null) {
-        	System.out.println("Sl: mmf not null");
+        	//System.out.println("Sl: mmf not null");
             try {
 				return mainMenuFrame.enterGameFrame();
 			} catch (RemoteException e) {
@@ -264,7 +264,7 @@ public class ServerListener {
      */
     public boolean addInGameConsoleMessage(String message) {
     	//System.out.println("sl: send in game console message - before null check ");
-    	if (gameFrame==null) System.out.println("gameFrameNull in server listener");
+    	//if (gameFrame==null) //System.out.println("gameFrameNull in server listener");
     	if (gameFrame != null) { 
             //System.out.println("sl: send in game console message - " + message);
         	return gameFrame.addMessageToInGameConsole(message);

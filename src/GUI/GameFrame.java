@@ -213,7 +213,7 @@ public class GameFrame extends javax.swing.JFrame {
 				//System.out.println("NULL FORMAT");
 			}
 		}
-		System.out.println("finishing game frame");
+		//System.out.println("finishing game frame");
 		return setCardIconsForUser(username, cardIcons);
 	}
 

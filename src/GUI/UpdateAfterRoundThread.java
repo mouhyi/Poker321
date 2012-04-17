@@ -35,11 +35,11 @@ public class UpdateAfterRoundThread extends Thread {
 
 		
 		listener.updateAllCards();
-	 	System.out.println("updated cards ");
+	 	//System.out.println("updated cards ");
 		listener.updateBettingSystem();
-		System.out.println("updated bets");
+		//System.out.println("updated bets");
 		listener.addInGameConsoleMessage(msg);
-		System.out.println("updated message");
+		//System.out.println("updated message");
 		
 		playerCl.mainSem.release();
 		

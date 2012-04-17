@@ -164,7 +164,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
      * Updates the profile panel with the users information.
      */
     private void updateProfilePanel() {
-        System.out.println("Profile Panel Shown");
+        //System.out.println("Profile Panel Shown");
         firstNameProfileLabel.setText("First Name: Haibo");
         lastNameProfileLabel.setText("Last Name: Zeng");
         emailProfileLabel.setText("Email: " + clientRequest.getEmail());
