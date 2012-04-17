@@ -827,7 +827,7 @@ public class GUIClient {
                     currentGameTableClient.getUserProxy().getTable(table).getGame(), sl);
         } catch (RemoteException e) {
             
-                    / e.printStackTrace();
+                    e.printStackTrace();
         }
         if (i == 0 && this.usersGameTable != null) {
             return true;
