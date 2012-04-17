@@ -29,8 +29,8 @@ public class Statistics {
 			return -1;
 
 		try {
-			Connection con = Methods.connectToDB("5CARD");
-			String query = "UPDATE 5CARD.Players SET gameWinnings=?, wins=?, losses=?"
+			Connection con = Methods.connectToDB("team1");
+			String query = "UPDATE team1.Players SET gameWinnings=?, wins=?, losses=?"
 					+ " WHERE u_id=?";
 			pstmt = con.prepareStatement(query);
 
@@ -70,7 +70,7 @@ public class Statistics {
 		int i = 0;
 		String[][] leaderboard = new String[20][5];
 		try {
-			Connection con = Methods.connectToDB("5CARD");
+			Connection con = Methods.connectToDB("team1");
 			String query = "SELECT * FROM Players ORDER BY gameWinnings DESC LIMIT 20";
 			stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
@@ -119,7 +119,7 @@ public class Statistics {
 		Statement stmt = null;
 		double[] stats = new double[3];
 		try {
-			Connection con = Methods.connectToDB("5CARD");
+			Connection con = Methods.connectToDB("team1");
 			String query = "SELECT * FROM Players WHERE u_id='" + userId + "'";
 			stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);

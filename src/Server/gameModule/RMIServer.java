@@ -10,7 +10,7 @@ import Remote.GameServer;
 public class RMIServer {
 	
 	private static final int PORT = 10066;
-	private static final String HOST_NAME = "localhost";
+	private static final String HOST_NAME = "132.206.42.61";
 	
 	public static void registerGameServer() {
 		try {

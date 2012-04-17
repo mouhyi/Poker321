@@ -8,7 +8,7 @@ import Remote.RemoteUser;
 public class GameClient {
 	
 	private static final int PORT = 10066;
-	private static final String HOST_NAME = "localhost";
+	private static final String HOST_NAME = "132.206.42.61";
 	
 	// stub to the GameServer object
 	private GameServer gameServerProxy;

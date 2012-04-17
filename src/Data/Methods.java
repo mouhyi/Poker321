@@ -10,12 +10,19 @@ import java.util.Properties;
  *
  */
 public class Methods {
+	
+	/**
+	 * Connects to db
+	 * @param db
+	 * @return
+	 * @throws SQLException
+	 */
 	public static Connection connectToDB(String db) throws SQLException{
 		Connection con= null;
 		try{
 			Properties connectionProps = new Properties();
-			connectionProps.put("user", "root");
-			connectionProps.put("password", "");
+			connectionProps.put("user", "ecse321");
+			connectionProps.put("password", "ecse321");
 			con = DriverManager.getConnection(
 					"jdbc:mysql://127.0.0.1:3306/"+db, connectionProps);
 			
@@ -25,7 +32,11 @@ public class Methods {
 			return con;
 		}
 	}
-
+	
+	/**
+	 * Handles SQLEsceptions
+	 * @param ex
+	 */
 	public static void printSQLException(SQLException ex) {
 		for (Throwable e : ex) {
 			if (e instanceof SQLException) {

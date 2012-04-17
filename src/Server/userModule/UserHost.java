@@ -19,7 +19,7 @@ import Remote.RemoteUser;
 public class UserHost {
 
 	private static final int PORT = 10012;
-	private static final String HOST_NAME = "localhost";
+	private static final String HOST_NAME = "132.206.42.61";
 
 	/**
 	 * This is constructor where the Remote 'User' Object is exported to the RMI

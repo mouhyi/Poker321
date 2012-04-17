@@ -31,8 +31,8 @@ public class UserData {
 		String name = Methods.addQuotes(user.getName());
 		String chips = Methods.addQuotes(user.getChips());
 
-		Connection con = Methods.connectToDB("5CARD");
-		String query = "INSERT INTO 5CARD.Users (email, password, name, chips, online)"
+		Connection con = Methods.connectToDB("team1");
+		String query = "INSERT INTO team1.Users (email, password, name, chips, online)"
 				+ "VALUES ("
 				+ email
 				+ ", "
@@ -56,8 +56,8 @@ public class UserData {
 	 * @throws SQLException
 	 */
 	public static int createPlayer(int userId) throws SQLException {
-		Connection con = Methods.connectToDB("5CARD");
-		String query = "INSERT INTO 5CARD.Players (u_id, wins, losses, gameWinnings)"
+		Connection con = Methods.connectToDB("team1");
+		String query = "INSERT INTO team1.Players (u_id, wins, losses, gameWinnings)"
 				+ "VALUES (" + Methods.addQuotes(userId) + ", 0,0,0)";
 		Statement st = con.createStatement();
 		st.executeUpdate(query);
@@ -75,8 +75,8 @@ public class UserData {
 	public static int authenticate(String email, String password) {
 		int result = -1;
 		try {
-			Connection con = Methods.connectToDB("5CARD");
-			String query = "SELECT * FROM 5CARD.Users WHERE email='" + email
+			Connection con = Methods.connectToDB("team1");
+			String query = "SELECT * FROM team1.Users WHERE email='" + email
 					+ "' and password='" + password + "'";
 			Statement st = con.createStatement();
 			if (st.executeQuery(query).next())
@@ -103,8 +103,8 @@ public class UserData {
 		Statement st = null;
 
 		try {
-			Connection con = Methods.connectToDB("5CARD");
-			String query = "SELECT * FROM 5CARD.Users WHERE u_id='" + userId
+			Connection con = Methods.connectToDB("team1");
+			String query = "SELECT * FROM team1.Users WHERE u_id='" + userId
 					+ "'";
 			st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
@@ -142,8 +142,8 @@ public class UserData {
 		Statement st = null;
 
 		try {
-			Connection con = Methods.connectToDB("5CARD");
-			String query = "SELECT u_id FROM 5CARD.Users WHERE email='" + user
+			Connection con = Methods.connectToDB("team1");
+			String query = "SELECT u_id FROM team1.Users WHERE email='" + user
 					+ "' or name='" + user + "'";
 			st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
@@ -187,8 +187,8 @@ public class UserData {
 		Statement st = null;
 
 		try {
-			Connection con = Methods.connectToDB("5CARD");
-			String query = "SELECT email FROM 5CARD.Users WHERE u_id='"
+			Connection con = Methods.connectToDB("team1");
+			String query = "SELECT email FROM team1.Users WHERE u_id='"
 					+ userId + "'";
 			st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
@@ -221,8 +221,8 @@ public class UserData {
 			return -1;
 
 		try {
-			Connection con = Methods.connectToDB("5CARD");
-			String query = "UPDATE 5CARD.Users SET name=? , chips =?, online=?, password=?"
+			Connection con = Methods.connectToDB("team1");
+			String query = "UPDATE team1.Users SET name=? , chips =?, online=?, password=?"
 					+ " WHERE u_id=?";
 			pstmt = con.prepareStatement(query);
 			pstmt.setString(1, user.getName());
@@ -257,8 +257,8 @@ public class UserData {
 		Statement stmt = null;
 
 		try {
-			Connection con = Methods.connectToDB("5CARD");
-			String query = "SELECT f_id FROM 5CARD.Friends WHERE u_id="
+			Connection con = Methods.connectToDB("team1");
+			String query = "SELECT f_id FROM team1.Friends WHERE u_id="
 					+ Methods.addQuotes(u_id);
 			stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
@@ -297,10 +297,10 @@ public class UserData {
 			return -1;
 
 		try {
-			con = Methods.connectToDB("5CARD");
+			con = Methods.connectToDB("team1");
 			con.setAutoCommit(false);
 
-			String query = "INSERT INTO 5CARD.Friends (u_id, f_id) VALUES (?, ?)";
+			String query = "INSERT INTO team1.Friends (u_id, f_id) VALUES (?, ?)";
 
 			pstmt = con.prepareStatement(query);
 
@@ -349,10 +349,10 @@ public class UserData {
 		Connection con = null;
 
 		try {
-			con = Methods.connectToDB("5CARD");
+			con = Methods.connectToDB("team1");
 			con.setAutoCommit(false);
 
-			String query = "DELETE FROM 5CARD.Friends WHERE u_id=? AND f_id=? ";
+			String query = "DELETE FROM team1.Friends WHERE u_id=? AND f_id=? ";
 
 			pstmt = con.prepareStatement(query);
 
@@ -403,9 +403,9 @@ public class UserData {
 		boolean result = false;
 
 		try {
-			con = Methods.connectToDB("5CARD");
+			con = Methods.connectToDB("team1");
 
-			String query = "SELECT * FROM 5CARD.Friends WHERE u_id=? AND f_id=? ";
+			String query = "SELECT * FROM team1.Friends WHERE u_id=? AND f_id=? ";
 			pstmt = con.prepareStatement(query);
 			pstmt.setInt(1, userId);
 			pstmt.setInt(2, friendId);
