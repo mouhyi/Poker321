@@ -2,26 +2,11 @@
 
 *************************** Welcome to 321 Poker!  **************************
 
-The source code is available on: https://github.com/mouhyi/5CardStud
 
 
-**************************** Installation ***********************************
-
-To run the game make sure you have mysql and RMIregistry running.
-
-IP: 132.206.42.61。
-MySQL: User name and password: ecse321
-
-Download PokerServer.jar & PokerClient.jar.
-
-From the terminal run the server jar on the hosting server:
-	java -jar PokerServer.jar 
-	
-From the terminal run the client jar on the user's machine:
-	java -jar PokerClient.jar 
 	
 	
-****************************** Enjoy ****************************************
+*****************************************************************************
 	
 	
 ****************************************************************************************************************************************	
